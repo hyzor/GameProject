@@ -614,100 +614,14 @@ void Projekt::UpdateScene(float dt)
 	for (UINT i = 0; i < mGenSkinnedInstances.size(); ++i)
 		mGenSkinnedInstances[i].Update(dt);
 
-	/*
-	// Up
-	if (mDirectInput->GetKeyboardState()[DIK_W] && 0x80)
-	{
-		mPlayer.GetCamera()->walk(30.0f*dt);
-	}
-
-	// Left
-	if (mDirectInput->GetKeyboardState()[DIK_A] & 0x80)
-	{
-		mPlayer.GetCamera()->strafe(-30.0f*dt);
-	}
-
-	// Down
-	if (mDirectInput->GetKeyboardState()[DIK_S] & 0x80)
-	{
-		mPlayer.GetCamera()->walk(-30.0f*dt);
-	}
-
-	// Right
-	if (mDirectInput->GetKeyboardState()[DIK_D] & 0x80)
-	{
-		mPlayer.GetCamera()->strafe(30.0f*dt);
-	}
-
-	// Mouse has moved in x-axis
-	if (mDirectInput->MouseHasMoved())
-	{
-		// Make each pixel correspond to a quarter of a degree.
-		float dx = XMConvertToRadians(0.25f*static_cast<float>(mDirectInput->GetMouseState().lX));
-		float dy = XMConvertToRadians(0.25f*static_cast<float>(mDirectInput->GetMouseState().lY));
-
-		mPlayer.GetCamera()->yaw(dx);
-		mPlayer.GetCamera()->pitch(dy);
-	}
-	*/
-
-	//DetectInput(dt);
-	// Movement
-// 	if(GetAsyncKeyState('W') & 0x8000)
-// 		mPlayer.GetCamera()->walk(30.0f*dt);
-// 
-// 	if(GetAsyncKeyState('S') & 0x8000)
-// 		mPlayer.GetCamera()->walk(-30.0f*dt);
-// 
-// 	if(GetAsyncKeyState('A') & 0x8000)
-// 		mPlayer.GetCamera()->strafe(-30.0f*dt);
-// 
-// 	if(GetAsyncKeyState('D') & 0x8000)
-// 		mPlayer.GetCamera()->strafe(30.0f*dt);
-
-	// Change shadow map resolution
-// 	if(GetAsyncKeyState('1') & 0x8000)
-// 	{
-// 		mShadowMapSize = 256;
-// 		mShadowMap->setResolution(mDirect3D->GetDevice(), mShadowMapSize, mShadowMapSize);
-// 	}
-// 
-// 	if(GetAsyncKeyState('2') & 0x8000)
-// 	{
-// 		mShadowMapSize = 512;
-// 		mShadowMap->setResolution(mDirect3D->GetDevice(), mShadowMapSize, mShadowMapSize);
-// 	}
-// 
-// 	if(GetAsyncKeyState('3') & 0x8000)
-// 	{
-// 		mShadowMapSize = 1024;
-// 		mShadowMap->setResolution(mDirect3D->GetDevice(), mShadowMapSize, mShadowMapSize);
-// 	}
-// 
-// 	if(GetAsyncKeyState('4') & 0x8000)
-// 	{
-// 		mShadowMapSize = 2048;
-// 		mShadowMap->setResolution(mDirect3D->GetDevice(), mShadowMapSize, mShadowMapSize);
-// 	}
-// 
-// 	if(GetAsyncKeyState('5') & 0x8000)
-// 	{
-// 		mShadowMapSize = 4096;
-// 		mShadowMap->setResolution(mDirect3D->GetDevice(), mShadowMapSize, mShadowMapSize);
-// 	}
-// 
-// 	if(GetAsyncKeyState('6') & 0x8000)
-// 	{
-// 		mShadowMapSize = 8192;
-// 		mShadowMap->setResolution(mDirect3D->GetDevice(), mShadowMapSize, mShadowMapSize);
-// 	}
+	if (mDirectInput->GetKeyboardState()[DIK_ESCAPE] && 0x80)
+		SendMessage(mhMainWnd, WM_DESTROY, 0, 0);
 
 	// Walk/fly mode
 // 	if(GetAsyncKeyState('Z') & 0x8000)
 // 		mWalkCamMode = true;
 // 	if(GetAsyncKeyState('X') & 0x8000)
 // 		mWalkCamMode = false;
-
 
 	// Walk mode
 	if (mWalkCamMode)
