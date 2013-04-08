@@ -1,5 +1,5 @@
 GameProject
 ===========
-- GameProject: Visual Studio solution med all tillh�rande data
+- GameProject: Visual Studio solution med all tillhorande data
 
-- Docs: T�nkte att vi l�gger upp bl.a. Game Treatment och klassdiagram h�r
+- Docs: Tankte att vi lagger upp bl.a. Game Treatment och klassdiagram har
