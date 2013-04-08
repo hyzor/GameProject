@@ -57,7 +57,7 @@ void Weapon::ResetCooldown()
 	mCurCooldown = mCooldown;
 }
 
-void Weapon::FireProjectile( int type, int numProjectiles )
+void Weapon::FireProjectile( int type, UINT numProjectiles )
 {
 	switch (type)
 	{

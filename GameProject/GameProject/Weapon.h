@@ -25,7 +25,7 @@ public:
 
 	void Update(float dt);
 
-	void FireProjectile(int type, int numProjectiles);
+	void FireProjectile(int type, UINT numProjectiles);
 
 	void Init(Weapon::Properties properties);
 

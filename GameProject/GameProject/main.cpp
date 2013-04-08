@@ -174,7 +174,7 @@ Projekt::~Projekt()
 {
 	SafeDelete(mGenericModel);
 
-	SafeDelete(mSkinnedModel);
+	//SafeDelete(mSkinnedModel);
 
 	SafeDelete(mPlayerModel);
 
@@ -258,7 +258,7 @@ bool Projekt::Init()
 	//--------------------------------------------------------
 	mGenericModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\duck.dae", L"Data\\Models\\Collada\\");
 
-	mSkinnedModel = new GenericSkinnedModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.dae", L"Data\\Models\\Collada\\AnimTest\\");
+	//mSkinnedModel = new GenericSkinnedModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.dae", L"Data\\Models\\Collada\\AnimTest\\");
 
 	mPlayerModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
 
@@ -282,11 +282,11 @@ bool Projekt::Init()
 	GenericModelInstance genericInstance;
 	genericInstance.model = mGenericModel;
 
-	GenericSkinnedModelInstance genSkinnedInstance;
-	genSkinnedInstance.model = mSkinnedModel;
-	genSkinnedInstance.FinalTransforms.resize(mSkinnedModel->skinnedData.getBoneCount());
-	genSkinnedInstance.ClipName = "animation";
-	genSkinnedInstance.TimePos = 0.0f;
+// 	GenericSkinnedModelInstance genSkinnedInstance;
+// 	genSkinnedInstance.model = mSkinnedModel;
+// 	genSkinnedInstance.FinalTransforms.resize(mSkinnedModel->skinnedData.getBoneCount());
+// 	genSkinnedInstance.ClipName = "animation";
+// 	genSkinnedInstance.TimePos = 0.0f;
 
 	//--------------------------------------------------------
 	// Scale, rotate and move model instances
@@ -299,15 +299,15 @@ bool Projekt::Init()
 	modelOffset = XMMatrixTranslation(-30.0f, 15.0f, -110.0f);
 	XMStoreFloat4x4(&genericInstance.world, modelScale*modelRot*modelOffset);
 
-	modelOffset = XMMatrixTranslation(50.0f, 15.0f, -110.0f);
-	XMStoreFloat4x4(&genSkinnedInstance.world, modelScale*modelRot*modelOffset);
+// 	modelOffset = XMMatrixTranslation(50.0f, 15.0f, -110.0f);
+// 	XMStoreFloat4x4(&genSkinnedInstance.world, modelScale*modelRot*modelOffset);
 
 	//--------------------------------------------------------
 	// Insert model instances to the vector
 	//--------------------------------------------------------
 	mGenericInstances.push_back(genericInstance);
 
-	mGenSkinnedInstances.push_back(genSkinnedInstance);
+/*	mGenSkinnedInstances.push_back(genSkinnedInstance);*/
 
 	//--------------------------------------------------------
 	// Compute scene bounding box

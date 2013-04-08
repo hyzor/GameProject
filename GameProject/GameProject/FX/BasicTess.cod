@@ -107,7 +107,7 @@ fxgroup
                 dcl_output o3.xyzw
                 dcl_temps 4
                 
-                #line 104 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 104 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r0.xyz, v0.xyzx  // vOut<0,1,2>
                 mov r1.xyz, v1.xyzx  // vOut<3,4,5>
                 mov r2.xy, v2.xyxx  // vOut<6,7>
@@ -245,7 +245,7 @@ fxgroup
                 dcl_constantbuffer cb0[19], immediateIndexed
                 dcl_constantbuffer cb1[3], immediateIndexed
                 
-                #line 175 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 175 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 hs_control_point_phase 
                 dcl_input vOutputControlPointID
                 dcl_input v[3][0].xyz
@@ -425,7 +425,7 @@ fxgroup
                 dcl_output o5.xyzw
                 dcl_temps 7
                 
-                #line 204 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 204 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mul r0.xyz, vDomain.xxxx, vicp[0][0].xyzx
                 mul r1.xyz, vDomain.yyyy, vicp[1][0].xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -595,7 +595,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 13
                 
-                #line 248 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 248 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pIn<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -653,7 +653,7 @@ fxgroup
                 #line 245
                 div r0.w, r0.w, l(9.000000)  // percentLit<0:[0f,1f]>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 nop 
                 mov r2.xyz, cb1[24].xyzx  // mat<0,1,2>
                 mov r3.xyz, cb1[25].xyzx  // mat<4,5,6>
@@ -692,7 +692,7 @@ fxgroup
                 movc r6.xyz, r2.wwww, r6.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r7.xyz, r2.wwww, r7.xyzx, l(0,0,0,0)  // specular<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r5.xyz, r5.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r6.xyz, r6.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r7.xyz, r7.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -736,7 +736,7 @@ fxgroup
                 movc r9.xyz, r1.wwww, r9.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r10.xyz, r1.wwww, r10.xyzx, l(0,0,0,0)  // specular<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r8.xyz, r8.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r9.xyz, r9.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r10.xyz, r10.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -780,7 +780,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // specular<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -848,7 +848,7 @@ fxgroup
                 dcl_output o3.xyzw
                 dcl_temps 4
                 
-                #line 104 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 104 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r0.xyz, v0.xyzx  // vOut<0,1,2>
                 mov r1.xyz, v1.xyzx  // vOut<3,4,5>
                 mov r2.xy, v2.xyxx  // vOut<6,7>
@@ -986,7 +986,7 @@ fxgroup
                 dcl_constantbuffer cb0[19], immediateIndexed
                 dcl_constantbuffer cb1[3], immediateIndexed
                 
-                #line 175 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 175 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 hs_control_point_phase 
                 dcl_input vOutputControlPointID
                 dcl_input v[3][0].xyz
@@ -1166,7 +1166,7 @@ fxgroup
                 dcl_output o5.xyzw
                 dcl_temps 7
                 
-                #line 204 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 204 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mul r0.xyz, vDomain.xxxx, vicp[0][0].xyzx
                 mul r1.xyz, vDomain.yyyy, vicp[1][0].xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -1341,7 +1341,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 14
                 
-                #line 248 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 248 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pIn<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -1402,7 +1402,7 @@ fxgroup
                 #line 245
                 div r1.w, r1.w, l(9.000000)  // percentLit<0:[0f,1f]>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 nop 
                 mov r3.xyz, cb1[24].xyzx  // mat<0,1,2>
                 mov r4.xyz, cb1[25].xyzx  // mat<4,5,6>
@@ -1441,7 +1441,7 @@ fxgroup
                 movc r7.xyz, r4.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // specular<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1485,7 +1485,7 @@ fxgroup
                 movc r10.xyz, r3.wwww, r10.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r11.xyz, r3.wwww, r11.xyzx, l(0,0,0,0)  // specular<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r9.xyz, r9.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r10.xyz, r10.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r11.xyz, r11.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1529,7 +1529,7 @@ fxgroup
                 movc r1.xyz, r3.wwww, r1.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r0.xyz, r3.wwww, r0.xyzx, l(0,0,0,0)  // specular<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 291 "E:\Programming\Visual Studio 2010\Projects\GameProject\GameProject\FX\BasicTess.fx"
+                #line 291 "E:\Programming\GitHub\GameProject\GameProject\GameProject\FX\BasicTess.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r1.xyz, r1.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r0.xyz, r0.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
