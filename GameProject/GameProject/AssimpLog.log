@@ -1,0 +1,40 @@
+Info,  T484: Load Data\Models\TestModel.obj
+Debug, T484: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Info,  T484: Found a matching importer for this file format
+Info,  T484: Import root directory is 'Data\Models\'
+Error, T484: OBJ: unexpected illumination model (0-2 recognized)
+Skipping one or more lines with the same contents
+Info,  T484: Entering post processing pipeline
+Debug, T484: RemoveRedundantMatsProcess begin
+Debug, T484: RemoveRedundantMatsProcess finished 
+Debug, T484: GenUVCoordsProcess begin
+Debug, T484: GenUVCoordsProcess finished
+Debug, T484: TriangulateProcess begin
+Info,  T484: TriangulateProcess finished. All polygons have been triangulated.
+Debug, T484: SortByPTypeProcess begin
+Info,  T484: Points: 0, Lines: 0, Triangles: 3, Polygons: 0 (Meshes, X = removed)
+Debug, T484: SortByPTypeProcess finished
+Debug, T484: SplitLargeMeshesProcess_Triangle begin
+Debug, T484: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T484: Generate spatially-sorted vertex cache
+Debug, T484: GenVertexNormalsProcess begin
+Debug, T484: GenVertexNormalsProcess finished. Normals are already there
+Debug, T484: CalcTangentsProcess begin
+Info,  T484: CalcTangentsProcess finished. Tangents have been calculated
+Debug, T484: SplitLargeMeshesProcess_Vertex begin
+Debug, T484: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Debug, T484: MakeLeftHandedProcess begin
+Debug, T484: MakeLeftHandedProcess finished
+Debug, T484: FlipUVsProcess begin
+Debug, T484: FlipUVsProcess finished
+Debug, T484: FlipWindingOrderProcess begin
+Debug, T484: FlipWindingOrderProcess finished
+Debug, T484: LimitBoneWeightsProcess begin
+Debug, T484: LimitBoneWeightsProcess end
+Info,  T484: Leaving post processing pipeline
+Info,  T484: Node: default (Num children: 0)
+Info,  T484: Node: pCylinder1 (Mesh index: 0) (Material index: 1) (Num children: 0)
+Info,  T484: Node: default (Num children: 0)
+Info,  T484: Node: pCone1 (Mesh index: 1) (Material index: 2) (Num children: 0)
+Info,  T484: Node: default (Num children: 0)
+Info,  T484: Node: pSphere1 (Mesh index: 2) (Material index: 3) (Num children: 0)
