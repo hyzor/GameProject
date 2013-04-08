@@ -1,3 +1,11 @@
 GameProject
 ===========
-This is a README file. Please add some information about the project here.
+-----------------------------------------------------
+ GameProject
+-----------------------------------------------------
+Visual Studio solution med all tillhörande data
+
+-----------------------------------------------------
+ Docs
+-----------------------------------------------------
+Tänkte att vi lägger upp bl.a. Game Treatment och klassdiagram här
