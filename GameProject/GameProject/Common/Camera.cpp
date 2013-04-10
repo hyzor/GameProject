@@ -7,7 +7,7 @@ Camera::Camera(void)
 	mUp(0.0f, 1.0f, 0.0f),
 	mLook(0.0f, 0.0f, 1.0f)
 {
-	setLens(0.25f*MathHelper::pi, 1.0f, 1.0f, 1000.0f);
+	SetLens(0.25f*MathHelper::pi, 1.0f, 1.0f, 1000.0f);
 }
 
 
@@ -15,99 +15,99 @@ Camera::~Camera(void)
 {
 }
 
-XMVECTOR Camera::getPositionXM() const
+XMVECTOR Camera::GetPositionXM() const
 {
 	return XMLoadFloat3(&mPosition);
 }
 
-XMFLOAT3 Camera::getPosition() const
+XMFLOAT3 Camera::GetPosition() const
 {
 	return mPosition;
 }
 
-void Camera::setPosition( float x, float y, float z )
+void Camera::SetPosition( float x, float y, float z )
 {
 	mPosition = XMFLOAT3(x, y, z);
 }
 
-void Camera::setPosition( const XMFLOAT3& v )
+void Camera::SetPosition( const XMFLOAT3& v )
 {
 	mPosition = v;
 }
 
-XMVECTOR Camera::getRightXM() const
+XMVECTOR Camera::GetRightXM() const
 {
 	return XMLoadFloat3(&mRight);
 }
 
-XMFLOAT3 Camera::getRight() const
+XMFLOAT3 Camera::GetRight() const
 {
 	return mRight;
 }
 
-XMVECTOR Camera::getUpXM() const
+XMVECTOR Camera::GetUpXM() const
 {
 	return XMLoadFloat3(&mUp);
 }
 
-XMFLOAT3 Camera::getUp() const
+XMFLOAT3 Camera::GetUp() const
 {
 	return mUp;
 }
 
-XMVECTOR Camera::getLookXM() const
+XMVECTOR Camera::GetLookXM() const
 {
 	return XMLoadFloat3(&mLook);
 }
 
-XMFLOAT3 Camera::getLook() const
+XMFLOAT3 Camera::GetLook() const
 {
 	return mLook;
 }
 
-XMMATRIX Camera::getViewMatrix() const
+XMMATRIX Camera::GetViewMatrix() const
 {
 	return XMLoadFloat4x4(&mView);
 }
 
-XMMATRIX Camera::getProjMatrix() const
+XMMATRIX Camera::GetProjMatrix() const
 {
 	return XMLoadFloat4x4(&mProj);
 }
 
-XMMATRIX Camera::getViewProjMatrix() const
+XMMATRIX Camera::GetViewProjMatrix() const
 {
-	return XMMatrixMultiply(getViewMatrix(), getProjMatrix());
+	return XMMatrixMultiply(GetViewMatrix(), GetProjMatrix());
 }
 
 #pragma region Frustum
-float Camera::getNearZ() const
+float Camera::GetNearZ() const
 {
 	return mNearZ;
 }
 
-float Camera::getFarZ() const
+float Camera::GetFarZ() const
 {
 	return mFarZ;
 }
 
-float Camera::getAspect() const
+float Camera::GetAspect() const
 {
 	return mAspect;
 }
 
-float Camera::getFovY() const
+float Camera::GetFovY() const
 {
 	return mFovY;
 }
 
-float Camera::getFovX() const
+float Camera::GetFovX() const
 {
-	float halfWidth = 0.5f*getNearWindowWidth();
+	float halfWidth = 0.5f*GetNearWindowWidth();
 	return 2.0f*atan(halfWidth / mNearZ);
 }
 
-void Camera::setLens( float fovY, float aspect, float zn, float zf )
+void Camera::SetLens( float fovY, float aspect, float zn, float zf )
 {
 	// Cache properties
 	mFovY = fovY;
@@ -123,27 +123,27 @@ void Camera::setLens( float fovY, float aspect, float zn, float zf )
 }
 #pragma endregion Frustum
 
-float Camera::getNearWindowWidth() const
+float Camera::GetNearWindowWidth() const
 {
 	return mAspect * mNearWindowHeight;
 }
 
-float Camera::getNearWindowHeight() const
+float Camera::GetNearWindowHeight() const
 {
 	return mNearWindowHeight;
 }
 
-float Camera::getFarWindowWidth() const
+float Camera::GetFarWindowWidth() const
 {
 	return mAspect * mFarWindowHeight;
 }
 
-float Camera::getFarWindowHeight() const
+float Camera::GetFarWindowHeight() const
 {
 	return mFarWindowHeight;
 }
 
-void Camera::updateViewMatrix()
+void Camera::UpdateViewMatrix()
 {
 	XMVECTOR right = XMLoadFloat3(&mRight);
 	XMVECTOR up = XMLoadFloat3(&mUp);
@@ -187,7 +187,7 @@ void Camera::updateViewMatrix()
 	mView(3,3) = 1.0f;
 }
 
-void Camera::walk( float dist )
+void Camera::Walk(float dist)
 {
 	XMVECTOR s = XMVectorReplicate(dist);
 	XMVECTOR l = XMLoadFloat3(&mLook);
@@ -195,7 +195,7 @@ void Camera::walk( float dist )
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
 }
 
-void Camera::strafe( float dist )
+void Camera::Strafe(float dist)
 {
 	XMVECTOR s = XMVectorReplicate(dist);
 	XMVECTOR r = XMLoadFloat3(&mRight);
@@ -203,7 +203,7 @@ void Camera::strafe( float dist )
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
 }
 
-void Camera::pitch( float angle )
+void Camera::Pitch(float angle)
 {
 	// Get angle between normalized horizontal vector 
 	// and normalized look vector (z-axis)
@@ -213,18 +213,26 @@ void Camera::pitch( float angle )
 
 	XMVECTOR look = XMLoadFloat3(&mLook);
 	XMVECTOR horzDir = look;
-	horzDir.m128_f32[1] = 0.0f;
+	horzDir.m128_f32[1] = 0.0f; // Set horzDir y-component to 0
 
 	XMVECTOR angleVec = XMVector3AngleBetweenNormals(XMVector3Normalize(horzDir), XMVector3Normalize(look));
 
 	// Final angle in radians, converted to degrees
-	if (MathHelper::RadiansToDegrees(angleVec.m128_f32[0]) > 85.0f)
+	if (MathHelper::RadiansToDegrees(XMVectorGetY(angleVec)) > 89.0f)
 	{
 		// Limit angle when looking "too steeply up"
-		angle = 0.001f;
+		if (XMVectorGetY(look) > 0.50)
+		{
+			if (angle < 0)
+				return;
+		}
 
 		// Limit angle when looking "too steeply down"
-		// angle = -0.001f;
+		else if (XMVectorGetY(look) < 0.50)
+		{
+			if (angle > 0)
+				return;
+		}
 	}
 
 	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
@@ -233,7 +241,7 @@ void Camera::pitch( float angle )
 	 XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
 }
 
-void Camera::yaw( float angle )
+void Camera::Yaw(float angle)
 {
 	XMMATRIX R = XMMatrixRotationY(angle);
 
@@ -242,12 +250,12 @@ void Camera::yaw( float angle )
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
 }
 
-XNA::Frustum Camera::getFrustum() const
+XNA::Frustum Camera::GetFrustum() const
 {
 	return mFrustum;
 }
 
-void Camera::computeFrustum()
+void Camera::ComputeFrustum()
 {
-	ComputeFrustumFromProjection(&mFrustum, &getProjMatrix());
+	ComputeFrustumFromProjection(&mFrustum, &GetProjMatrix());
 }

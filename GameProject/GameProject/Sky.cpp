@@ -75,13 +75,13 @@ ID3D11ShaderResourceView* Sky::cubeMapSRV()
 void Sky::draw(ID3D11DeviceContext* dc, const Camera& camera)
 {
 	// Center sky about eye in world space
-	XMFLOAT3 eyePos = camera.getPosition();
+	XMFLOAT3 eyePos = camera.GetPosition();
 	XMMATRIX T = XMMatrixTranslation(eyePos.x, eyePos.y, eyePos.z);
 
-	XMMATRIX WVP = XMMatrixMultiply(T, camera.getViewProjMatrix());
+	XMMATRIX WVP = XMMatrixMultiply(T, camera.GetViewProjMatrix());
 
-	Effects::SkyFX->setWorldViewProj(WVP);
-	Effects::SkyFX->setCubeMap(mCubeMapSRV);
+	Effects::SkyFX->SetWorldViewProj(WVP);
+	Effects::SkyFX->SetCubeMap(mCubeMapSRV);
 
 	UINT stride = sizeof(XMFLOAT3);
 	UINT offset = 0;

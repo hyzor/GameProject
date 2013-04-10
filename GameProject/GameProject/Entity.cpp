@@ -36,9 +36,9 @@ void Entity::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, C
 	XMMATRIX worldInvTranspose;
 	XMMATRIX worldViewProj;
 
-	XMMATRIX view = mCamera->getViewMatrix();
-	XMMATRIX proj = mCamera->getProjMatrix();
-	XMMATRIX viewproj = mCamera->getViewProjMatrix();
+	XMMATRIX view = mCamera->GetViewMatrix();
+	XMMATRIX proj = mCamera->GetProjMatrix();
+	XMMATRIX viewproj = mCamera->GetViewProjMatrix();
 
 	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 	XMMATRIX toTexSpace(
@@ -58,13 +58,13 @@ void Entity::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, C
 	Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
 	Effects::BasicFX->SetWorldViewProj(worldViewProj);
 	Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-	Effects::BasicFX->setShadowTransform(world*XMLoadFloat4x4(&shadowMap->getShadowTransform()));
-	Effects::BasicFX->setShadowMap(shadowMap->getDepthMapSRV());
+	Effects::BasicFX->SetShadowTransform(world*XMLoadFloat4x4(&shadowMap->GetShadowTransform()));
+	Effects::BasicFX->SetShadowMap(shadowMap->getDepthMapSRV());
 	Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		Effects::BasicTessFX->setFogColor(Colors::Silver);
+		Effects::BasicTessFX->SetFogColor(Colors::Silver);
 
 		for (UINT i = 0; i < mInstance.model->meshCount; ++i)
 		{

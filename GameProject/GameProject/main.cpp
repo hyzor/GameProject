@@ -4,6 +4,7 @@
 #include "ShadowMap.h"
 #include "Sky.h"
 #include "FrustumCulling.h"
+#include "RenderStates.h"
 
 #include "Game.h"
 
@@ -23,8 +24,6 @@ public:
 private:
 	TextureManager mTextureMgr;
 
-	// Models
-	GenericModel* mPlayerModel;
 	std::vector<GenericModelInstance> mGenericInstances;
 
 	// Lights
@@ -37,16 +36,11 @@ private:
 	// Scene bounding sphere
 	XNA::Sphere mSceneBounds;
 
-	// Player
-
 	// Sky
 	Sky* mSky;
 
 	// Frustum culling
 	FrustumCulling* mFrustumCulling;
-
-	// Render states
-	ID3D11RasterizerState* WireFrameRS;
 
 	Game* mGame;
 };
@@ -56,7 +50,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-	//_CrtSetBreakAlloc(1088);
 
 	// Also create a debug console window
 	// 	if(AllocConsole()) 
@@ -79,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 Projekt::Projekt(HINSTANCE hInstance)
 	: D3D11App(hInstance), mShadowMap(0)
 {
-	mMainWndCaption = L"DV1415 - Projekt";
+	mMainWndCaption = L"GameProject";
 
 	//--------------------------------------------------------
 	// Create lights
@@ -110,11 +103,10 @@ Projekt::~Projekt()
 	SafeDelete(mShadowMap);
 	SafeDelete(mFrustumCulling);
 	SafeDelete(mGame);
-	ReleaseCOM(WireFrameRS);
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
-
+	RenderStates::DestroyAll();
 }
 
 bool Projekt::Init()
@@ -126,113 +118,54 @@ bool Projekt::Init()
 	Effects::InitAll(mDirect3D->GetDevice());
 	InputLayouts::InitAll(mDirect3D->GetDevice());
 	mTextureMgr.init(mDirect3D->GetDevice());
+	RenderStates::InitAll(mDirect3D->GetDevice());
 
-	// Initialize wireframe render state
-	D3D11_RASTERIZER_DESC wireFrameDesc;
-	ZeroMemory(&wireFrameDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireFrameDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wireFrameDesc.CullMode = D3D11_CULL_BACK;
-	wireFrameDesc.FrontCounterClockwise = false;
-	wireFrameDesc.DepthClipEnable = true;
-
-	HR(mDirect3D->GetDevice()->CreateRasterizerState(&wireFrameDesc, &WireFrameRS));
-	
-	mFrustumCulling = new FrustumCulling();
-
-
+	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
 
-	//--------------------------------------------------------
 	// Create sky
-	//--------------------------------------------------------
 	mSky = new Sky(mDirect3D->GetDevice(), L"Data/Textures/snowcube1024.dds", 5000.0f);
 
-	//--------------------------------------------------------
 	// Create shadow map
-	//--------------------------------------------------------
 	mShadowMap = new ShadowMap(mDirect3D->GetDevice(), 2048, 2048);
 
-	//--------------------------------------------------------
-	// Load models
-	//--------------------------------------------------------
-	/*
-	mGenericModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\duck.dae", L"Data\\Models\\Collada\\");
-
-	mPlayerModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
-
-	duck = new Entity(mGenericModel, XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-	Player::InitProperties playerProp;
-	playerProp.PlayerID = 0;
-	playerProp.Nickname = "Hyzor";
-	playerProp.Speed = 1.0f;
-	playerProp.Health = 1.0f;
-	playerProp.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	playerProp.Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	playerProp.Angle = 0.0f;
-	playerProp.ModelInstance.model = mPlayerModel;
-	playerProp.ModelInstance.isVisible = true;
-
-	mPlayer = new Player();
-	mPlayer->Init(playerProp);
-	
-	//--------------------------------------------------------
-	// Create model instances
-	//--------------------------------------------------------
-	GenericModelInstance genericInstance;
-	genericInstance.model = mGenericModel;
-
-	//--------------------------------------------------------
-	// Scale, rotate and move model instances
-	//--------------------------------------------------------
-	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
-	XMMATRIX modelOffset = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-
-	//modelScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	modelOffset = XMMatrixTranslation(-30.0f, 15.0f, -110.0f);
-	XMStoreFloat4x4(&genericInstance.world, modelScale*modelRot*modelOffset);
-
-	//--------------------------------------------------------
-	// Insert model instances to the vector
-	//--------------------------------------------------------
-	mGenericInstances.push_back(genericInstance);
+	// Create frustum culling
+	mFrustumCulling = new FrustumCulling();
 
 	//--------------------------------------------------------
 	// Compute scene bounding box
 	//--------------------------------------------------------
-	XMFLOAT3 minPt(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
-	XMFLOAT3 maxPt(-MathHelper::infinity, -MathHelper::infinity, -MathHelper::infinity);
-
-	// Get vertex positions from all models
-	for (UINT i = 0; i < mGenericInstances.size(); ++i)
-	{
-		for (UINT j = 0; j < mGenericInstances[i].model->vertices.size(); ++j)
-		{
-			XMFLOAT3 vPos = mGenericInstances[i].model->vertices[j]->position;
-
-			minPt.x = MathHelper::getMin(minPt.x, vPos.x);
-			minPt.y = MathHelper::getMin(minPt.x, vPos.x);
-			minPt.z = MathHelper::getMin(minPt.x, vPos.x);
-
-			maxPt.x = MathHelper::getMax(maxPt.x, vPos.x);
-			maxPt.y = MathHelper::getMax(maxPt.x, vPos.x);
-			maxPt.z = MathHelper::getMax(maxPt.x, vPos.x);
-		}
-	}
-
-	// Sphere center is at half of these new dimensions
-	mSceneBounds.Center = XMFLOAT3(	0.5f*(minPt.x + maxPt.x),
-		0.5f*(minPt.y + maxPt.y),
-		0.5f*(minPt.z + maxPt.z));
-
-	// Calculate the sphere radius
-	XMFLOAT3 extent(0.5f*(maxPt.x - minPt.x),
-		0.5f*(maxPt.y - minPt.y),
-		0.5f*(maxPt.z - minPt.z));
-
-	mSceneBounds.Radius = sqrtf(extent.x*extent.x + extent.y*extent.y + extent.z*extent.z);
-	*/
+// 	XMFLOAT3 minPt(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
+// 	XMFLOAT3 maxPt(-MathHelper::infinity, -MathHelper::infinity, -MathHelper::infinity);
+// 
+// 	// Get vertex positions from all models
+// 	for (UINT i = 0; i < mGenericInstances.size(); ++i)
+// 	{
+// 		for (UINT j = 0; j < mGenericInstances[i].model->vertices.size(); ++j)
+// 		{
+// 			XMFLOAT3 vPos = mGenericInstances[i].model->vertices[j]->position;
+// 
+// 			minPt.x = MathHelper::getMin(minPt.x, vPos.x);
+// 			minPt.y = MathHelper::getMin(minPt.x, vPos.x);
+// 			minPt.z = MathHelper::getMin(minPt.x, vPos.x);
+// 
+// 			maxPt.x = MathHelper::getMax(maxPt.x, vPos.x);
+// 			maxPt.y = MathHelper::getMax(maxPt.x, vPos.x);
+// 			maxPt.z = MathHelper::getMax(maxPt.x, vPos.x);
+// 		}
+// 	}
+// 
+// 	// Sphere center is at half of these new dimensions
+// 	mSceneBounds.Center = XMFLOAT3(	0.5f*(minPt.x + maxPt.x),
+// 		0.5f*(minPt.y + maxPt.y),
+// 		0.5f*(minPt.z + maxPt.z));
+// 
+// 	// Calculate the sphere radius
+// 	XMFLOAT3 extent(0.5f*(maxPt.x - minPt.x),
+// 		0.5f*(maxPt.y - minPt.y),
+// 		0.5f*(maxPt.z - minPt.z));
+// 
+// 	mSceneBounds.Radius = sqrtf(extent.x*extent.x + extent.y*extent.y + extent.z*extent.z);
 
 	OnResize();
 
@@ -243,12 +176,11 @@ void Projekt::OnResize()
 {
 	D3D11App::OnResize();
 
-	mGame->GetCamera()->setLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
+	mGame->GetCamera()->SetLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
+	mGame->GetCamera()->ComputeFrustum();
 
-	mGame->GetCamera()->computeFrustum();
-
-	// Build the frustum from the projection matrix in view space
-	//ComputeFrustumFromProjection(&mCamFrustum, &mPlayer->GetCamera()->getProjMatrix());
+	XMVECTOR myVec;
+	myVec.m128_f32[0];
 }
 
 void Projekt::DrawScene()
@@ -257,7 +189,7 @@ void Projekt::DrawScene()
 	// Render scene to shadow map
 	//---------------------------------------------------------------------------
 	mShadowMap->BindDsvAndSetNullRenderTarget(mDirect3D->GetImmediateContext());
-	mShadowMap->drawSceneToShadowMap(mGenericInstances, *mGame->GetCamera(), mDirect3D->GetImmediateContext());
+	mShadowMap->DrawSceneToShadowMap(mGenericInstances, *mGame->GetCamera(), mDirect3D->GetImmediateContext());
 
 	mDirect3D->GetImmediateContext()->RSSetState(0);
 
@@ -272,152 +204,21 @@ void Projekt::DrawScene()
 	//---------------------------------------------------------------------------
 
 	// Possible Wireframe render state
-	if (GetAsyncKeyState('E') & 0x8000)
-		mDirect3D->GetImmediateContext()->RSSetState(WireFrameRS);
-
-	XMMATRIX shadowTransform = XMLoadFloat4x4(&mShadowMap->getShadowTransform());
-
-	// Camera matrices
-	XMMATRIX view = mGame->GetCamera()->getViewMatrix();
-	XMMATRIX proj = mGame->GetCamera()->getProjMatrix();
-	XMMATRIX viewproj = mGame->GetCamera()->getViewProjMatrix();
-
-	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+	if (mDirectInput->GetKeyboardState()[DIK_E] && 0x80)
+		mDirect3D->GetImmediateContext()->RSSetState(RenderStates::WireFrameRS);
 
 	//--------------------------------------------------------------
-	// Shader constants
+	// Set shader constants
 	//--------------------------------------------------------------
-	// Set per frame constants for shaders
 	Effects::BasicFX->SetDirLights(mDirLights);
-	Effects::BasicFX->SetEyePosW(mGame->GetCamera()->getPosition());
-	Effects::BasicFX->setShadowMap(mShadowMap->getDepthMapSRV());
+	Effects::BasicFX->SetEyePosW(mGame->GetCamera()->GetPosition());
+	Effects::BasicFX->SetShadowMap(mShadowMap->getDepthMapSRV());
 	Effects::BasicFX->SetCubeMap(mSky->cubeMapSRV());
 
-// 	Effects::NormalMapFX->SetDirLights(mDirLights);
-// 	Effects::NormalMapFX->SetEyePosW(mPlayer->GetCamera()->getPosition());
-// 	Effects::NormalMapFX->setShadowMap(mShadowMap->getDepthMapSRV());
-// 	Effects::NormalMapFX->SetCubeMap(mSky->cubeMapSRV());
-
-	XMMATRIX world;
-	XMMATRIX worldInvTranspose;
-	XMMATRIX worldViewProj;
-
-	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
-	XMMATRIX toTexSpace(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-
-	// Draw player
-	/*mPlayer->Draw(mDirect3D->GetImmediateContext(), mDirLights,
-		mShadowMap->getDepthMapSRV(), &shadowTransform);*/
-
-	/*ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
-	duck->Draw(mDirect3D->GetImmediateContext(), activeTech, mPlayer->GetCamera(), mShadowMap);*/
-
+	// Draw game
 	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
 
-	// Set our effect technique to use
-	/*ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
-	ID3DX11EffectTechnique* activeSkinnedTech = Effects::NormalMapFX->DirLights3TexTech;
-
-	D3DX11_TECHNIQUE_DESC techDesc;*/
-
-	//--------------------------------------------------------------------------------
-	// Draw opaque objects
-	//--------------------------------------------------------------------------------
-	/*mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::Basic32);
-
-	activeTech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		for (UINT mIndex = 0; mIndex < mGenericInstances.size(); ++mIndex)
-		{
-			if (mGenericInstances[mIndex].isVisible)
-			{
-				world = XMLoadFloat4x4(&mGenericInstances[mIndex].world);
-				worldInvTranspose = MathHelper::InverseTranspose(world);
-				worldViewProj = world*view*proj;
-
-				Effects::BasicFX->SetWorld(world);
-				Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
-				Effects::BasicFX->SetWorldViewProj(worldViewProj);
-				Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-				Effects::BasicFX->setShadowTransform(world*shadowTransform);
-				Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-				for (UINT i = 0; i < mGenericInstances[mIndex].model->meshCount; ++i)
-				{
-					UINT matIndex = mGenericInstances[mIndex].model->meshes[i].MaterialIndex;
-
-					Effects::BasicFX->SetMaterial(mGenericInstances[mIndex].model->mat[matIndex]);
-
-					Effects::BasicFX->SetDiffuseMap(mGenericInstances[mIndex].model->diffuseMapSRV[matIndex]);
-					//Effects::BasicTessFX->SetNormalMap(mGenericInstances[mIndex].model->normalMapSRV[matIndex]);
-
-					activeTech->GetPassByIndex(p)->Apply(0, mDirect3D->GetImmediateContext());
-					mGenericInstances[mIndex].model->meshes[i].draw(mDirect3D->GetImmediateContext());
-				}
-			}
-		}
-	}*/
-
-	// FX sets tessellation stages, but it does not disable them.  So do that here
-	// to turn off tessellation.
-// 	mDirect3D->GetImmediateContext()->HSSetShader(0, 0, 0);
-// 	mDirect3D->GetImmediateContext()->DSSetShader(0, 0, 0);
-
-// 	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-// 	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::PosNormalTexTanSkinned);
-
-	// Skinned objects
-// 	activeSkinnedTech->GetDesc(&techDesc);
-// 	for (UINT p = 0; p < techDesc.Passes; ++p)
-// 	{
-// 		for (UINT mIndex = 0; mIndex < mGenSkinnedInstances.size(); ++mIndex)
-// 		{
-// 			if (mGenSkinnedInstances[mIndex].isVisible)
-// 			{
-// 				world = XMLoadFloat4x4(&mGenSkinnedInstances[mIndex].world);
-// 				worldInvTranspose = MathHelper::InverseTranspose(world);
-// 				worldViewProj = world*view*proj;
-// 
-// 				Effects::NormalMapFX->SetWorld(world);
-// 				Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
-// 				Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
-// 				Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-// 				Effects::NormalMapFX->setShadowTransform(world*shadowTransform);
-// 				Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-// 				Effects::NormalMapFX->setFogStart(GameSettings::Instance()->Fog()->fogStart);
-// 				Effects::NormalMapFX->setFogRange(GameSettings::Instance()->Fog()->fogRange);
-// 				Effects::NormalMapFX->setBoneTransforms(&mGenSkinnedInstances[mIndex].FinalTransforms[0],
-// 					mGenSkinnedInstances[mIndex].FinalTransforms.size());
-// 
-// 
-// 				Effects::BasicTessFX->setFogColor(Colors::Silver);
-// 
-// 				for (UINT i = 0; i < mGenSkinnedInstances[mIndex].model->numMeshes; ++i)
-// 				{
-// 					UINT matIndex = mGenSkinnedInstances[mIndex].model->meshes[i].mMaterialIndex;
-// 
-// 					Effects::NormalMapFX->SetMaterial(mGenSkinnedInstances[mIndex].model->mat[matIndex]);
-// 
-// 					Effects::NormalMapFX->SetDiffuseMap(mGenSkinnedInstances[mIndex].model->diffuseMapSRV[matIndex]);
-// 
-// 					Effects::NormalMapFX->setNormalMap(mGenSkinnedInstances[mIndex].model->normalMapSRV[matIndex]);
-// 
-// 					activeSkinnedTech->GetPassByIndex(p)->Apply(0, mDirect3D->GetImmediateContext());
-// 					mGenSkinnedInstances[mIndex].model->meshes[i].draw(mDirect3D->GetImmediateContext());
-// 				}
-// 			}
-// 		}
-// 	}
-
-	//---------------------------------------------------------------------------
 	// Draw sky
-	//---------------------------------------------------------------------------
 	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera());
 
 	// Unbind shadow map and AmbientMap as a shader input because we are going to render
@@ -426,6 +227,7 @@ void Projekt::DrawScene()
 	mDirect3D->GetImmediateContext()->PSSetShaderResources(0, 16, nullSRV);
 
 	// Restore default states
+	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	mDirect3D->GetImmediateContext()->RSSetState(0);
 	mDirect3D->GetImmediateContext()->OMSetDepthStencilState(0, 0);
 	mDirect3D->GetImmediateContext()->OMSetBlendState(0, blendFactor, 0xffffffff); 
@@ -442,14 +244,14 @@ void Projekt::UpdateScene(float dt)
 	mGame->Update(dt, mDirectInput);
 
 	// Update shadow map
-	mShadowMap->buildShadowTransform(mDirLights[0], mSceneBounds);
+	mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);
 
 	// Frustum culling
-	mFrustumCulling->frustumCull(mGenericInstances, *mGame->GetCamera());
+	mFrustumCulling->FrustumCull(mGenericInstances, *mGame->GetCamera());
 
 	std::wostringstream outs;
 	outs.precision(6);
-	outs << L"    " << mFrustumCulling->getNumVisible() << 
+	outs << L"    " << mFrustumCulling->GetNumVisible() << 
 		L" objects visible out of " << mGenericInstances.size();
 	mMainWndCaption = outs.str();
 }

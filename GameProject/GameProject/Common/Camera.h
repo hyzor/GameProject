@@ -11,52 +11,52 @@ public:
 	~Camera(void);
 
 	// Camera position functions
-	XMVECTOR getPositionXM() const;
-	XMFLOAT3 getPosition() const;
+	XMVECTOR GetPositionXM() const;
+	XMFLOAT3 GetPosition() const;
 
-	void setPosition(float x, float y, float z);
-	void setPosition(const XMFLOAT3& v);
+	void SetPosition(float x, float y, float z);
+	void SetPosition(const XMFLOAT3& v);
 
 	// Get functions
-	XMVECTOR getRightXM() const;
-	XMFLOAT3 getRight() const;
-	XMVECTOR getUpXM() const;
-	XMFLOAT3 getUp() const;
-	XMVECTOR getLookXM() const;
-	XMFLOAT3 getLook() const;
+	XMVECTOR GetRightXM() const;
+	XMFLOAT3 GetRight() const;
+	XMVECTOR GetUpXM() const;
+	XMFLOAT3 GetUp() const;
+	XMVECTOR GetLookXM() const;
+	XMFLOAT3 GetLook() const;
 
 	// Get frustum (lens) properties
-	float getNearZ() const;
-	float getFarZ() const;
-	float getAspect() const;
-	float getFovY() const;
-	float getFovX() const;
+	float GetNearZ() const;
+	float GetFarZ() const;
+	float GetAspect() const;
+	float GetFovY() const;
+	float GetFovX() const;
 
 	// Set frustum (lens)
-	void setLens(float fovY, float aspect, float zn, float zf);
+	void SetLens(float fovY, float aspect, float zn, float zf);
 
 	// Get matrices
-	XMMATRIX getViewMatrix() const;
-	XMMATRIX getProjMatrix() const;
-	XMMATRIX getViewProjMatrix() const;
+	XMMATRIX GetViewMatrix() const;
+	XMMATRIX GetProjMatrix() const;
+	XMMATRIX GetViewProjMatrix() const;
 
 	// Get near and far plane dimensions in view space coordinates
-	float getNearWindowWidth() const;
-	float getNearWindowHeight() const;
-	float getFarWindowWidth() const;
-	float getFarWindowHeight() const;
+	float GetNearWindowWidth() const;
+	float GetNearWindowHeight() const;
+	float GetFarWindowWidth() const;
+	float GetFarWindowHeight() const;
 
-	void updateViewMatrix();
+	void UpdateViewMatrix();
 
-	void walk(float dist);
-	void strafe(float dist);
+	void Walk(float dist);
+	void Strafe(float dist);
 
-	void pitch(float angle);
-	void yaw(float angle);
+	void Pitch(float angle);
+	void Yaw(float angle);
 
-	XNA::Frustum getFrustum() const;
+	XNA::Frustum GetFrustum() const;
 
-	void computeFrustum();
+	void ComputeFrustum();
 
 private:
 	// Coordinate system relative to world space

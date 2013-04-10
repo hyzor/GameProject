@@ -12,15 +12,15 @@ FrustumCulling::~FrustumCulling(void)
 {
 }
 
-void FrustumCulling::frustumCull(std::vector<GenericModelInstance>& instances, Camera& camera)
+void FrustumCulling::FrustumCull(std::vector<GenericModelInstance>& instances, Camera& camera)
 {
 	if (!mFrustumCullingEnabled)
 		return;
 
 	mNumVisible = 0;
 
-	XMVECTOR detView = XMMatrixDeterminant(camera.getViewMatrix());
-	XMMATRIX invView = XMMatrixInverse(&detView, camera.getViewMatrix());
+	XMVECTOR detView = XMMatrixDeterminant(camera.GetViewMatrix());
+	XMMATRIX invView = XMMatrixInverse(&detView, camera.GetViewMatrix());
 
 	for (UINT i = 0; i < instances.size(); ++i)
 	{
@@ -40,7 +40,7 @@ void FrustumCulling::frustumCull(std::vector<GenericModelInstance>& instances, C
 
 		// Transform the camera frustum from view space to the object's local space.
 		XNA::Frustum localspaceFrustum;
-		XNA::TransformFrustum(&localspaceFrustum, &camera.getFrustum(), XMVectorGetX(scale), rotQuat, translation);
+		XNA::TransformFrustum(&localspaceFrustum, &camera.GetFrustum(), XMVectorGetX(scale), rotQuat, translation);
 
 		// Perform the box/frustum intersection test in local space.
 		if(XNA::IntersectAxisAlignedBoxFrustum(&instances[i].model->boundingBox, &localspaceFrustum) != 0)
@@ -53,7 +53,7 @@ void FrustumCulling::frustumCull(std::vector<GenericModelInstance>& instances, C
 	}
 }
 
-UINT FrustumCulling::getNumVisible() const
+UINT FrustumCulling::GetNumVisible() const
 {
 	return mNumVisible;
 }

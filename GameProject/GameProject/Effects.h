@@ -41,34 +41,28 @@ public:
 
 	void SetEyePosW(const XMFLOAT3& v)                  { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 
-	void SetDirLights(const DirectionalLight* lights)   { dirLights->SetRawValue(lights, 0, 3*sizeof(DirectionalLight)); }
-	void setPointLight(const PointLight* light)			{ pointLight->SetRawValue(light, 0, sizeof(PointLight)); }
+	void SetDirLights(const DirectionalLight* lights)   { DirLights->SetRawValue(lights, 0, 3*sizeof(DirectionalLight)); }
+	void SetPointLight(const PointLight* light)			{ PointLight->SetRawValue(light, 0, sizeof(PointLight)); }
 
 	void SetMaterial(const Material& mat)               { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex)   { DiffuseMap->SetResource(tex); }
 	void SetCubeMap(ID3D11ShaderResourceView* tex) { CubeMap->SetResource(tex); }
 
-	void setShadowMap(ID3D11ShaderResourceView* tex) { shadowMap->SetResource(tex); }
-	void setShadowTransform(CXMMATRIX M) { shadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetShadowMap(ID3D11ShaderResourceView* tex) { ShadowMap->SetResource(tex); }
+	void SetShadowTransform(CXMMATRIX M) { ShadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 
-	void setFogRange(float f) { fogRange->SetFloat(f); }
-	void setFogStart(float f) { fogStart->SetFloat(f); }
-	void setFogColor(const FXMVECTOR v) { fogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
+	void SetFogRange(float f) { FogRange->SetFloat(f); }
+	void SetFogStart(float f) { FogStart->SetFloat(f); }
+	void SetFogColor(const FXMVECTOR v) { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 
-	//-------------------------------------------------------
 	// Techniques
-	//-------------------------------------------------------
 	ID3DX11EffectTechnique* PointLight1Tech;
 	ID3DX11EffectTechnique* DirLights3Tech;
-
 	ID3DX11EffectTechnique* PointLight1TexTech;
 	ID3DX11EffectTechnique* DirLights3TexTech;
-
 	ID3DX11EffectTechnique* DirLights3FogTech;
-
 	ID3DX11EffectTechnique* DirLights3FogTexTech;
-
 	ID3DX11EffectTechnique* DirLights3FogReflectionTech;
 
 	// Matrices
@@ -85,21 +79,21 @@ public:
 	ID3DX11EffectVariable* Mat;
 
 	// Lights
-	ID3DX11EffectVariable* pointLight;
-	ID3DX11EffectVariable* dirLights;
+	ID3DX11EffectVariable* PointLight;
+	ID3DX11EffectVariable* DirLights;
 
 	// Shadow mapping
-	ID3DX11EffectShaderResourceVariable* shadowMap;
-	ID3DX11EffectMatrixVariable* shadowTransform;
+	ID3DX11EffectShaderResourceVariable* ShadowMap;
+	ID3DX11EffectMatrixVariable* ShadowTransform;
 
 	// Texture
 	ID3DX11EffectShaderResourceVariable* DiffuseMap;
 	ID3DX11EffectShaderResourceVariable* CubeMap;
 
 	// Fogging
-	ID3DX11EffectScalarVariable* fogRange;
-	ID3DX11EffectScalarVariable* fogStart;
-	ID3DX11EffectVectorVariable* fogColor;
+	ID3DX11EffectScalarVariable* FogRange;
+	ID3DX11EffectScalarVariable* FogStart;
+	ID3DX11EffectVectorVariable* FogColor;
 };
 
 //====================================================================
@@ -120,7 +114,7 @@ public:
 	void SetEyePosW(const XMFLOAT3& v)                  { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 
 	void SetDirLights(const DirectionalLight* lights)   { dirLights->SetRawValue(lights, 0, 3*sizeof(DirectionalLight)); }
-	void setPointLight(const PointLight* light)			{ pointLight->SetRawValue(light, 0, sizeof(PointLight)); }
+	void SetPointLight(const PointLight* light)			{ pointLight->SetRawValue(light, 0, sizeof(PointLight)); }
 
 	void SetMaterial(const Material& mat)               { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 
@@ -128,21 +122,19 @@ public:
 	void SetNormalMap(ID3D11ShaderResourceView* tex)   { DiffuseMap->SetResource(tex); }
 	void SetCubeMap(ID3D11ShaderResourceView* tex) { CubeMap->SetResource(tex); }
 
-	void setShadowMap(ID3D11ShaderResourceView* tex) { shadowMap->SetResource(tex); }
-	void setShadowTransform(CXMMATRIX M) { shadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetShadowMap(ID3D11ShaderResourceView* tex) { shadowMap->SetResource(tex); }
+	void SetShadowTransform(CXMMATRIX M) { shadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 
-	void setFogRange(float f) { fogRange->SetFloat(f); }
-	void setFogStart(float f) { fogStart->SetFloat(f); }
-	void setFogColor(const FXMVECTOR v) { fogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
+	void SetFogRange(float f) { fogRange->SetFloat(f); }
+	void SetFogStart(float f) { fogStart->SetFloat(f); }
+	void SetFogColor(const FXMVECTOR v) { fogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 
 	void SetMinTessDistance(float f)                       { MinDist->SetFloat(f); }
 	void SetMaxTessDistance(float f)                       { MaxDist->SetFloat(f); }
 	void SetMinTessFactor(float f)                       { MinTess->SetFloat(f); }
 	void SetMaxTessFactor(float f)                       { MaxTess->SetFloat(f); }
 
-	//-------------------------------------------------------
 	// Techniques
-	//-------------------------------------------------------
 	ID3DX11EffectTechnique* TessDirLights3FogTexTech;
 	ID3DX11EffectTechnique* TessDirLights3Tech;
 
@@ -275,8 +267,8 @@ public:
 	SkyEffect(ID3D11Device* device, const std::wstring& filename);
 	~SkyEffect();
 
-	void setWorldViewProj(CXMMATRIX m) { worldViewProj->SetMatrix(reinterpret_cast<const float*>(&m)); }
-	void setCubeMap(ID3D11ShaderResourceView* _cubeMap) { cubeMap->SetResource(_cubeMap); }
+	void SetWorldViewProj(CXMMATRIX m) { worldViewProj->SetMatrix(reinterpret_cast<const float*>(&m)); }
+	void SetCubeMap(ID3D11ShaderResourceView* _cubeMap) { cubeMap->SetResource(_cubeMap); }
 
 	ID3DX11EffectTechnique* skyTech;
 
@@ -311,19 +303,17 @@ public:
 	void setNormalMap(ID3D11ShaderResourceView* tex) { NormalMap->SetResource(tex); }
 
 	// Shadow map
-	void setShadowMap(ID3D11ShaderResourceView* tex) { shadowMap->SetResource(tex); }
-	void setShadowTransform(CXMMATRIX M) { shadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetShadowMap(ID3D11ShaderResourceView* tex) { shadowMap->SetResource(tex); }
+	void SetShadowTransform(CXMMATRIX M) { shadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 
 	// Fog
-	void setFogRange(float f) { fogRange->SetFloat(f); }
-	void setFogStart(float f) { fogStart->SetFloat(f); }
-	void setFogColor(const FXMVECTOR v) { fogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
+	void SetFogRange(float f) { fogRange->SetFloat(f); }
+	void SetFogStart(float f) { fogStart->SetFloat(f); }
+	void SetFogColor(const FXMVECTOR v) { fogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 
-	void setBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
+	void SetBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
 
-	//-------------------------------------------------------
 	// Techniques
-	//-------------------------------------------------------
 	ID3DX11EffectTechnique* DirLights3TexTech;
 
 	// Matrices

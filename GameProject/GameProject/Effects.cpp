@@ -61,19 +61,19 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 
 	EyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
 
-	pointLight = mFX->GetVariableByName("gPointLight");
-	dirLights = mFX->GetVariableByName("gDirLights");
+	PointLight = mFX->GetVariableByName("gPointLight");
+	DirLights = mFX->GetVariableByName("gDirLights");
 
-	shadowTransform = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
-	shadowMap = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
+	ShadowTransform = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
+	ShadowMap = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
 
 	Mat               = mFX->GetVariableByName("gMaterial");
 	DiffuseMap        = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 	CubeMap = mFX->GetVariableByName("gCubeMap")->AsShaderResource();
 
-	fogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
-	fogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
-	fogColor = mFX->GetVariableByName("gFogColor")->AsVector();
+	FogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
+	FogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
+	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();
 }
 
 BasicEffect::~BasicEffect()

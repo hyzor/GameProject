@@ -11,9 +11,9 @@ public:
 	FrustumCulling(void);
 	~FrustumCulling(void);
 
-	void frustumCull(std::vector<GenericModelInstance>& instances, Camera& camera);
+	void FrustumCull(std::vector<GenericModelInstance>& instances, Camera& camera);
 
-	UINT getNumVisible() const;
+	UINT GetNumVisible() const;
 
 private:
 	bool mFrustumCullingEnabled;

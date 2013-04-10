@@ -8,10 +8,6 @@
 #include <TextureManager.h>
 #include <xnacollision.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "GenericModel.h"
 #include "ShadowMap.h"
 

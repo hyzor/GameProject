@@ -89,25 +89,25 @@ void Player::Update(float dt, DirectInput* dInput)
 	// Up
 	if (dInput->GetKeyboardState()[DIK_W] && 0x80)
 	{
-		mCamera->walk(30.0f*dt);
+		mCamera->Walk(30.0f*dt);
 	}
 
 	// Left
 	if (dInput->GetKeyboardState()[DIK_A] & 0x80)
 	{
-		mCamera->strafe(-30.0f*dt);
+		mCamera->Strafe(-30.0f*dt);
 	}
 
 	// Down
 	if (dInput->GetKeyboardState()[DIK_S] & 0x80)
 	{
-		mCamera->walk(-30.0f*dt);
+		mCamera->Walk(-30.0f*dt);
 	}
 
 	// Right
 	if (dInput->GetKeyboardState()[DIK_D] & 0x80)
 	{
-		mCamera->strafe(30.0f*dt);
+		mCamera->Strafe(30.0f*dt);
 	}
 
 	// Mouse has moved in x-axis
@@ -117,8 +117,8 @@ void Player::Update(float dt, DirectInput* dInput)
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lX));
 		float dy = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lY));
 
-		mCamera->yaw(dx);
-		mCamera->pitch(dy);
+		mCamera->Yaw(dx);
+		mCamera->Pitch(dy);
 	}
 
 	if (dInput->GetMouseState().rgbButtons[0])
@@ -126,9 +126,9 @@ void Player::Update(float dt, DirectInput* dInput)
 		Shoot();
 	}	
 
-	mCamera->updateViewMatrix();
+	mCamera->UpdateViewMatrix();
 
-	SetPosition(mCamera->getPosition());
+	SetPosition(mCamera->GetPosition());
 }
 
 bool Player::Init(InitProperties playerProperties)
@@ -224,9 +224,9 @@ void Player::Draw(ID3D11DeviceContext* dc,
 	XMMATRIX worldInvTranspose;
 	XMMATRIX worldViewProj;
 
-	XMMATRIX view = mCamera->getViewMatrix();
-	XMMATRIX proj = mCamera->getProjMatrix();
-	XMMATRIX viewproj = mCamera->getViewProjMatrix();
+	XMMATRIX view = mCamera->GetViewMatrix();
+	XMMATRIX proj = mCamera->GetProjMatrix();
+	XMMATRIX viewproj = mCamera->GetViewProjMatrix();
 
 	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 	XMMATRIX toTexSpace(
@@ -248,15 +248,15 @@ void Player::Draw(ID3D11DeviceContext* dc,
 	Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
 	Effects::BasicFX->SetWorldViewProj(worldViewProj);
 	Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-	Effects::BasicFX->setShadowTransform(world*(*shadowTransform));
-	Effects::BasicFX->setShadowMap(shadowMap);
+	Effects::BasicFX->SetShadowTransform(world*(*shadowTransform));
+	Effects::BasicFX->SetShadowMap(shadowMap);
 	Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 
 
-		Effects::BasicTessFX->setFogColor(Colors::Silver);
+		Effects::BasicTessFX->SetFogColor(Colors::Silver);
 
 		for (UINT i = 0; i < mModelInstance.model->meshCount; ++i)
 		{

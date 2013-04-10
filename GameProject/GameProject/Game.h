@@ -28,6 +28,4 @@ class Game
 		Player* mPlayer;
 };
 
-
-
 #endif

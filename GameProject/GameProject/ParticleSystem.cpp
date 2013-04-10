@@ -94,7 +94,7 @@ void ParticleSystem::BuildVB( ID3D11Device* device )
 
 void ParticleSystem::draw( ID3D11DeviceContext* dc, const Camera& cam )
 {
-	XMMATRIX VP = cam.getViewProjMatrix();
+	XMMATRIX VP = cam.GetViewProjMatrix();
 
 	// Constants
 	mFX->SetViewProj(VP);

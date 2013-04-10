@@ -23,16 +23,16 @@ public:
 	ID3D11ShaderResourceView* getDepthMapSRV();
 
 	void BindDsvAndSetNullRenderTarget(ID3D11DeviceContext* dc);
-	void setResolution(ID3D11Device* device, UINT width, UINT height);
+	void SetResolution(ID3D11Device* device, UINT width, UINT height);
 
-	UINT getWidth() const;
-	UINT getHeight() const;
-	XMFLOAT4X4 getShadowTransform() const;
+	UINT GetWidth() const;
+	UINT GetHeight() const;
+	XMFLOAT4X4 GetShadowTransform() const;
 
-	void buildShadowTransform(const DirectionalLight& light,
+	void BuildShadowTransform(const DirectionalLight& light,
 							const XNA::Sphere& sceneBounds);
 
-	void drawSceneToShadowMap(
+	void DrawSceneToShadowMap(
 					const std::vector<GenericModelInstance>& modelInstances,
 					const Camera& camera,
 					ID3D11DeviceContext* deviceContext);
@@ -50,7 +50,7 @@ private:
 
 	D3D11_VIEWPORT mViewport;
 
-	void createShadowMap(ID3D11Device* device, UINT width, UINT height);
+	void CreateShadowMap(ID3D11Device* device, UINT width, UINT height);
 };
 
 #endif

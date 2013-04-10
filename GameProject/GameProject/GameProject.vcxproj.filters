@@ -28,15 +28,15 @@
     <Filter Include="Models\Skinned">
       <UniqueIdentifier>{18a975af-7eb6-4167-bf2f-c9be42d12141}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Logging">
+      <UniqueIdentifier>{bc53626e-cef9-469f-b023-a6646a1523bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\Camera.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\d3dUtilities.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Logger.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\MathHelper.cpp">
@@ -117,6 +117,12 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Logger.cpp">
+      <Filter>Common\Logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\TextureManager.h">
@@ -132,12 +138,6 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\LightDef.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\log.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Logger.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\MathHelper.h">
@@ -211,6 +211,15 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Logger.h">
+      <Filter>Common\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\log.h">
+      <Filter>Common\Logging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

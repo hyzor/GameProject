@@ -10,7 +10,7 @@
 ShadowMap::ShadowMap(ID3D11Device* device, UINT width, UINT height)
 	: mDepthMapDSV(0), mDepthMapSRV(0)
 {
-	createShadowMap(device, width, height);
+	CreateShadowMap(device, width, height);
 }
 
 
@@ -37,16 +37,16 @@ void ShadowMap::BindDsvAndSetNullRenderTarget(ID3D11DeviceContext* dc)
 	dc->ClearDepthStencilView(mDepthMapDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void ShadowMap::setResolution(ID3D11Device* device, UINT width, UINT height)
+void ShadowMap::SetResolution(ID3D11Device* device, UINT width, UINT height)
 {	
 	// Release old SRV and DSV
 	ReleaseCOM(mDepthMapSRV);
 	ReleaseCOM(mDepthMapDSV);
 
-	createShadowMap(device, width, height);
+	CreateShadowMap(device, width, height);
 }
 
-void ShadowMap::createShadowMap(ID3D11Device* device, UINT width, UINT height)
+void ShadowMap::CreateShadowMap(ID3D11Device* device, UINT width, UINT height)
 {
 	// Set new dimensions
 	mWidth = width;
@@ -103,17 +103,17 @@ void ShadowMap::createShadowMap(ID3D11Device* device, UINT width, UINT height)
 	ReleaseCOM(depthMap);
 }
 
-UINT ShadowMap::getWidth() const
+UINT ShadowMap::GetWidth() const
 {
 	return mWidth;
 }
 
-UINT ShadowMap::getHeight() const
+UINT ShadowMap::GetHeight() const
 {
 	return mHeight;
 }
 
-void ShadowMap::buildShadowTransform(const DirectionalLight& light, const XNA::Sphere& sceneBounds)
+void ShadowMap::BuildShadowTransform(const DirectionalLight& light, const XNA::Sphere& sceneBounds)
 {
 	// Only first "main" light casts a shadow
 	// So get light direction and position from first light
@@ -153,7 +153,7 @@ void ShadowMap::buildShadowTransform(const DirectionalLight& light, const XNA::S
 	XMStoreFloat4x4(&mShadowTransform, S);
 }
 
-void ShadowMap::drawSceneToShadowMap( 
+void ShadowMap::DrawSceneToShadowMap( 
 	const std::vector<GenericModelInstance>& modelInstances, 
 	const Camera& camera,
 	ID3D11DeviceContext* deviceContext)
@@ -162,7 +162,7 @@ void ShadowMap::drawSceneToShadowMap(
 	XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 
-	Effects::BuildShadowMapFX->SetEyePosW(camera.getPosition());
+	Effects::BuildShadowMapFX->SetEyePosW(camera.GetPosition());
 	Effects::BuildShadowMapFX->SetViewProj(viewProj);
 
 	XMMATRIX world;
@@ -210,7 +210,7 @@ void ShadowMap::drawSceneToShadowMap(
 	deviceContext->RSSetState(0);
 }
 
-XMFLOAT4X4 ShadowMap::getShadowTransform() const
+XMFLOAT4X4 ShadowMap::GetShadowTransform() const
 {
 	return mShadowTransform;
 }
