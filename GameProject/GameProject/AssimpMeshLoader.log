@@ -1,51 +1,51 @@
-Info,  T7124: Load Data\Models\OBJ\Cop\cop.obj
-Debug, T7124: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
-Info,  T7124: Found a matching importer for this file format
-Info,  T7124: Import root directory is 'Data\Models\OBJ\Cop\'
-Info,  T7124: Entering post processing pipeline
-Debug, T7124: RemoveRedundantMatsProcess begin
-Debug, T7124: RemoveRedundantMatsProcess finished 
-Debug, T7124: FindDegeneratesProcess begin
-Debug, T7124: FindDegeneratesProcess finished
-Debug, T7124: GenUVCoordsProcess begin
-Debug, T7124: GenUVCoordsProcess finished
-Debug, T7124: TriangulateProcess begin
-Debug, T7124: TriangulateProcess finished. There was nothing to be done.
-Debug, T7124: SortByPTypeProcess begin
-Info,  T7124: Points: 0, Lines: 0, Triangles: 5, Polygons: 0 (Meshes, X = removed)
-Debug, T7124: SortByPTypeProcess finished
-Debug, T7124: FindInvalidDataProcess begin
-Debug, T7124: FindInvalidDataProcess finished. Everything seems to be OK.
-Debug, T7124: SplitLargeMeshesProcess_Triangle begin
-Debug, T7124: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
-Debug, T7124: Generate spatially-sorted vertex cache
-Debug, T7124: GenVertexNormalsProcess begin
-Debug, T7124: GenVertexNormalsProcess finished. Normals are already there
-Debug, T7124: CalcTangentsProcess begin
-Info,  T7124: CalcTangentsProcess finished. Tangents have been calculated
-Debug, T7124: JoinVerticesProcess begin
-Debug, T7124: Mesh 0 (unnamed) | Verts in: 570 out: 137 | ~75.9649%
-Debug, T7124: Mesh 1 (unnamed) | Verts in: 5790 out: 2070 | ~64.2487%
-Debug, T7124: Mesh 2 (unnamed) | Verts in: 6303 out: 2574 | ~59.1623%
-Debug, T7124: Mesh 3 (unnamed) | Verts in: 795 out: 229 | ~71.195%
-Debug, T7124: Mesh 4 (unnamed) | Verts in: 228 out: 116 | ~49.1228%
-Info,  T7124: JoinVerticesProcess finished | Verts in: 13686 out: 5126 | ~62.5%
-Debug, T7124: SplitLargeMeshesProcess_Vertex begin
-Debug, T7124: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
-Debug, T7124: MakeLeftHandedProcess begin
-Debug, T7124: MakeLeftHandedProcess finished
-Debug, T7124: FlipUVsProcess begin
-Debug, T7124: FlipUVsProcess finished
-Debug, T7124: FlipWindingOrderProcess begin
-Debug, T7124: FlipWindingOrderProcess finished
-Debug, T7124: LimitBoneWeightsProcess begin
-Debug, T7124: LimitBoneWeightsProcess end
-Debug, T7124: ImproveCacheLocalityProcess begin
-Debug, T7124: Mesh 0 | ACMR in: 1.294737 out: 0.863158 | ~33.3%
-Debug, T7124: Mesh 1 | ACMR in: 1.598446 out: 1.170985 | ~26.7%
-Debug, T7124: Mesh 2 | ACMR in: 1.758686 out: 1.358877 | ~22.7%
-Debug, T7124: Mesh 3 | ACMR in: 1.173585 out: 0.939623 | ~19.9%
-Debug, T7124: Mesh 4 | ACMR in: 1.539474 out: 1.526316 | ~0.9%
-Info,  T7124: Cache relevant are 5 meshes (4562 faces). Average output ACMR is 1.237177
-Debug, T7124: ImproveCacheLocalityProcess finished. 
-Info,  T7124: Leaving post processing pipeline
+Info,  T7428: Load Data\Models\OBJ\Cop\cop.obj
+Debug, T7428: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Info,  T7428: Found a matching importer for this file format
+Info,  T7428: Import root directory is 'Data\Models\OBJ\Cop\'
+Info,  T7428: Entering post processing pipeline
+Debug, T7428: RemoveRedundantMatsProcess begin
+Debug, T7428: RemoveRedundantMatsProcess finished 
+Debug, T7428: FindDegeneratesProcess begin
+Debug, T7428: FindDegeneratesProcess finished
+Debug, T7428: GenUVCoordsProcess begin
+Debug, T7428: GenUVCoordsProcess finished
+Debug, T7428: TriangulateProcess begin
+Debug, T7428: TriangulateProcess finished. There was nothing to be done.
+Debug, T7428: SortByPTypeProcess begin
+Info,  T7428: Points: 0, Lines: 0, Triangles: 5, Polygons: 0 (Meshes, X = removed)
+Debug, T7428: SortByPTypeProcess finished
+Debug, T7428: FindInvalidDataProcess begin
+Debug, T7428: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T7428: SplitLargeMeshesProcess_Triangle begin
+Debug, T7428: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T7428: Generate spatially-sorted vertex cache
+Debug, T7428: GenVertexNormalsProcess begin
+Debug, T7428: GenVertexNormalsProcess finished. Normals are already there
+Debug, T7428: CalcTangentsProcess begin
+Info,  T7428: CalcTangentsProcess finished. Tangents have been calculated
+Debug, T7428: JoinVerticesProcess begin
+Debug, T7428: Mesh 0 (unnamed) | Verts in: 570 out: 137 | ~75.9649%
+Debug, T7428: Mesh 1 (unnamed) | Verts in: 5790 out: 2070 | ~64.2487%
+Debug, T7428: Mesh 2 (unnamed) | Verts in: 6303 out: 2574 | ~59.1623%
+Debug, T7428: Mesh 3 (unnamed) | Verts in: 795 out: 229 | ~71.195%
+Debug, T7428: Mesh 4 (unnamed) | Verts in: 228 out: 116 | ~49.1228%
+Info,  T7428: JoinVerticesProcess finished | Verts in: 13686 out: 5126 | ~62.5%
+Debug, T7428: SplitLargeMeshesProcess_Vertex begin
+Debug, T7428: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Debug, T7428: MakeLeftHandedProcess begin
+Debug, T7428: MakeLeftHandedProcess finished
+Debug, T7428: FlipUVsProcess begin
+Debug, T7428: FlipUVsProcess finished
+Debug, T7428: FlipWindingOrderProcess begin
+Debug, T7428: FlipWindingOrderProcess finished
+Debug, T7428: LimitBoneWeightsProcess begin
+Debug, T7428: LimitBoneWeightsProcess end
+Debug, T7428: ImproveCacheLocalityProcess begin
+Debug, T7428: Mesh 0 | ACMR in: 1.294737 out: 0.863158 | ~33.3%
+Debug, T7428: Mesh 1 | ACMR in: 1.598446 out: 1.170985 | ~26.7%
+Debug, T7428: Mesh 2 | ACMR in: 1.758686 out: 1.358877 | ~22.7%
+Debug, T7428: Mesh 3 | ACMR in: 1.173585 out: 0.939623 | ~19.9%
+Debug, T7428: Mesh 4 | ACMR in: 1.539474 out: 1.526316 | ~0.9%
+Info,  T7428: Cache relevant are 5 meshes (4562 faces). Average output ACMR is 1.237177
+Debug, T7428: ImproveCacheLocalityProcess finished. 
+Info,  T7428: Leaving post processing pipeline
