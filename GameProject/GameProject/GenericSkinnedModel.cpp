@@ -8,21 +8,17 @@ GenericSkinnedModel::GenericSkinnedModel(ID3D11Device* device, TextureManager& t
 	// Load all the meshes
 	GenericObjectLoader objectLoader;
 	//objectLoader.loadObject(fileName, mats, meshes, device);
-	objectLoader.loadSkinnedObject(fileName, mats, meshes, skinnedData, bones);
+	objectLoader.loadSkinnedObject(fileName, mats, meshes);
 
 	numMeshes = meshes.size();
 	numMaterials = mats.size();
-	numBones = bones.size();
+	//numBones = bones.size();
 
 	// Set vertices and indices for each mesh
 	for (UINT i = 0; i < numMeshes; ++i)
 	{
-		meshes[i].setIndices(device, &meshes[i].indices[0], meshes[i].indices.size());
-		meshes[i].setVertices(device, &meshes[i].vertices[0], meshes[i].vertices.size());
-
-		// Push back addresses to all the vertices to the models vector of pointers
-// 		for (UINT j = 0; j < meshes[i].vertices.size(); ++j)
-// 			vertices.push_back(&meshes[i].vertices[j]);
+		meshes[i].setIndices(device, &meshes[i].mIndices[0], meshes[i].mIndices.size());
+		meshes[i].setVertices(device, &meshes[i].mVertices[0], meshes[i].mVertices.size());
 	}
 
 	for (UINT i = 0; i < numMaterials; ++i)
@@ -62,22 +58,14 @@ GenericSkinnedModel::GenericSkinnedModel(ID3D11Device* device, TextureManager& t
 
 	for (UINT i = 0; i < numMeshes; ++i)
 	{
-		for (UINT j = 0; j < meshes[i].vertices.size(); ++j)
+		for (UINT j = 0; j < meshes[i].mVertices.size(); ++j)
 		{
-			XMVECTOR pos = XMLoadFloat3(&meshes[i].vertices[j].position);
+			XMVECTOR pos = XMLoadFloat3(&meshes[i].mVertices[j].position);
 
 			vMin = XMVectorMin(vMin, pos);
 			vMax = XMVectorMax(vMax, pos);
 		}
 	}
-
-	// 	for (int i = 0; i < vertices.size(); ++i)
-	// 	{
-	// 		XMVECTOR pos = XMLoadFloat3(&vertices[i].position);
-	// 
-	// 		vMin = XMVectorMin(vMin, pos);
-	// 		vMax = XMVectorMax(vMax, pos);
-	// 	}
 
 	// Store values in bounding box
 	XMStoreFloat3(&boundingBox.Center, 0.5f*(vMin+vMax));
@@ -93,10 +81,10 @@ GenericSkinnedModel::~GenericSkinnedModel(void)
 
 void GenericSkinnedModelInstance::Update(float dt)
 {
-	TimePos += dt;
-	model->skinnedData.getFinalTransforms(ClipName, TimePos, FinalTransforms);
-
-	// Loop animation
-	if (TimePos > model->skinnedData.getClipEndTime(ClipName))
-		TimePos = 0.0f;
+// 	TimePos += dt;
+// 	model->skinnedData.getFinalTransforms(ClipName, TimePos, FinalTransforms);
+// 
+// 	// Loop animation
+// 	if (TimePos > model->skinnedData.getClipEndTime(ClipName))
+// 		TimePos = 0.0f;
 }

@@ -10,8 +10,6 @@
 
 #include <d3dUtilities.h>
 #include <TextureManager.h>
-#include "ObjLoader.h"
-#include "MeshGeometry.h"
 #include <xnacollision.h>
 #include "GenericObjectLoader.h"
 #include "SkinnedData.h"
@@ -39,14 +37,14 @@ public:
 
 	// Map containing vectors of vertices
 	// The maps key values are the meshes corresponding index
-	std::map<int, std::vector<Vertex::PosNormalTexTanSkinned>> verticesMap;
+	//std::map<int, std::vector<Vertex::PosNormalTexTanSkinned>> verticesMap;
 
-	std::vector<SkinnedDataStructs::Bone> bones;
+	//std::vector<SkinnedDataStructs::Bone> bones;
 
 	// Bounding box
 	XNA::AxisAlignedBox boundingBox;
 
-	SkinnedData skinnedData;
+	//SkinnedData skinnedData;
 };
 
 struct GenericSkinnedModelInstance

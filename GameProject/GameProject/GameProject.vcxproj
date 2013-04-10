@@ -82,7 +82,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BasicModel.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Common\D3D11App.cpp" />
     <ClCompile Include="Common\d3dUtilities.cpp" />
@@ -102,8 +101,6 @@
     <ClCompile Include="GenericMesh.cpp" />
     <ClCompile Include="GenericModel.cpp" />
     <ClCompile Include="GenericObjectLoader.cpp" />
-    <ClCompile Include="MeshGeometry.cpp" />
-    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -115,7 +112,6 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicModel.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\D3D11App.h" />
     <ClInclude Include="Common\d3dUtilities.h" />
@@ -137,8 +133,6 @@
     <ClInclude Include="GenericObjectLoader.h" />
     <ClInclude Include="GenericSkinnedMesh.h" />
     <ClInclude Include="GenericSkinnedModel.h" />
-    <ClInclude Include="MeshGeometry.h" />
-    <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />

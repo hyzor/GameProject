@@ -8,9 +8,11 @@ namespace SkinnedDataStructs
 {
 	struct VertexWeight
 	{
-		VertexWeight() :
-	VertexID(0), Weight(0.0f)
-	{}
+		VertexWeight()
+		{
+			VertexID = 0;
+			Weight = 0.0f;
+		}
 
 	UINT VertexID;
 	float Weight;
@@ -18,14 +20,26 @@ namespace SkinnedDataStructs
 
 	struct Bone
 	{
+		Bone() 
+		{
+			name = "";
+			//offsetMatrix = NULL;
+			//finalTransformation = NULL;
+
+			parentBone = NULL;
+		}
+
 		std::string name;
 		XMFLOAT4X4 offsetMatrix;
+		XMFLOAT4X4 finalTransformation;
 		std::vector<VertexWeight> weights;
-		int parentBoneIndex;
-		int meshIndex;
+
+		Bone* parentBone;
+		std::vector<Bone*> childrenBones;
 	};
 }
 
+/*
 struct KeyFrame
 {
 	KeyFrame();
@@ -84,5 +98,6 @@ private:
 
 	std::map<std::string, AnimationClip> mAnimations;
 };
+*/
 
 #endif

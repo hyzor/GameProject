@@ -10,8 +10,6 @@
 
 #include <d3dUtilities.h>
 #include <TextureManager.h>
-#include "ObjLoader.h"
-#include "MeshGeometry.h"
 #include <xnacollision.h>
 #include "GenericObjectLoader.h"
 

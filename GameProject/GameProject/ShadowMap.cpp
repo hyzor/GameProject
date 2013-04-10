@@ -102,3 +102,115 @@ void ShadowMap::createShadowMap(ID3D11Device* device, UINT width, UINT height)
 	// Now release depth map reference because view already saved a reference
 	ReleaseCOM(depthMap);
 }
+
+UINT ShadowMap::getWidth() const
+{
+	return mWidth;
+}
+
+UINT ShadowMap::getHeight() const
+{
+	return mHeight;
+}
+
+void ShadowMap::buildShadowTransform(DirectionalLight* light, XNA::Sphere& sceneBounds)
+{
+	// Only first "main" light casts a shadow
+	// So get light direction and position from first light
+	XMVECTOR lightDir = XMLoadFloat3(&light->Direction);
+
+	XMVECTOR lightPos = -2.0f*sceneBounds.Radius*lightDir;
+
+	XMVECTOR targetPos = XMLoadFloat3(&sceneBounds.Center);
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX V = XMMatrixLookAtLH(lightPos, targetPos, up);
+
+	// Transform bounding sphere to light space
+	XMFLOAT3 sphereCenterLS;
+	XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, V));
+
+	// Orthogonal frustum in light space encloses scene
+	float l = sphereCenterLS.x - sceneBounds.Radius;
+	float b = sphereCenterLS.y - sceneBounds.Radius;
+	float n = sphereCenterLS.z - sceneBounds.Radius;
+	float r = sphereCenterLS.x + sceneBounds.Radius;
+	float t = sphereCenterLS.y + sceneBounds.Radius;
+	float f = sphereCenterLS.z + sceneBounds.Radius;
+	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	XMMATRIX S = V*P*T;
+
+	XMStoreFloat4x4(&mLightView, V);
+	XMStoreFloat4x4(&mLightProj, P);
+	XMStoreFloat4x4(&mShadowTransform, S);
+}
+
+void ShadowMap::drawSceneToShadowMap( 
+	const std::vector<GenericModelInstance>& modelInstances, 
+	const Camera& camera,
+	ID3D11DeviceContext* deviceContext)
+{
+	XMMATRIX view = XMLoadFloat4x4(&mLightView);
+	XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+
+	Effects::BuildShadowMapFX->SetEyePosW(camera.getPosition());
+	Effects::BuildShadowMapFX->SetViewProj(viewProj);
+
+	XMMATRIX world;
+	XMMATRIX worldInvTranspose;
+	XMMATRIX worldViewProj;
+
+	ID3DX11EffectTechnique* tech = Effects::BuildShadowMapFX->TessBuildShadowMapTech;
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	//------------------------------------------------------------------
+	// Draw opaque tessellated objects
+	//------------------------------------------------------------------
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan);
+
+	for (UINT pass = 0; pass < techDesc.Passes; ++pass)
+	{
+		for (UINT i = 0; i < modelInstances.size(); ++i)
+		{
+			world = XMLoadFloat4x4(&modelInstances[i].world);
+			worldInvTranspose = MathHelper::InverseTranspose(world);
+			worldViewProj = world*view*proj;
+
+			Effects::BuildShadowMapFX->SetWorld(world);
+			Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
+			Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
+			Effects::BuildShadowMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+			tech->GetPassByIndex(pass)->Apply(0, deviceContext);
+
+			for (UINT j = 0; j < modelInstances[i].model->meshCount; ++j)
+			{
+				modelInstances[i].model->meshes[i].draw(deviceContext);
+			}
+		}
+	}
+
+	// FX sets tessellation stages, but it does not disable them.  So do that here
+	// to turn off tessellation.
+	deviceContext->HSSetShader(0, 0, 0);
+	deviceContext->DSSetShader(0, 0, 0);
+
+	deviceContext->RSSetState(0);
+}
+
+XMFLOAT4X4 ShadowMap::getShadowTransform() const
+{
+	return mShadowTransform;
+}

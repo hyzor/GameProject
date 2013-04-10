@@ -1,5 +1,6 @@
 #include "SkinnedData.h"
 
+/*
 KeyFrame::KeyFrame()
 	: timePos(0.0f),
 	translation(0.0f, 0.0f, 0.0f),
@@ -171,7 +172,7 @@ void SkinnedData::getFinalTransforms(const std::string& clipName,
 	toRootTransforms[0] = toParentTransforms[0];
 
 	// Now find toRootTransform for all the other bones
-	for (UINT i = 1; i < numBones; ++i)
+	for (UINT i = 0; i < numBones; ++i)
 	{
 		XMMATRIX toParent = XMLoadFloat4x4(&toParentTransforms[i]);
 
@@ -193,3 +194,4 @@ void SkinnedData::getFinalTransforms(const std::string& clipName,
 		XMStoreFloat4x4(&finalTransforms[i], XMMatrixMultiply(offset, toRoot));
 	}
 }
+*/

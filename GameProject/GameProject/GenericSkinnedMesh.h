@@ -12,25 +12,6 @@
 #include "Vertex.h"
 #include "SkinnedData.h"
 
-// struct VertexWeight
-// {
-// 	VertexWeight() :
-// 		VertexID(0), Weight(0.0f)
-// 		{}
-// 
-// 	UINT VertexID;
-// 	float Weight;
-// };
-
-// struct Bone
-// {
-// 	std::string name;
-// 	XMFLOAT4X4 offsetMatrix;
-// 	std::vector<VertexWeight> weights;
-// 	int parentIndex;
-// 	//VertexWeight weights[4];
-// };
-
 class GenericSkinnedMesh
 {
 public:
@@ -43,16 +24,16 @@ public:
 	void setIndices(ID3D11Device* device, const UINT* indices, UINT count);
 	void draw(ID3D11DeviceContext* deviceContext);
 
-	UINT MaterialIndex;
-	UINT FaceCount;
-	UINT VertexCount;
-	std::string Name;
+	UINT mMaterialIndex;
+	UINT mNumFaces;
+	UINT mNumVertices;
+	std::string mName;
 
 	// CPU copies of mesh data 
-	std::vector<Vertex::PosNormalTexTanSkinned> vertices;
-	std::vector<UINT> indices;
+	std::vector<Vertex::PosNormalTexTanSkinned> mVertices;
+	std::vector<UINT> mIndices;
 
-	//std::vector<SkinnedDataStructs::Bone> bones;
+	std::vector<SkinnedDataStructs::Bone> mBones;
 
 private:
 	ID3D11Buffer* mVertexBuffer;

@@ -27,8 +27,8 @@ Player::Player(const Player& other)
 
 Player::~Player(void)
 {
-	if (mCamera)
-		SafeDelete(mCamera);
+//	if (mCamera)
+//		SafeDelete(mCamera);
 
 	for (UINT i = 0; i < mWeapons.size(); ++i)
 		delete mWeapons[i];
@@ -126,7 +126,7 @@ void Player::Update(float dt, DirectInput* dInput)
 		Shoot();
 	}	
 
-	mPosition = mCamera->getPosition();
+	SetPosition(mCamera->getPosition());
 }
 
 bool Player::Init(InitProperties playerProperties)
@@ -145,10 +145,13 @@ bool Player::Init(InitProperties playerProperties)
 		if (!mCamera)
 			mCamera = new Camera();
 
-		SetPosition(mPosition);
+		mModelInstance = playerProperties.ModelInstance;
 
-		mModelInstance.isVisible = true;
-		mModelInstance.model = playerProperties.Model;
+		SetPosition(mPosition);
+		SetScale(mScale);
+
+		//mModelInstance.isVisible = true;
+		//mModelInstance.model = playerProperties.Model;
 
 		// Weapons
 		Weapon* weapon = new Weapon();
@@ -176,8 +179,17 @@ void Player::SetPosition(XMFLOAT3 position)
 	XMMATRIX modelRotY = XMMatrixRotationY(mAngle);
 
 	XMStoreFloat4x4(&mModelInstance.world, modelScale*modelRotY*modelOffset);
+}
 
-	mCamera->setPosition(mPosition);
+void Player::SetScale(XMFLOAT3 scale)
+{
+	mScale = scale;
+
+	XMMATRIX modelOffset = XMMatrixTranslation(mPosition.x, mPosition.y, mPosition.z);
+	XMMATRIX modelScale = XMMatrixScaling(mScale.x, mScale.y, mScale.z);
+	XMMATRIX modelRotY = XMMatrixRotationY(mAngle);
+
+	XMStoreFloat4x4(&mModelInstance.world, modelScale*modelRotY*modelOffset);
 }
 
 XMFLOAT3 Player::GetPosition() const
@@ -195,8 +207,8 @@ void Player::Draw(ID3D11DeviceContext* dc,
 	ID3D11ShaderResourceView* shadowMap,
 	XMMATRIX* shadowTransform)
 {
-	if (!mInCameraFrustum)
-		return;
+	//if (!mInCameraFrustum)
+		//return;
 
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	dc->IASetInputLayout(InputLayouts::Basic32);

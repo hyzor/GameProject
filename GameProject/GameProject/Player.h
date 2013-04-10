@@ -25,7 +25,8 @@ public:
 		float Health;
 		float Speed;
 
-		GenericModel* Model;
+		//GenericModel* Model;
+		GenericModelInstance ModelInstance;
 		XMFLOAT3 Scale;
 		XMFLOAT3 Position;
 		float Angle;
@@ -40,6 +41,7 @@ public:
 	bool Init(InitProperties playerProperties);
 
 	void SetPosition(XMFLOAT3 position);
+	void SetScale(XMFLOAT3 scale);
 
 	int GetID() const;
 	XMFLOAT3 GetPosition() const;
