@@ -1,19 +1,13 @@
-#include <d3dUtilities.h>
-#include <D3D11App.h>
-#include <Camera.h>
-#include <TextureManager.h>
-#include <xnacollision.h>
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "GenericModel.h"
 #include "GenericSkinnedModel.h"
 #include "Player.h"
 #include "ShadowMap.h"
 #include "Sky.h"
 #include "FrustumCulling.h"
+
+#include "Game.h"
+
+#include "Entity.h"
 
 class Projekt : public D3D11App
 {
@@ -30,7 +24,6 @@ private:
 	TextureManager mTextureMgr;
 
 	// Models
-	GenericModel* mGenericModel;
 	GenericModel* mPlayerModel;
 	std::vector<GenericModelInstance> mGenericInstances;
 
@@ -45,7 +38,6 @@ private:
 	XNA::Sphere mSceneBounds;
 
 	// Player
-	Player* mPlayer;
 
 	// Sky
 	Sky* mSky;
@@ -55,6 +47,8 @@ private:
 
 	// Render states
 	ID3D11RasterizerState* WireFrameRS;
+
+	Game* mGame;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
@@ -112,16 +106,15 @@ Projekt::Projekt(HINSTANCE hInstance)
 
 Projekt::~Projekt()
 {
-	SafeDelete(mPlayer);
-	SafeDelete(mGenericModel);
-	SafeDelete(mPlayerModel);
 	SafeDelete(mSky);
 	SafeDelete(mShadowMap);
 	SafeDelete(mFrustumCulling);
+	SafeDelete(mGame);
 	ReleaseCOM(WireFrameRS);
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
+
 }
 
 bool Projekt::Init()
@@ -146,6 +139,9 @@ bool Projekt::Init()
 	
 	mFrustumCulling = new FrustumCulling();
 
+
+	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
+
 	//--------------------------------------------------------
 	// Create sky
 	//--------------------------------------------------------
@@ -159,9 +155,12 @@ bool Projekt::Init()
 	//--------------------------------------------------------
 	// Load models
 	//--------------------------------------------------------
+	/*
 	mGenericModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\duck.dae", L"Data\\Models\\Collada\\");
 
 	mPlayerModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
+
+	duck = new Entity(mGenericModel, XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	Player::InitProperties playerProp;
 	playerProp.PlayerID = 0;
@@ -233,6 +232,7 @@ bool Projekt::Init()
 		0.5f*(maxPt.z - minPt.z));
 
 	mSceneBounds.Radius = sqrtf(extent.x*extent.x + extent.y*extent.y + extent.z*extent.z);
+	*/
 
 	OnResize();
 
@@ -243,9 +243,9 @@ void Projekt::OnResize()
 {
 	D3D11App::OnResize();
 
-	mPlayer->GetCamera()->setLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
+	mGame->GetCamera()->setLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
 
-	mPlayer->GetCamera()->computeFrustum();
+	mGame->GetCamera()->computeFrustum();
 
 	// Build the frustum from the projection matrix in view space
 	//ComputeFrustumFromProjection(&mCamFrustum, &mPlayer->GetCamera()->getProjMatrix());
@@ -257,7 +257,7 @@ void Projekt::DrawScene()
 	// Render scene to shadow map
 	//---------------------------------------------------------------------------
 	mShadowMap->BindDsvAndSetNullRenderTarget(mDirect3D->GetImmediateContext());
-	mShadowMap->drawSceneToShadowMap(mGenericInstances, *mPlayer->GetCamera(), mDirect3D->GetImmediateContext());
+	mShadowMap->drawSceneToShadowMap(mGenericInstances, *mGame->GetCamera(), mDirect3D->GetImmediateContext());
 
 	mDirect3D->GetImmediateContext()->RSSetState(0);
 
@@ -278,9 +278,9 @@ void Projekt::DrawScene()
 	XMMATRIX shadowTransform = XMLoadFloat4x4(&mShadowMap->getShadowTransform());
 
 	// Camera matrices
-	XMMATRIX view = mPlayer->GetCamera()->getViewMatrix();
-	XMMATRIX proj = mPlayer->GetCamera()->getProjMatrix();
-	XMMATRIX viewproj = mPlayer->GetCamera()->getViewProjMatrix();
+	XMMATRIX view = mGame->GetCamera()->getViewMatrix();
+	XMMATRIX proj = mGame->GetCamera()->getProjMatrix();
+	XMMATRIX viewproj = mGame->GetCamera()->getViewProjMatrix();
 
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
@@ -289,7 +289,7 @@ void Projekt::DrawScene()
 	//--------------------------------------------------------------
 	// Set per frame constants for shaders
 	Effects::BasicFX->SetDirLights(mDirLights);
-	Effects::BasicFX->SetEyePosW(mPlayer->GetCamera()->getPosition());
+	Effects::BasicFX->SetEyePosW(mGame->GetCamera()->getPosition());
 	Effects::BasicFX->setShadowMap(mShadowMap->getDepthMapSRV());
 	Effects::BasicFX->SetCubeMap(mSky->cubeMapSRV());
 
@@ -310,19 +310,24 @@ void Projekt::DrawScene()
 		0.5f, 0.5f, 0.0f, 1.0f);
 
 	// Draw player
-	mPlayer->Draw(mDirect3D->GetImmediateContext(), mDirLights,
-		mShadowMap->getDepthMapSRV(), &shadowTransform);
+	/*mPlayer->Draw(mDirect3D->GetImmediateContext(), mDirLights,
+		mShadowMap->getDepthMapSRV(), &shadowTransform);*/
+
+	/*ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
+	duck->Draw(mDirect3D->GetImmediateContext(), activeTech, mPlayer->GetCamera(), mShadowMap);*/
+
+	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
 
 	// Set our effect technique to use
-	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
+	/*ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
 	ID3DX11EffectTechnique* activeSkinnedTech = Effects::NormalMapFX->DirLights3TexTech;
 
-	D3DX11_TECHNIQUE_DESC techDesc;
+	D3DX11_TECHNIQUE_DESC techDesc;*/
 
 	//--------------------------------------------------------------------------------
 	// Draw opaque objects
 	//--------------------------------------------------------------------------------
-	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	/*mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::Basic32);
 
 	activeTech->GetDesc(&techDesc);
@@ -357,7 +362,7 @@ void Projekt::DrawScene()
 				}
 			}
 		}
-	}
+	}*/
 
 	// FX sets tessellation stages, but it does not disable them.  So do that here
 	// to turn off tessellation.
@@ -413,7 +418,7 @@ void Projekt::DrawScene()
 	//---------------------------------------------------------------------------
 	// Draw sky
 	//---------------------------------------------------------------------------
-	mSky->draw(mDirect3D->GetImmediateContext(), *mPlayer->GetCamera());
+	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera());
 
 	// Unbind shadow map and AmbientMap as a shader input because we are going to render
 	// to it next frame.  These textures can be at any slot, so clear all slots.
@@ -434,13 +439,13 @@ void Projekt::UpdateScene(float dt)
 		SendMessage(mhMainWnd, WM_DESTROY, 0, 0);
 
 	// Update objects
-	mPlayer->Update(dt, mDirectInput);
+	mGame->Update(dt, mDirectInput);
 
 	// Update shadow map
 	mShadowMap->buildShadowTransform(mDirLights[0], mSceneBounds);
 
 	// Frustum culling
-	mFrustumCulling->frustumCull(mGenericInstances, *mPlayer->GetCamera());
+	mFrustumCulling->frustumCull(mGenericInstances, *mGame->GetCamera());
 
 	std::wostringstream outs;
 	outs.precision(6);

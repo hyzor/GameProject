@@ -16,7 +16,7 @@
 class GenericModel
 {
 public:
-	GenericModel(ID3D11Device* device, TextureManager& textureMgr, const std::string& fileName, const std::wstring& texturePath);
+	GenericModel(ID3D11Device* device, TextureManager* textureMgr, const std::string& fileName, const std::wstring& texturePath);
 	~GenericModel(void);
 
 	UINT meshCount;

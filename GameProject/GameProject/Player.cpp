@@ -237,19 +237,23 @@ void Player::Draw(ID3D11DeviceContext* dc,
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
+	//mModelInstance.draw(thechDesc);
+
+	
+	world = XMLoadFloat4x4(&mModelInstance.world);
+	worldInvTranspose = MathHelper::InverseTranspose(world);
+	worldViewProj = world*view*proj;
+
+	Effects::BasicFX->SetWorld(world);
+	Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
+	Effects::BasicFX->SetWorldViewProj(worldViewProj);
+	Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
+	Effects::BasicFX->setShadowTransform(world*(*shadowTransform));
+	Effects::BasicFX->setShadowMap(shadowMap);
+	Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		world = XMLoadFloat4x4(&mModelInstance.world);
-		worldInvTranspose = MathHelper::InverseTranspose(world);
-		worldViewProj = world*view*proj;
-
-		Effects::BasicFX->SetWorld(world);
-		Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
-		Effects::BasicFX->SetWorldViewProj(worldViewProj);
-		Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-		Effects::BasicFX->setShadowTransform(world*(*shadowTransform));
-		Effects::BasicFX->setShadowMap(shadowMap);
-		Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 
 		Effects::BasicTessFX->setFogColor(Colors::Silver);
