@@ -162,48 +162,6 @@ BuildShadowMapEffect::~BuildShadowMapEffect()
 }
 
 //==============================================================================
-// Terrain effect
-//==============================================================================
-TerrainEffect::TerrainEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
-{
-	Tech1 = mFX->GetTechniqueByName("Tech1");
-	DirLights3Tech = mFX->GetTechniqueByName("DirLights3");
-	DirLights3FogTech = mFX->GetTechniqueByName("DirLights3Fog");
-
-	ViewProj = mFX->GetVariableByName("gViewProj")->AsMatrix();
-	EyePosW = mFX->GetVariableByName("gEyePosW")->AsVector();
-	Mat = mFX->GetVariableByName("gMaterial");
-
-	DirLights = mFX->GetVariableByName("gDirLights");
-
-	LayerMapArray      = mFX->GetVariableByName("gLayerMapArray")->AsShaderResource();
-	BlendMap           = mFX->GetVariableByName("gBlendMap")->AsShaderResource();
-	HeightMap          = mFX->GetVariableByName("gHeightMap")->AsShaderResource();
-
-	MinDist            = mFX->GetVariableByName("gMinDist")->AsScalar();
-	MaxDist            = mFX->GetVariableByName("gMaxDist")->AsScalar();
-	MinTess            = mFX->GetVariableByName("gMinTess")->AsScalar();
-	MaxTess            = mFX->GetVariableByName("gMaxTess")->AsScalar();
-	TexelCellSpaceU    = mFX->GetVariableByName("gTexelCellSpaceU")->AsScalar();
-	TexelCellSpaceV    = mFX->GetVariableByName("gTexelCellSpaceV")->AsScalar();
-	WorldCellSpace     = mFX->GetVariableByName("gWorldCellSpace")->AsScalar();
-	WorldFrustumPlanes = mFX->GetVariableByName("gWorldFrustumPlanes")->AsVector();
-
-	fogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
-	fogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
-	fogColor = mFX->GetVariableByName("gFogColor")->AsVector();
-
-	shadowTransform = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
-	shadowMap = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
-}
-
-TerrainEffect::~TerrainEffect()
-{
-
-}
-
-//==============================================================================
 // Particle effect
 //==============================================================================
 ParticleEffect::ParticleEffect(ID3D11Device* device, const std::wstring& filename)
@@ -294,8 +252,6 @@ NormalMapEffect::~NormalMapEffect()
 //==============================================================================
 BasicEffect* Effects::BasicFX = 0;
 BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
-TerrainEffect* Effects::TerrainFX = 0;
-ParticleEffect* Effects::FireFX = 0;
 SkyEffect* Effects::SkyFX = 0;
 BasicTessEffect* Effects::BasicTessFX = 0;
 NormalMapEffect* Effects::NormalMapFX = 0;
@@ -304,8 +260,6 @@ void Effects::InitAll(ID3D11Device* device)
 {
 	BasicFX = new BasicEffect(device, L"FX/Basic.fxo");
 	BuildShadowMapFX = new BuildShadowMapEffect(device, L"FX/BuildShadowMap.fxo");
-	TerrainFX = new TerrainEffect(device, L"FX/Terrain.fxo");
-	FireFX = new ParticleEffect(device, L"FX/Fire.fxo");
 	SkyFX = new SkyEffect(device, L"FX/Sky.fxo");
 	BasicTessFX = new BasicTessEffect(device, L"FX/BasicTess.fxo");
 	NormalMapFX = new NormalMapEffect(device, L"FX/NormalMap.fxo");
@@ -315,8 +269,6 @@ void Effects::DestroyAll()
 {
 	SafeDelete(BasicFX);
 	SafeDelete(BuildShadowMapFX);
-	SafeDelete(TerrainFX);
-	SafeDelete(FireFX);
 	SafeDelete(SkyFX);
 	SafeDelete(BasicTessFX);
 	SafeDelete(NormalMapFX);

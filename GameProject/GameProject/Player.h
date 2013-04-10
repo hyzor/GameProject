@@ -7,7 +7,6 @@
 #include "GenericSkinnedModel.h"
 #include "GenericModel.h"
 #include "Effects.h"
-#include "GameSettings.h"
 #include <DirectInput.h>
 
 class Player

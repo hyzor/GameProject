@@ -230,78 +230,6 @@ public:
 	ID3DX11EffectShaderResourceVariable* NormalMap;
 };
 
-//==============================================================================
-// Terrain effect
-//==============================================================================
-class TerrainEffect : public Effect
-{
-public:
-	TerrainEffect(ID3D11Device* device, const std::wstring& filename);
-	~TerrainEffect();
-
-	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	void SetEyePosW(const XMFLOAT3& v) { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
-
-	void SetDirLights(const DirectionalLight* lights) { DirLights->SetRawValue(lights, 0, 3*sizeof(DirectionalLight)); }
-	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
-
-	// Set SRVs
-	void SetLayerMapArray(ID3D11ShaderResourceView* tex)   { LayerMapArray->SetResource(tex); }
-	void SetBlendMap(ID3D11ShaderResourceView* tex)        { BlendMap->SetResource(tex); }
-	void SetHeightMap(ID3D11ShaderResourceView* tex)       { HeightMap->SetResource(tex); }
-
-	void SetMinTessDistance(float f)                       { MinDist->SetFloat(f); }
-	void SetMaxTessDistance(float f)                       { MaxDist->SetFloat(f); }
-	void SetMinTessFactor(float f)                       { MinTess->SetFloat(f); }
-	void SetMaxTessFactor(float f)                       { MaxTess->SetFloat(f); }
-	void SetTexelCellSpaceU(float f)               { TexelCellSpaceU->SetFloat(f); }
-	void SetTexelCellSpaceV(float f)               { TexelCellSpaceV->SetFloat(f); }
-	void SetWorldCellSpace(float f)                { WorldCellSpace->SetFloat(f); }
-	void SetWorldFrustumPlanes(XMFLOAT4 planes[6]) { WorldFrustumPlanes->SetFloatVectorArray(reinterpret_cast<float*>(planes), 0, 6); }
-
-	void setFogRange(float f) { fogRange->SetFloat(f); }
-	void setFogStart(float f) { fogStart->SetFloat(f); }
-	void setFogColor(const FXMVECTOR v) { fogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
-
-	void setShadowMap(ID3D11ShaderResourceView* tex) { shadowMap->SetResource(tex); }
-	void setShadowTransform(CXMMATRIX M) { shadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
-
-	ID3DX11EffectMatrixVariable* ViewProj;
-	ID3DX11EffectMatrixVariable* World;
-	ID3DX11EffectMatrixVariable* WorldInvTranspose;
-	ID3DX11EffectMatrixVariable* TexTransform;
-	ID3DX11EffectVectorVariable* EyePosW;
-
-	ID3DX11EffectShaderResourceVariable* LayerMapArray;
-	ID3DX11EffectShaderResourceVariable* BlendMap;
-	ID3DX11EffectShaderResourceVariable* HeightMap;
-
-	ID3DX11EffectTechnique* Tech1;
-	ID3DX11EffectTechnique* DirLights3Tech;
-	ID3DX11EffectTechnique* DirLights3FogTech;
-
-	ID3DX11EffectVariable* DirLights;
-	ID3DX11EffectVariable* Mat;
-
-	ID3DX11EffectScalarVariable* MinDist;
-	ID3DX11EffectScalarVariable* MaxDist;
-	ID3DX11EffectScalarVariable* MinTess;
-	ID3DX11EffectScalarVariable* MaxTess;
-	ID3DX11EffectScalarVariable* TexelCellSpaceU;
-	ID3DX11EffectScalarVariable* TexelCellSpaceV;
-	ID3DX11EffectScalarVariable* WorldCellSpace;
-	ID3DX11EffectVectorVariable* WorldFrustumPlanes;
-
-	// Fogging
-	ID3DX11EffectScalarVariable* fogRange;
-	ID3DX11EffectScalarVariable* fogStart;
-	ID3DX11EffectVectorVariable* fogColor;
-
-	// Shadow mapping
-	ID3DX11EffectShaderResourceVariable* shadowMap;
-	ID3DX11EffectMatrixVariable* shadowTransform;
-};
-
 //====================================================================
 // Particle effect
 //====================================================================
@@ -443,8 +371,6 @@ public:
 
 	static BasicEffect* BasicFX;
 	static BuildShadowMapEffect* BuildShadowMapFX;
-	static TerrainEffect* TerrainFX;
-	static ParticleEffect* FireFX;
 	static SkyEffect* SkyFX;
 	static BasicTessEffect* BasicTessFX;
 	static NormalMapEffect* NormalMapFX;

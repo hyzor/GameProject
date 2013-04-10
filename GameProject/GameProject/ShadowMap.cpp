@@ -113,11 +113,11 @@ UINT ShadowMap::getHeight() const
 	return mHeight;
 }
 
-void ShadowMap::buildShadowTransform(DirectionalLight* light, XNA::Sphere& sceneBounds)
+void ShadowMap::buildShadowTransform(const DirectionalLight& light, const XNA::Sphere& sceneBounds)
 {
 	// Only first "main" light casts a shadow
 	// So get light direction and position from first light
-	XMVECTOR lightDir = XMLoadFloat3(&light->Direction);
+	XMVECTOR lightDir = XMLoadFloat3(&light.Direction);
 
 	XMVECTOR lightPos = -2.0f*sceneBounds.Radius*lightDir;
 

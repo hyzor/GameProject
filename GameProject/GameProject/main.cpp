@@ -10,7 +10,6 @@
 
 #include "GenericModel.h"
 #include "GenericSkinnedModel.h"
-#include "GameSettings.h"
 #include "Player.h"
 #include "ShadowMap.h"
 #include "Sky.h"
@@ -26,9 +25,6 @@ public:
 	void UpdateScene(float dt);
 	void DrawScene();
 
-	void buildShadowTransform();
-	void drawSceneToShadowMap();
-
 private:
 	TextureManager mTextureMgr;
 
@@ -37,16 +33,14 @@ private:
 	GenericModel* mPlayerModel;
 	std::vector<GenericModelInstance> mGenericInstances;
 
-	// Skinned models
-	GenericSkinnedModel* mSkinnedModel;
-	std::vector<GenericSkinnedModelInstance> mGenSkinnedInstances;
-
 	// Lights
 	XMFLOAT3 mOriginalLightDir[3];
 	DirectionalLight mDirLights[3];
 
 	// Shadow map
 	ShadowMap* mShadowMap;
+
+	// Scene bounding sphere
 	XNA::Sphere mSceneBounds;
 
 	// Player
@@ -59,9 +53,6 @@ private:
 	XNA::Frustum mCamFrustum;
 	UINT mVisibleObjectCount;
 	bool mFrustumCullingEnabled;
-
-	// Fogging
-	FogSettings mFogSettings;
 
 	// Render states
 	ID3D11RasterizerState* WireFrameRS;
@@ -122,19 +113,15 @@ Projekt::Projekt(HINSTANCE hInstance)
 
 Projekt::~Projekt()
 {
-	delete mPlayer;
-
+	SafeDelete(mPlayer);
 	SafeDelete(mGenericModel);
 	SafeDelete(mPlayerModel);
-//	SafeDelete(mSkinnedModel);
 	SafeDelete(mSky);
 	SafeDelete(mShadowMap);
 	ReleaseCOM(WireFrameRS);
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
-
-	delete GameSettings::Instance();
 }
 
 bool Projekt::Init()
@@ -172,8 +159,6 @@ bool Projekt::Init()
 	//--------------------------------------------------------
 	mGenericModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\duck.dae", L"Data\\Models\\Collada\\");
 
-//	mSkinnedModel = new GenericSkinnedModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.dae", L"Data\\Models\\Collada\\AnimTest\\");
-
 	mPlayerModel = new GenericModel(mDirect3D->GetDevice(), mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
 
 	Player::InitProperties playerProp;
@@ -184,7 +169,6 @@ bool Projekt::Init()
 	playerProp.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	playerProp.Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	playerProp.Angle = 0.0f;
-	//playerProp.Model = mPlayerModel;
 	playerProp.ModelInstance.model = mPlayerModel;
 	playerProp.ModelInstance.isVisible = true;
 
@@ -197,12 +181,6 @@ bool Projekt::Init()
 	GenericModelInstance genericInstance;
 	genericInstance.model = mGenericModel;
 
-// 	GenericSkinnedModelInstance genSkinnedInstance;
-// 	genSkinnedInstance.model = mSkinnedModel;
-// 	genSkinnedInstance.FinalTransforms.resize(mSkinnedModel->numBones);
-// 	genSkinnedInstance.ClipName = "animation";
-// 	genSkinnedInstance.TimePos = 0.0f;
-
 	//--------------------------------------------------------
 	// Scale, rotate and move model instances
 	//--------------------------------------------------------
@@ -214,15 +192,10 @@ bool Projekt::Init()
 	modelOffset = XMMatrixTranslation(-30.0f, 15.0f, -110.0f);
 	XMStoreFloat4x4(&genericInstance.world, modelScale*modelRot*modelOffset);
 
-//  	modelOffset = XMMatrixTranslation(50.0f, 15.0f, -110.0f);
-//  	XMStoreFloat4x4(&genSkinnedInstance.world, modelScale*modelRot*modelOffset);
-
 	//--------------------------------------------------------
 	// Insert model instances to the vector
 	//--------------------------------------------------------
 	mGenericInstances.push_back(genericInstance);
-
-/*	mGenSkinnedInstances.push_back(genSkinnedInstance);*/
 
 	//--------------------------------------------------------
 	// Compute scene bounding box
@@ -268,8 +241,6 @@ void Projekt::OnResize()
 {
 	D3D11App::OnResize();
 
-	//mPlayer->GetCamera()->setLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
-
 	mPlayer->GetCamera()->setLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
 
 	// Build the frustum from the projection matrix in view space
@@ -282,7 +253,6 @@ void Projekt::DrawScene()
 	// Render scene to shadow map
 	//---------------------------------------------------------------------------
 	mShadowMap->BindDsvAndSetNullRenderTarget(mDirect3D->GetImmediateContext());
-	//drawSceneToShadowMap();
 	mShadowMap->drawSceneToShadowMap(mGenericInstances, *mPlayer->GetCamera(), mDirect3D->GetImmediateContext());
 
 	mDirect3D->GetImmediateContext()->RSSetState(0);
@@ -299,8 +269,6 @@ void Projekt::DrawScene()
 	if (GetAsyncKeyState('E') & 0x8000)
 		mDirect3D->GetImmediateContext()->RSSetState(WireFrameRS);
 
-	//XMMATRIX shadowTransform = XMLoadFloat4x4(&mShadowTransform);
-
 	XMMATRIX shadowTransform = XMLoadFloat4x4(&mShadowMap->getShadowTransform());
 
 	// Camera matrices
@@ -316,10 +284,10 @@ void Projekt::DrawScene()
 	Effects::BasicFX->setShadowMap(mShadowMap->getDepthMapSRV());
 	Effects::BasicFX->SetCubeMap(mSky->cubeMapSRV());
 
-	Effects::NormalMapFX->SetDirLights(mDirLights);
-	Effects::NormalMapFX->SetEyePosW(mPlayer->GetCamera()->getPosition());
-	Effects::NormalMapFX->setShadowMap(mShadowMap->getDepthMapSRV());
-	Effects::NormalMapFX->SetCubeMap(mSky->cubeMapSRV());
+// 	Effects::NormalMapFX->SetDirLights(mDirLights);
+// 	Effects::NormalMapFX->SetEyePosW(mPlayer->GetCamera()->getPosition());
+// 	Effects::NormalMapFX->setShadowMap(mShadowMap->getDepthMapSRV());
+// 	Effects::NormalMapFX->SetCubeMap(mSky->cubeMapSRV());
 
 	XMMATRIX world;
 	XMMATRIX worldInvTranspose;
@@ -340,31 +308,18 @@ void Projekt::DrawScene()
 	//mPlayer->Draw(mDirect3D->GetImmediateContext(), mDirLights,
 		//mShadowMap->getDepthMapSRV(), &shadowTransform);
 
-	//---------------------------------------------------------------------------
-	// Draw opaque objects
-	//---------------------------------------------------------------------------
-	// Bind information about primitive type, and set input layout
-	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::Basic32);
-
 	// Set our effect technique to use
-	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3FogTexTech;
+	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
 	ID3DX11EffectTechnique* activeSkinnedTech = Effects::NormalMapFX->DirLights3TexTech;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 
 	//--------------------------------------------------------------------------------
-	// Draw opaque tessellated objects
+	// Draw opaque objects
 	//--------------------------------------------------------------------------------
-	Effects::BasicTessFX->SetDirLights(mDirLights);
-	Effects::BasicTessFX->SetEyePosW(mPlayer->GetCamera()->getPosition());
-	Effects::BasicTessFX->setShadowMap(mShadowMap->getDepthMapSRV());
-	Effects::BasicTessFX->SetCubeMap(mSky->cubeMapSRV());
+	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::Basic32);
 
-	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::PosNormalTexTan);
-
-	activeTech = Effects::BasicTessFX->TessDirLights3FogTexTech;
 	activeTech->GetDesc(&techDesc);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
@@ -376,29 +331,20 @@ void Projekt::DrawScene()
 				worldInvTranspose = MathHelper::InverseTranspose(world);
 				worldViewProj = world*view*proj;
 
-				Effects::BasicTessFX->SetWorld(world);
-				Effects::BasicTessFX->SetWorldInvTranspose(worldInvTranspose);
-				Effects::BasicTessFX->SetWorldViewProj(worldViewProj);
-				Effects::BasicTessFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-				Effects::BasicTessFX->setShadowTransform(world*shadowTransform);
-				Effects::BasicTessFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-				Effects::BasicTessFX->SetMinTessDistance(20.0f);
-				Effects::BasicTessFX->SetMaxTessDistance(200.0f);
-				Effects::BasicTessFX->SetMinTessFactor(0.0f);
-				Effects::BasicTessFX->SetMaxTessFactor(3.0f);
-				Effects::BasicTessFX->setFogStart(GameSettings::Instance()->Fog()->fogStart);
-				Effects::BasicTessFX->setFogRange(GameSettings::Instance()->Fog()->fogRange);
-
-				
-				Effects::BasicTessFX->setFogColor(Colors::Silver);
+				Effects::BasicFX->SetWorld(world);
+				Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
+				Effects::BasicFX->SetWorldViewProj(worldViewProj);
+				Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
+				Effects::BasicFX->setShadowTransform(world*shadowTransform);
+				Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 				for (UINT i = 0; i < mGenericInstances[mIndex].model->meshCount; ++i)
 				{
 					UINT matIndex = mGenericInstances[mIndex].model->meshes[i].MaterialIndex;
 
-					Effects::BasicTessFX->SetMaterial(mGenericInstances[mIndex].model->mat[matIndex]);
+					Effects::BasicFX->SetMaterial(mGenericInstances[mIndex].model->mat[matIndex]);
 
-					Effects::BasicTessFX->SetDiffuseMap(mGenericInstances[mIndex].model->diffuseMapSRV[matIndex]);
+					Effects::BasicFX->SetDiffuseMap(mGenericInstances[mIndex].model->diffuseMapSRV[matIndex]);
 					//Effects::BasicTessFX->SetNormalMap(mGenericInstances[mIndex].model->normalMapSRV[matIndex]);
 
 					activeTech->GetPassByIndex(p)->Apply(0, mDirect3D->GetImmediateContext());
@@ -410,11 +356,11 @@ void Projekt::DrawScene()
 
 	// FX sets tessellation stages, but it does not disable them.  So do that here
 	// to turn off tessellation.
-	mDirect3D->GetImmediateContext()->HSSetShader(0, 0, 0);
-	mDirect3D->GetImmediateContext()->DSSetShader(0, 0, 0);
+// 	mDirect3D->GetImmediateContext()->HSSetShader(0, 0, 0);
+// 	mDirect3D->GetImmediateContext()->DSSetShader(0, 0, 0);
 
-	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::PosNormalTexTanSkinned);
+// 	mDirect3D->GetImmediateContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	mDirect3D->GetImmediateContext()->IASetInputLayout(InputLayouts::PosNormalTexTanSkinned);
 
 	// Skinned objects
 // 	activeSkinnedTech->GetDesc(&techDesc);
@@ -484,13 +430,8 @@ void Projekt::UpdateScene(float dt)
 
 	// Update objects
 	mPlayer->Update(dt, mDirectInput);
-	for (UINT i = 0; i < mGenSkinnedInstances.size(); ++i)
-		mGenSkinnedInstances[i].Update(dt);
 
-	// Build shadow map transform
-	//buildShadowTransform();
-
-	mShadowMap->buildShadowTransform(&mDirLights[0], mSceneBounds);
+	mShadowMap->buildShadowTransform(mDirLights[0], mSceneBounds);
 
 	// Update camera
 	mPlayer->GetCamera()->updateViewMatrix();

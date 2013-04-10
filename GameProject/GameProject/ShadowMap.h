@@ -29,7 +29,8 @@ public:
 	UINT getHeight() const;
 	XMFLOAT4X4 getShadowTransform() const;
 
-	void buildShadowTransform(DirectionalLight* light, XNA::Sphere& sceneBounds);
+	void buildShadowTransform(const DirectionalLight& light,
+							const XNA::Sphere& sceneBounds);
 
 	void drawSceneToShadowMap(
 					const std::vector<GenericModelInstance>& modelInstances,

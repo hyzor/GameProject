@@ -15,21 +15,6 @@ const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::Basic32[3] =
 	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 };
 
-const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::Terrain[3] =
-{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0}
-};
-
-const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::TerrainNormal[4] =
-{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}
-};
-
 const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::Particle[5] = 
 {
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -63,8 +48,6 @@ const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::PosNormalTexTanSkinned[6] =
 //===========================================================================
 ID3D11InputLayout* InputLayouts::Position = 0;
 ID3D11InputLayout* InputLayouts::Basic32 = 0;
-ID3D11InputLayout* InputLayouts::Terrain = 0;
-ID3D11InputLayout* InputLayouts::TerrainNormal = 0;
 ID3D11InputLayout* InputLayouts::Particle = 0;
 ID3D11InputLayout* InputLayouts::PosNormalTexTan = 0;
 ID3D11InputLayout* InputLayouts::PosNormalTexTanSkinned = 0;
@@ -83,21 +66,6 @@ void InputLayouts::InitAll(ID3D11Device* device)
 	HR(device->CreateInputLayout(InputLayoutDesc::Basic32, 3, passDesc.pIAInputSignature,
 		passDesc.IAInputSignatureSize, &Basic32));
 
-	// Terrain
-// 	Effects::TerrainFX->Tech1->GetPassByIndex(0)->GetDesc(&passDesc);
-// 	HR(device->CreateInputLayout(InputLayoutDesc::Terrain, 3, passDesc.pIAInputSignature,
-// 		passDesc.IAInputSignatureSize, &Terrain));
-
-	// Terrain with Normal
-	Effects::TerrainFX->Tech1->GetPassByIndex(0)->GetDesc(&passDesc);
-	HR(device->CreateInputLayout(InputLayoutDesc::TerrainNormal, 4, passDesc.pIAInputSignature,
-		passDesc.IAInputSignatureSize, &TerrainNormal));
-
-	// Particle
-	Effects::FireFX->StreamOutTech->GetPassByIndex(0)->GetDesc(&passDesc);
-	HR(device->CreateInputLayout(InputLayoutDesc::Particle, 5, passDesc.pIAInputSignature, 
-		passDesc.IAInputSignatureSize, &Particle));
-
 	// PosNormalTexTanSkinned
 	Effects::BasicTessFX->TessDirLights3Tech->GetPassByIndex(0)->GetDesc(&passDesc);
 	HR(device->CreateInputLayout(InputLayoutDesc::PosNormalTexTanSkinned, 6, passDesc.pIAInputSignature,
@@ -113,8 +81,6 @@ void InputLayouts::DestroyAll()
 {
 	ReleaseCOM(Position);
 	ReleaseCOM(Basic32);
-	ReleaseCOM(Terrain);
-	ReleaseCOM(TerrainNormal);
 	ReleaseCOM(Particle);
 	ReleaseCOM(PosNormalTexTan);
 	ReleaseCOM(PosNormalTexTanSkinned);

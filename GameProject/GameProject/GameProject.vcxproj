@@ -93,7 +93,6 @@
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\TextureManager.cpp" />
     <ClCompile Include="Common\xnacollision.cpp" />
-    <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="GenericSkinnedMesh.cpp" />
     <ClCompile Include="GenericSkinnedModel.cpp" />
     <ClCompile Include="main.cpp" />
@@ -107,7 +106,6 @@
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="Sky.cpp" />
-    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
@@ -127,7 +125,6 @@
     <ClInclude Include="Common\TextureManager.h" />
     <ClInclude Include="Common\xnacollision.h" />
     <ClInclude Include="Effects.h" />
-    <ClInclude Include="GameSettings.h" />
     <ClInclude Include="GenericMesh.h" />
     <ClInclude Include="GenericModel.h" />
     <ClInclude Include="GenericObjectLoader.h" />
@@ -139,7 +136,6 @@
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="Sky.h" />
-    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
@@ -156,12 +152,6 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
     </CustomBuild>
-    <CustomBuild Include="FX\Fire.fx">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
-    </CustomBuild>
     <CustomBuild Include="FX\BasicTess.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /Fc /Od /Zi /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
@@ -169,12 +159,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
     </CustomBuild>
     <None Include="FX\LightDef.fx" />
-    <CustomBuild Include="FX\Terrain.fx">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
-    </CustomBuild>
     <CustomBuild Include="FX\Sky.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /Fc /Od /Zi /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>

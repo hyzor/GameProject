@@ -216,7 +216,7 @@ void Player::Draw(ID3D11DeviceContext* dc,
 	UINT stride = sizeof(Vertex::Basic32);
 	UINT offset = 0;
 
-	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3FogTexTech;
+	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
 
 	XMMATRIX world;
 	XMMATRIX worldInvTranspose;
@@ -248,8 +248,6 @@ void Player::Draw(ID3D11DeviceContext* dc,
 		Effects::BasicFX->setShadowTransform(world*(*shadowTransform));
 		Effects::BasicFX->setShadowMap(shadowMap);
 		Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-		Effects::BasicFX->setFogStart(GameSettings::Instance()->Fog()->fogStart);
-		Effects::BasicTessFX->setFogRange(GameSettings::Instance()->Fog()->fogRange);
 
 
 		Effects::BasicTessFX->setFogColor(Colors::Silver);
@@ -261,7 +259,7 @@ void Player::Draw(ID3D11DeviceContext* dc,
 			Effects::BasicTessFX->SetMaterial(mModelInstance.model->mat[matIndex]);
 
 			Effects::BasicTessFX->SetDiffuseMap(mModelInstance.model->diffuseMapSRV[matIndex]);
-			//Effects::BasicTessFX->SetNormalMap(mGenericInstances[mIndex].model->normalMapSRV[matIndex]);
+			//Effects::BasicTessFX->SetNormalMap(mModelInstance.model->normalMapSRV[matIndex]);
 
 			activeTech->GetPassByIndex(p)->Apply(0, dc);
 			mModelInstance.model->meshes[i].draw(dc);

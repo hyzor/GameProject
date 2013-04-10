@@ -1,51 +1,51 @@
-Info,  T168: Load Data\Models\OBJ\Cop\cop.obj
-Debug, T168: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
-Info,  T168: Found a matching importer for this file format
-Info,  T168: Import root directory is 'Data\Models\OBJ\Cop\'
-Info,  T168: Entering post processing pipeline
-Debug, T168: RemoveRedundantMatsProcess begin
-Debug, T168: RemoveRedundantMatsProcess finished 
-Debug, T168: FindDegeneratesProcess begin
-Debug, T168: FindDegeneratesProcess finished
-Debug, T168: GenUVCoordsProcess begin
-Debug, T168: GenUVCoordsProcess finished
-Debug, T168: TriangulateProcess begin
-Debug, T168: TriangulateProcess finished. There was nothing to be done.
-Debug, T168: SortByPTypeProcess begin
-Info,  T168: Points: 0, Lines: 0, Triangles: 5, Polygons: 0 (Meshes, X = removed)
-Debug, T168: SortByPTypeProcess finished
-Debug, T168: FindInvalidDataProcess begin
-Debug, T168: FindInvalidDataProcess finished. Everything seems to be OK.
-Debug, T168: SplitLargeMeshesProcess_Triangle begin
-Debug, T168: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
-Debug, T168: Generate spatially-sorted vertex cache
-Debug, T168: GenVertexNormalsProcess begin
-Debug, T168: GenVertexNormalsProcess finished. Normals are already there
-Debug, T168: CalcTangentsProcess begin
-Info,  T168: CalcTangentsProcess finished. Tangents have been calculated
-Debug, T168: JoinVerticesProcess begin
-Debug, T168: Mesh 0 (unnamed) | Verts in: 570 out: 137 | ~75.9649%
-Debug, T168: Mesh 1 (unnamed) | Verts in: 5790 out: 2070 | ~64.2487%
-Debug, T168: Mesh 2 (unnamed) | Verts in: 6303 out: 2574 | ~59.1623%
-Debug, T168: Mesh 3 (unnamed) | Verts in: 795 out: 229 | ~71.195%
-Debug, T168: Mesh 4 (unnamed) | Verts in: 228 out: 116 | ~49.1228%
-Info,  T168: JoinVerticesProcess finished | Verts in: 13686 out: 5126 | ~62.5%
-Debug, T168: SplitLargeMeshesProcess_Vertex begin
-Debug, T168: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
-Debug, T168: MakeLeftHandedProcess begin
-Debug, T168: MakeLeftHandedProcess finished
-Debug, T168: FlipUVsProcess begin
-Debug, T168: FlipUVsProcess finished
-Debug, T168: FlipWindingOrderProcess begin
-Debug, T168: FlipWindingOrderProcess finished
-Debug, T168: LimitBoneWeightsProcess begin
-Debug, T168: LimitBoneWeightsProcess end
-Debug, T168: ImproveCacheLocalityProcess begin
-Debug, T168: Mesh 0 | ACMR in: 1.294737 out: 0.863158 | ~33.3%
-Debug, T168: Mesh 1 | ACMR in: 1.598446 out: 1.170985 | ~26.7%
-Debug, T168: Mesh 2 | ACMR in: 1.758686 out: 1.358877 | ~22.7%
-Debug, T168: Mesh 3 | ACMR in: 1.173585 out: 0.939623 | ~19.9%
-Debug, T168: Mesh 4 | ACMR in: 1.539474 out: 1.526316 | ~0.9%
-Info,  T168: Cache relevant are 5 meshes (4562 faces). Average output ACMR is 1.237177
-Debug, T168: ImproveCacheLocalityProcess finished. 
-Info,  T168: Leaving post processing pipeline
+Info,  T172: Load Data\Models\OBJ\Cop\cop.obj
+Debug, T172: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Info,  T172: Found a matching importer for this file format
+Info,  T172: Import root directory is 'Data\Models\OBJ\Cop\'
+Info,  T172: Entering post processing pipeline
+Debug, T172: RemoveRedundantMatsProcess begin
+Debug, T172: RemoveRedundantMatsProcess finished 
+Debug, T172: FindDegeneratesProcess begin
+Debug, T172: FindDegeneratesProcess finished
+Debug, T172: GenUVCoordsProcess begin
+Debug, T172: GenUVCoordsProcess finished
+Debug, T172: TriangulateProcess begin
+Debug, T172: TriangulateProcess finished. There was nothing to be done.
+Debug, T172: SortByPTypeProcess begin
+Info,  T172: Points: 0, Lines: 0, Triangles: 5, Polygons: 0 (Meshes, X = removed)
+Debug, T172: SortByPTypeProcess finished
+Debug, T172: FindInvalidDataProcess begin
+Debug, T172: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T172: SplitLargeMeshesProcess_Triangle begin
+Debug, T172: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T172: Generate spatially-sorted vertex cache
+Debug, T172: GenVertexNormalsProcess begin
+Debug, T172: GenVertexNormalsProcess finished. Normals are already there
+Debug, T172: CalcTangentsProcess begin
+Info,  T172: CalcTangentsProcess finished. Tangents have been calculated
+Debug, T172: JoinVerticesProcess begin
+Debug, T172: Mesh 0 (unnamed) | Verts in: 570 out: 137 | ~75.9649%
+Debug, T172: Mesh 1 (unnamed) | Verts in: 5790 out: 2070 | ~64.2487%
+Debug, T172: Mesh 2 (unnamed) | Verts in: 6303 out: 2574 | ~59.1623%
+Debug, T172: Mesh 3 (unnamed) | Verts in: 795 out: 229 | ~71.195%
+Debug, T172: Mesh 4 (unnamed) | Verts in: 228 out: 116 | ~49.1228%
+Info,  T172: JoinVerticesProcess finished | Verts in: 13686 out: 5126 | ~62.5%
+Debug, T172: SplitLargeMeshesProcess_Vertex begin
+Debug, T172: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Debug, T172: MakeLeftHandedProcess begin
+Debug, T172: MakeLeftHandedProcess finished
+Debug, T172: FlipUVsProcess begin
+Debug, T172: FlipUVsProcess finished
+Debug, T172: FlipWindingOrderProcess begin
+Debug, T172: FlipWindingOrderProcess finished
+Debug, T172: LimitBoneWeightsProcess begin
+Debug, T172: LimitBoneWeightsProcess end
+Debug, T172: ImproveCacheLocalityProcess begin
+Debug, T172: Mesh 0 | ACMR in: 1.294737 out: 0.863158 | ~33.3%
+Debug, T172: Mesh 1 | ACMR in: 1.598446 out: 1.170985 | ~26.7%
+Debug, T172: Mesh 2 | ACMR in: 1.758686 out: 1.358877 | ~22.7%
+Debug, T172: Mesh 3 | ACMR in: 1.173585 out: 0.939623 | ~19.9%
+Debug, T172: Mesh 4 | ACMR in: 1.539474 out: 1.526316 | ~0.9%
+Info,  T172: Cache relevant are 5 meshes (4562 faces). Average output ACMR is 1.237177
+Debug, T172: ImproveCacheLocalityProcess finished. 
+Info,  T172: Leaving post processing pipeline
