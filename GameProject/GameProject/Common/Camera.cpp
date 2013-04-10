@@ -241,3 +241,13 @@ void Camera::yaw( float angle )
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
 }
+
+XNA::Frustum Camera::getFrustum() const
+{
+	return mFrustum;
+}
+
+void Camera::computeFrustum()
+{
+	ComputeFrustumFromProjection(&mFrustum, &getProjMatrix());
+}

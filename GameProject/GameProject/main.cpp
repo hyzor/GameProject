@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "ShadowMap.h"
 #include "Sky.h"
+#include "FrustumCulling.h"
 
 class Projekt : public D3D11App
 {
@@ -49,10 +50,8 @@ private:
 	// Sky
 	Sky* mSky;
 
-	// Camera frustum
-	XNA::Frustum mCamFrustum;
-	UINT mVisibleObjectCount;
-	bool mFrustumCullingEnabled;
+	// Frustum culling
+	FrustumCulling* mFrustumCulling;
 
 	// Render states
 	ID3D11RasterizerState* WireFrameRS;
@@ -63,6 +62,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	//_CrtSetBreakAlloc(1088);
 
 	// Also create a debug console window
 	// 	if(AllocConsole()) 
@@ -83,8 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 }
 
 Projekt::Projekt(HINSTANCE hInstance)
-	: D3D11App(hInstance), mShadowMap(0),
-	mVisibleObjectCount(0), mFrustumCullingEnabled(true)
+	: D3D11App(hInstance), mShadowMap(0)
 {
 	mMainWndCaption = L"DV1415 - Projekt";
 
@@ -118,6 +117,7 @@ Projekt::~Projekt()
 	SafeDelete(mPlayerModel);
 	SafeDelete(mSky);
 	SafeDelete(mShadowMap);
+	SafeDelete(mFrustumCulling);
 	ReleaseCOM(WireFrameRS);
 
 	Effects::DestroyAll();
@@ -143,6 +143,8 @@ bool Projekt::Init()
 	wireFrameDesc.DepthClipEnable = true;
 
 	HR(mDirect3D->GetDevice()->CreateRasterizerState(&wireFrameDesc, &WireFrameRS));
+	
+	mFrustumCulling = new FrustumCulling();
 
 	//--------------------------------------------------------
 	// Create sky
@@ -243,8 +245,10 @@ void Projekt::OnResize()
 
 	mPlayer->GetCamera()->setLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
 
+	mPlayer->GetCamera()->computeFrustum();
+
 	// Build the frustum from the projection matrix in view space
-	ComputeFrustumFromProjection(&mCamFrustum, &mPlayer->GetCamera()->getProjMatrix());
+	//ComputeFrustumFromProjection(&mCamFrustum, &mPlayer->GetCamera()->getProjMatrix());
 }
 
 void Projekt::DrawScene()
@@ -265,6 +269,8 @@ void Projekt::DrawScene()
 	mDirect3D->GetImmediateContext()->ClearDepthStencilView(mDirect3D->GetDepthStencilView(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 	mDirect3D->GetImmediateContext()->RSSetViewports(1, &mDirect3D->GetScreenViewport());
 
+	//---------------------------------------------------------------------------
+
 	// Possible Wireframe render state
 	if (GetAsyncKeyState('E') & 0x8000)
 		mDirect3D->GetImmediateContext()->RSSetState(WireFrameRS);
@@ -278,7 +284,10 @@ void Projekt::DrawScene()
 
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
-	// Set per frame constants
+	//--------------------------------------------------------------
+	// Shader constants
+	//--------------------------------------------------------------
+	// Set per frame constants for shaders
 	Effects::BasicFX->SetDirLights(mDirLights);
 	Effects::BasicFX->SetEyePosW(mPlayer->GetCamera()->getPosition());
 	Effects::BasicFX->setShadowMap(mShadowMap->getDepthMapSRV());
@@ -300,13 +309,9 @@ void Projekt::DrawScene()
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
 
-	// Vertex size & offset
-	UINT stride = sizeof(Vertex::Basic32);
-	UINT offset = 0;
-
 	// Draw player
-	//mPlayer->Draw(mDirect3D->GetImmediateContext(), mDirLights,
-		//mShadowMap->getDepthMapSRV(), &shadowTransform);
+	mPlayer->Draw(mDirect3D->GetImmediateContext(), mDirLights,
+		mShadowMap->getDepthMapSRV(), &shadowTransform);
 
 	// Set our effect technique to use
 	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
@@ -431,63 +436,15 @@ void Projekt::UpdateScene(float dt)
 	// Update objects
 	mPlayer->Update(dt, mDirectInput);
 
+	// Update shadow map
 	mShadowMap->buildShadowTransform(mDirLights[0], mSceneBounds);
 
-	// Update camera
-	mPlayer->GetCamera()->updateViewMatrix();
-
-	//------------------------------------------------------------------
 	// Frustum culling
-	//------------------------------------------------------------------
-	mVisibleObjectCount = 0;
+	mFrustumCulling->frustumCull(mGenericInstances, *mPlayer->GetCamera());
 
-	if (mFrustumCullingEnabled)
-	{
-		XMVECTOR detView = XMMatrixDeterminant(mPlayer->GetCamera()->getViewMatrix());
-		XMMATRIX invView = XMMatrixInverse(&detView, mPlayer->GetCamera()->getViewMatrix());
-
-		for (UINT i = 0; i < mGenericInstances.size(); ++i)
-		{
-			mGenericInstances[i].isVisible = false;
-
-			XMMATRIX W = XMLoadFloat4x4(&mGenericInstances[i].world);
-			XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
-
-			// View space to the object's local space.
-			XMMATRIX toLocal = XMMatrixMultiply(invView, invWorld);
-
-			// Decompose the matrix into its individual parts.
-			XMVECTOR scale;
-			XMVECTOR rotQuat;
-			XMVECTOR translation;
-			XMMatrixDecompose(&scale, &rotQuat, &translation, toLocal);
-
-			// Transform the camera frustum from view space to the object's local space.
-			XNA::Frustum localspaceFrustum;
-			XNA::TransformFrustum(&localspaceFrustum, &mCamFrustum, XMVectorGetX(scale), rotQuat, translation);
-
-			// Perform the box/frustum intersection test in local space.
-			if(XNA::IntersectAxisAlignedBoxFrustum(&mGenericInstances[i].model->boundingBox, &localspaceFrustum) != 0)
-			{
-				// Write the instance data to dynamic VB of the visible objects.
-				//dataView[mVisibleObjectCount++] = mInstancedData[i];
-				mVisibleObjectCount++;
-				mGenericInstances[i].isVisible = true;
-			}
-		}
-	}
-	else
-	{
-		for (UINT i = 0; i < mGenericInstances.size(); ++i)
-		{
-			mGenericInstances[i].isVisible = true;
-			mVisibleObjectCount++;
-		}
-	}
-
-	std::wostringstream outs;   
+	std::wostringstream outs;
 	outs.precision(6);
-	outs << L"    " << mVisibleObjectCount << 
+	outs << L"    " << mFrustumCulling->getNumVisible() << 
 		L" objects visible out of " << mGenericInstances.size();
 	mMainWndCaption = outs.str();
 }

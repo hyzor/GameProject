@@ -44,7 +44,7 @@ public:
 
 	int GetID() const;
 	XMFLOAT3 GetPosition() const;
-	Camera* GetCamera() const;
+	Camera* GetCamera();
 
 	bool Shoot();
 

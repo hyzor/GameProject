@@ -108,6 +108,9 @@
     <ClCompile Include="SkinnedData.cpp">
       <Filter>Models\Skinned</Filter>
     </ClCompile>
+    <ClCompile Include="FrustumCulling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\TextureManager.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="SkinnedData.h">
       <Filter>Models\Skinned</Filter>
+    </ClInclude>
+    <ClInclude Include="FrustumCulling.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

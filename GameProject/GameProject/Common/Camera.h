@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "d3dUtilities.h"
+#include <xnacollision.h>
 
 class Camera
 {
@@ -53,6 +54,10 @@ public:
 	void pitch(float angle);
 	void yaw(float angle);
 
+	XNA::Frustum getFrustum() const;
+
+	void computeFrustum();
+
 private:
 	// Coordinate system relative to world space
 	XMFLOAT3 mPosition; // view space origin
@@ -71,6 +76,8 @@ private:
 	float mFovY;
 	float mNearWindowHeight;
 	float mFarWindowHeight;
+
+	XNA::Frustum mFrustum;
 };
 
 #endif

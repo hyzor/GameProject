@@ -27,8 +27,8 @@ Player::Player(const Player& other)
 
 Player::~Player(void)
 {
-//	if (mCamera)
-//		SafeDelete(mCamera);
+	if (mCamera)
+		SafeDelete(mCamera);
 
 	for (UINT i = 0; i < mWeapons.size(); ++i)
 		delete mWeapons[i];
@@ -126,6 +126,8 @@ void Player::Update(float dt, DirectInput* dInput)
 		Shoot();
 	}	
 
+	mCamera->updateViewMatrix();
+
 	SetPosition(mCamera->getPosition());
 }
 
@@ -197,7 +199,7 @@ XMFLOAT3 Player::GetPosition() const
 	return mPosition;
 }
 
-Camera* Player::GetCamera() const
+Camera* Player::GetCamera()
 {
 	return mCamera;
 }

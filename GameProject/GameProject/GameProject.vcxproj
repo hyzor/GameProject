@@ -93,6 +93,7 @@
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\TextureManager.cpp" />
     <ClCompile Include="Common\xnacollision.cpp" />
+    <ClCompile Include="FrustumCulling.cpp" />
     <ClCompile Include="GenericSkinnedMesh.cpp" />
     <ClCompile Include="GenericSkinnedModel.cpp" />
     <ClCompile Include="main.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="Common\TextureManager.h" />
     <ClInclude Include="Common\xnacollision.h" />
     <ClInclude Include="Effects.h" />
+    <ClInclude Include="FrustumCulling.h" />
     <ClInclude Include="GenericMesh.h" />
     <ClInclude Include="GenericModel.h" />
     <ClInclude Include="GenericObjectLoader.h" />
