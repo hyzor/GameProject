@@ -13,6 +13,7 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 	mPosition = Position;
 	mPlayerID = PlayerID;
 	mIsAlive = true;
+	Joint = XMMatrixIdentity();
 
 	mCamera = new Camera();
 
@@ -42,23 +43,21 @@ Player::~Player()
 		delete mWeapons[i];
 }
 
-bool Player::Shoot()
+void Player::Shoot()
 {
-	if (mWeapons[mCurWeaponIndex]->GetCooldown() > 0.0f)
+	mWeapons[mCurWeaponIndex]->FireProjectile(0,0); //Objekt orienterat!!
+	/*if (mWeapons[mCurWeaponIndex]->GetCooldown() > 0.0f)
 		return false;
 
-	switch (mWeapons[mCurWeaponIndex]->GetType())
+	if(mWeapons[mCurWeaponIndex]->GetType() == Weapon::TYPE_RAILGUN)
 	{
-		case Weapon::TYPE_RAILGUN:
-			// Shoot laser beam
-			// Emit new particles going forward in a straight line
-			// Forming a type of beam
-			mWeapons[mCurWeaponIndex]->FireProjectile(Weapon::TYPE_RAILGUN, mWeapons[mCurWeaponIndex]->GetNumProjectiles());
-			break;
+		// Shoot laser beam
+		// Emit new particles going forward in a straight line
+		// Forming a type of beam
+		mWeapons[mCurWeaponIndex]->FireProjectile(Weapon::TYPE_RAILGUN, mWeapons[mCurWeaponIndex]->GetNumProjectiles());
 	}
 
-	mWeapons[mCurWeaponIndex]->ResetCooldown();
-	return true;
+	mWeapons[mCurWeaponIndex]->ResetCooldown();*/
 }
 
 
@@ -70,21 +69,36 @@ void Player::TakeDamage(float damage)
 
 void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 {
+	//switch garvity
+	if(dInput->GetKeyboardState()[DIK_E] & 0x80)
+	{
+		if(!eDown)
+		{
+			Joint(1,1) *= -1;
+			ySpeed = 0;
+		}
+		eDown = true;
+	}
+	else
+		eDown = false;
+
+
+
 	// Health lower than 0, die
 	if (mHealth < 0.0f)
 		mIsAlive = false;
 
-	for (UINT i = 0; i < mWeapons.size(); ++i)
+	for (UINT i = 0; i < mWeapons.size(); i++)
 		mWeapons[i]->Update(dt);
 
 	// Move
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
-	XMVECTOR look = XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
+	XMVECTOR look = XMVector3Transform(XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), Joint);
 	if (dInput->GetKeyboardState()[DIK_W] & 0x80)
 		pos += look*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_S] & 0x80)
 		pos -= look*mSpeed*dt;
-	XMVECTOR right = XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
+	XMVECTOR right = XMVector3Transform(XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), Joint);
 	if (dInput->GetKeyboardState()[DIK_D] & 0x80)
 		pos += right*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_A] & 0x80)
@@ -103,23 +117,32 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 	if (dInput->GetMouseState().rgbButtons[0])
 		Shoot();
 
-	mCamera->UpdateViewMatrix();
 
 
+
+	//gravity
 	ySpeed += 300*dt;
-	pos -= XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt;
+	pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, Joint);
+
+
+
+
 
 	//Collision
 	bool OnGround = false;
 	XMVECTOR dir;
 	CollisionModel::Hit hit;
 
-	dir = XMLoadFloat3(&XMFLOAT3(0,-1,0));
-	hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(0,20,0)), dir); 
+	/*XNA::AxisAlignedBox boundingBox;
+	XMStoreFloat3(&boundingBox.Center, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), Joint));
+	XMStoreFloat3(&boundingBox.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(6,10,6)), Joint));*/
+
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), Joint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), Joint), dir, 20); 
 	if(hit.hit)
 	{
 		//feet
-		if(hit.t > 10 && hit.t < 20)
+		if(hit.t > 10)
 		{
 			OnGround = true;
 			ySpeed = 0;
@@ -134,24 +157,24 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 		}
 	}
 
-	dir = XMLoadFloat3(&XMFLOAT3(0,0,-1));
-	hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(0,5,-6)), dir); 
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,-1)), Joint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,5,-6)), Joint), dir, 12); 
 	if(hit.hit)
 	{
 		//front
-		if(hit.t > 6 && hit.t < 12)
+		if(hit.t > 6)
 			pos += dir*12-dir*hit.t;
 		//back
 		if(hit.t < 6)
 			pos -= dir*hit.t;
 	}
 
-	dir = XMLoadFloat3(&XMFLOAT3(-1,0,0));
-	hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(-6,5,0)), dir); 
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-1,0,0)), Joint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-6,5,0)), Joint), dir, 12); 
 	if(hit.hit)
 	{
 		//left
-		if(hit.t > 6 && hit.t < 12)
+		if(hit.t > 6)
 			pos -= dir*12-dir*hit.t;
 		//right
 		if(hit.t < 6)
@@ -168,8 +191,9 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 	
 	XMStoreFloat3(&mPosition, pos);
 	XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, pos+XMLoadFloat3(&XMFLOAT3(0,10,0)));
+	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), Joint));
 	mCamera->SetPosition(camPos);
+	mCamera->UpdateViewMatrix();
 }
 
 

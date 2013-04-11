@@ -34,7 +34,6 @@ public:
 	Camera* GetCamera() {return mCamera;};
 	bool IsAlive() const {return mIsAlive;};
 
-	bool Shoot();
 
 	void TakeDamage(float damage);
 
@@ -58,6 +57,12 @@ private:
 	Camera* mCamera;
 
 	GenericModel* mModel;
+
+	XMMATRIX Joint;
+	bool eDown;
+
+	
+	void Shoot();
 };
 
 #endif

@@ -25,7 +25,6 @@ class CollisionModel
 		{
 			bool hit;
 			float t;
-			float dot;
 		};
 
 		CollisionModel(XMFLOAT3 pos);
@@ -33,12 +32,18 @@ class CollisionModel
 		void LoadObj(char *file);
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
+		void SetPosition(XMFLOAT3 position);
+		XNA::AxisAlignedBox GetBoundingBox();
 		
-		Hit Intersect(XMVECTOR origin, XMVECTOR dir);
+		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 
 	private:
 		std::vector<XMFLOAT3> vertices;
 		XMFLOAT3 pos;
+
+		XMVECTOR vMin;
+		XMVECTOR vMax;
+		XNA::AxisAlignedBox boundingBox;
 
 		std::vector<std::string> CollisionModel::split(std::string line);
 };
