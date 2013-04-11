@@ -10,7 +10,7 @@ Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 	mDuckColl = new CollisionModel(mDuck->Position);
 	mDuckColl->LoadObj("Data\\Models\\Collada\\duck.obj");
 
-	mPlayer = new Player(mPlayerModel, 0, "Hyzor", XMFLOAT3(0,0,0));
+	mPlayer = new Player(mPlayerModel, 0, "Hyzor", XMFLOAT3(0,200,50));
 }
 
 Game::~Game()

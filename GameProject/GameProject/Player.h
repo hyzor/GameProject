@@ -43,6 +43,7 @@ private:
 	float mHealth;
 
 	float mSpeed;
+	float ySpeed;
 
 	bool mIsAlive;
 	bool mInCameraFrustum;

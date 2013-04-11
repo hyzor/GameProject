@@ -9,6 +9,7 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 	mHealth = 1;
 	mNickname = Nickname;
 	mSpeed = 100;
+	ySpeed = 0;
 	mPosition = Position;
 	mPlayerID = PlayerID;
 	mIsAlive = true;
@@ -78,14 +79,16 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 
 	// Move
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
-	if (dInput->GetKeyboardState()[DIK_W] && 0x80)
-		pos += mCamera->GetLookXM()*mSpeed*dt;
+	XMVECTOR look = XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
+	if (dInput->GetKeyboardState()[DIK_W] & 0x80)
+		pos += look*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_S] & 0x80)
-		pos -= mCamera->GetLookXM()*mSpeed*dt;
+		pos -= look*mSpeed*dt;
+	XMVECTOR right = XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
 	if (dInput->GetKeyboardState()[DIK_D] & 0x80)
-		pos += mCamera->GetRightXM()*mSpeed*dt;
+		pos += right*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_A] & 0x80)
-		pos -= mCamera->GetRightXM()*mSpeed*dt;
+		pos -= right*mSpeed*dt;
 
 	// Rotate camera
 	if (dInput->MouseHasMoved())
@@ -103,24 +106,69 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 	mCamera->UpdateViewMatrix();
 
 
+	ySpeed += 300*dt;
+	pos -= XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt;
+
 	//Collision
-	XMVECTOR dir = XMLoadFloat3(&XMFLOAT3(0,1,0));
-	CollisionModel::Hit hit = world->Intersect(pos + XMLoadFloat3(&XMFLOAT3(0,-20,0)), dir); 
+	bool OnGround = false;
+	XMVECTOR dir;
+	CollisionModel::Hit hit;
+
+	dir = XMLoadFloat3(&XMFLOAT3(0,-1,0));
+	hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(0,20,0)), dir); 
 	if(hit.hit)
 	{
-		//pos -= dir;
 		//feet
-		//if(hit.dot > 0 && hit.t > 0.5f)
-			pos -= dir-dir*hit.t;
+		if(hit.t > 10 && hit.t < 20)
+		{
+			OnGround = true;
+			ySpeed = 0;
+			pos -= dir*20-dir*hit.t;
+		}
 		//head
-		//else if(hit.dot < 0 && hit.t < 0.5f)
-			//pos += dir*hit.t;
+		if(hit.t < 10)
+		{
+			OnGround = false;
+			ySpeed = 0;
+			pos += dir*hit.t;
+		}
 	}
+
+	dir = XMLoadFloat3(&XMFLOAT3(0,0,-1));
+	hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(0,5,-6)), dir); 
+	if(hit.hit)
+	{
+		//front
+		if(hit.t > 6 && hit.t < 12)
+			pos += dir*12-dir*hit.t;
+		//back
+		if(hit.t < 6)
+			pos -= dir*hit.t;
+	}
+
+	dir = XMLoadFloat3(&XMFLOAT3(-1,0,0));
+	hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(-6,5,0)), dir); 
+	if(hit.hit)
+	{
+		//left
+		if(hit.t > 6 && hit.t < 12)
+			pos -= dir*12-dir*hit.t;
+		//right
+		if(hit.t < 6)
+			pos += dir*hit.t;
+	}
+
+
+
+	//jump
+	if (OnGround && dInput->GetKeyboardState()[DIK_SPACE] & 0x80)
+		ySpeed = -200;
+
 
 	
 	XMStoreFloat3(&mPosition, pos);
 	XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, pos+XMLoadFloat3(&XMFLOAT3(0,-10,0)));
+	XMStoreFloat3(&camPos, pos+XMLoadFloat3(&XMFLOAT3(0,10,0)));
 	mCamera->SetPosition(camPos);
 }
 
