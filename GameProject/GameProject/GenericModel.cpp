@@ -19,9 +19,9 @@ GenericModel::GenericModel(ID3D11Device* device, TextureManager* textureMgr, con
 		meshes[i].setIndices(device, &meshes[i].indices[0], meshes[i].indices.size());
 		meshes[i].setVertices(device, &meshes[i].vertices[0], meshes[i].vertices.size());
 
-		// Push back addresses to all the vertices to the models vector of pointers
-		for (UINT j = 0; j < meshes[i].vertices.size(); ++j)
-			vertices.push_back(&meshes[i].vertices[j]);
+		//// Push back addresses to all the vertices to the models vector of pointers
+		//for (UINT j = 0; j < meshes[i].vertices.size(); ++j)
+		//	vertices.push_back(&meshes[i].vertices[j]);
 	}
 
 	for (UINT i = 0; i < materialCount; ++i)
@@ -88,4 +88,34 @@ GenericModel::GenericModel(ID3D11Device* device, TextureManager* textureMgr, con
 
 GenericModel::~GenericModel(void)
 {
+}
+
+Vertex::Basic32* GenericModel::GetVertex(int index)
+{
+	for (UINT i = 0; i < meshCount; ++i)
+	{
+		/*int i2 = index - meshes[i].indices.size();
+		if(i2 < 0)
+			return &meshes[i].vertices[meshes[i].indices[index]];
+		index = i2;*/
+
+		int i2 = index - meshes[i].vertices.size();
+		if(i2 < 0)
+			return &meshes[i].vertices[index];
+		index = i2;
+	}
+
+	return NULL;
+}
+
+int GenericModel::GetVertexCount()
+{
+	int size = 0;
+	/*for (UINT i = 0; i < meshCount; ++i)
+		size += meshes[i].indices.size();*/
+	for (UINT i = 0; i < meshCount; ++i)
+		size += meshes[i].vertices.size();
+
+
+	return size;
 }

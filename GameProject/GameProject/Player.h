@@ -2,54 +2,41 @@
 #define PLAYER_H_
 
 #include <d3dUtilities.h>
-#include <Camera.h>
 #include "Weapon.h"
 #include "GenericSkinnedModel.h"
 #include "GenericModel.h"
 #include "Effects.h"
 #include <DirectInput.h>
+#include "CollisionModel.h"
+#include "Entity.h"
+
+
+
+
 
 class Player
 {
 public:
 
-	Player(void);
-	Player(const Player& other);
-	~Player(void);
+	Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3 Position);
+	~Player();
 
-	struct InitProperties
-	{
-		int PlayerID;
-		std::string Nickname;
-		float Health;
-		float Speed;
 
-		//GenericModel* Model;
-		GenericModelInstance ModelInstance;
-		XMFLOAT3 Scale;
-		XMFLOAT3 Position;
-		float Angle;
-	};
+	void Update(float dt, DirectInput* dInput, CollisionModel* world);
+	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
-	void Update(float dt, DirectInput* dInput);
-	void Draw(ID3D11DeviceContext* dc,
-		DirectionalLight lights[3],
-		ID3D11ShaderResourceView* shadowMap,
-		XMMATRIX* shadowTransform);
 
-	bool Init(InitProperties playerProperties);
 
-	void SetPosition(XMFLOAT3 position);
-	void SetScale(XMFLOAT3 scale);
+	void SetPosition(XMFLOAT3 position) {mPosition=position;};
 
-	int GetID() const;
-	XMFLOAT3 GetPosition() const;
-	Camera* GetCamera();
+	int GetID() const {return mPlayerID;};
+	XMFLOAT3 GetPosition() const {return mPosition;};
+	Camera* GetCamera() {return mCamera;};
+	bool IsAlive() const {return mIsAlive;};
 
 	bool Shoot();
 
 	void TakeDamage(float damage);
-	bool IsAlive() const;
 
 private:
 	int mPlayerID;
@@ -61,8 +48,6 @@ private:
 	bool mInCameraFrustum;
 
 	XMFLOAT3 mPosition;
-	XMFLOAT3 mScale;
-	float mAngle;
 
 	std::string mNickname;
 
@@ -71,7 +56,7 @@ private:
 
 	Camera* mCamera;
 
-	GenericModelInstance mModelInstance;
+	GenericModel* mModel;
 };
 
 #endif

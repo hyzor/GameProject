@@ -5,7 +5,6 @@
 #include <D3D11App.h>
 #include <Camera.h>
 #include <TextureManager.h>
-#include <xnacollision.h>
 
 #include "GenericModel.h"
 #include "Entity.h"
@@ -26,6 +25,9 @@ class Game
 		GenericModel* mPlayerModel; 
 		Entity* mDuck;
 		Player* mPlayer;
+		CollisionModel* mDuckColl;
 };
+
+
 
 #endif

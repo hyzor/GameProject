@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionModel.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Common\D3D11App.cpp" />
     <ClCompile Include="Common\d3dUtilities.cpp" />
@@ -114,6 +115,7 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionModel.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\D3D11App.h" />
     <ClInclude Include="Common\d3dUtilities.h" />

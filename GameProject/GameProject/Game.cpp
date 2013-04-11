@@ -5,22 +5,11 @@ Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
 	mDuckModel = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.dae", L"Data\\Models\\Collada\\");
 	mPlayerModel = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
-	
-	mDuck = new Entity(mDuckModel, XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-	Player::InitProperties playerProp;
-	playerProp.PlayerID = 0;
-	playerProp.Nickname = "Hyzor";
-	playerProp.Speed = 1.0f;
-	playerProp.Health = 1.0f;
-	playerProp.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	playerProp.Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	playerProp.Angle = 0.0f;
-	playerProp.ModelInstance.model = mPlayerModel;
-	playerProp.ModelInstance.isVisible = true;
+	mDuck = new Entity(mDuckModel, XMFLOAT3(0, 0, 0));
+	mDuckColl = new CollisionModel(mDuckModel, mDuck->Position);
 
-	mPlayer = new Player();
-	mPlayer->Init(playerProp);
+	mPlayer = new Player(mPlayerModel, 0, "Hyzor", XMFLOAT3(0,0,0));
 }
 
 Game::~Game()
@@ -29,11 +18,12 @@ Game::~Game()
 	SafeDelete(mPlayerModel);
 	SafeDelete(mDuck);
 	SafeDelete(mPlayer);
+	SafeDelete(mDuckColl);
 }
 
 void Game::Update(float deltaTime, DirectInput* di)
 {
-	mPlayer->Update(deltaTime, di);
+	mPlayer->Update(deltaTime, di, mDuckColl);
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)

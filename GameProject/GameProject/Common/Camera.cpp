@@ -218,7 +218,7 @@ void Camera::Pitch(float angle)
 	XMVECTOR angleVec = XMVector3AngleBetweenNormals(XMVector3Normalize(horzDir), XMVector3Normalize(look));
 
 	// Final angle in radians, converted to degrees
-	if (MathHelper::RadiansToDegrees(XMVectorGetY(angleVec)) > 89.0f)
+	/*if (MathHelper::RadiansToDegrees(XMVectorGetY(angleVec)) > 89.0f)
 	{
 		// Limit angle when looking "too steeply up"
 		if (XMVectorGetY(look) > 0.50)
@@ -233,7 +233,7 @@ void Camera::Pitch(float angle)
 			if (angle > 0)
 				return;
 		}
-	}
+	}*/
 
 	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
 

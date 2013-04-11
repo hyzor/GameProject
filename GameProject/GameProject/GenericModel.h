@@ -29,10 +29,13 @@ public:
 	std::vector<GenericMesh> meshes;
 
 	// Pointer to all vertices of all meshes
-	std::vector<Vertex::Basic32*> vertices;
+	//std::vector<Vertex::Basic32*> vertices;
 
 	// Bounding box
 	XNA::AxisAlignedBox boundingBox;
+
+	Vertex::Basic32* GetVertex(int index);
+	int GetVertexCount();
 };
 
 struct GenericModelInstance

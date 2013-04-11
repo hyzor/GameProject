@@ -123,6 +123,9 @@
     <ClCompile Include="Common\Logger.cpp">
       <Filter>Common\Logging</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\TextureManager.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="Common\log.h">
       <Filter>Common\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionModel.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
