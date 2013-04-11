@@ -13,9 +13,6 @@ void RenderStates::InitAll(ID3D11Device* device)
 	wireFrameDesc.DepthClipEnable = true;
 
 	HR(device->CreateRasterizerState(&wireFrameDesc, &WireFrameRS));
-
-	XMVECTOR xm2;
-	XMFLOAT3 xm;
 }
 
 

@@ -10,6 +10,9 @@
 #include "Entity.h"
 #include "Player.h"
 
+#include "AnimatedEntity.h"
+#include "GenericSkinnedModel.h"
+
 class Game
 {
 	public:
@@ -26,6 +29,9 @@ class Game
 		Entity* mDuck;
 		Player* mPlayer;
 		CollisionModel* mDuckColl;
+
+		AnimatedEntity* mAnimatedEntity;
+		GenericSkinnedModel* mSkinnedModel;
 };
 
 

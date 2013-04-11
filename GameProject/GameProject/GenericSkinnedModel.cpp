@@ -8,7 +8,8 @@ GenericSkinnedModel::GenericSkinnedModel(ID3D11Device* device, TextureManager& t
 	// Load all the meshes
 	GenericObjectLoader objectLoader;
 	//objectLoader.loadObject(fileName, mats, meshes, device);
-	objectLoader.loadSkinnedObject(fileName, mats, meshes);
+	//objectLoader.loadSkinnedObject(fileName, mats, meshes);
+	objectLoader.loadSkinnedObject(fileName, mats, meshes, skinnedData);
 
 	numMeshes = meshes.size();
 	numMaterials = mats.size();

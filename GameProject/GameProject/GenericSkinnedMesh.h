@@ -33,7 +33,7 @@ public:
 	std::vector<Vertex::PosNormalTexTanSkinned> mVertices;
 	std::vector<UINT> mIndices;
 
-	std::vector<SkinnedDataStructs::Bone> mBones;
+	std::vector<SkinData::Bone> mBones;
 
 private:
 	ID3D11Buffer* mVertexBuffer;

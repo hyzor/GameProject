@@ -30,21 +30,10 @@ public:
 
 	std::vector<GenericSkinnedMesh> meshes;
 
-	// Pointer to all vertices of all meshes
-	//std::vector<Vertex::PosNormalTexTanSkinned*> vertices;
-
-	//std::vector<Vertex::PosNormalTexTanSkinned> vertices;
-
-	// Map containing vectors of vertices
-	// The maps key values are the meshes corresponding index
-	//std::map<int, std::vector<Vertex::PosNormalTexTanSkinned>> verticesMap;
-
-	//std::vector<SkinnedDataStructs::Bone> bones;
-
 	// Bounding box
 	XNA::AxisAlignedBox boundingBox;
 
-	//SkinnedData skinnedData;
+	SkinnedData skinnedData;
 };
 
 struct GenericSkinnedModelInstance

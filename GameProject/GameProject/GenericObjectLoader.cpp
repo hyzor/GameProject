@@ -54,7 +54,10 @@ bool GenericObjectLoader::loadSkinnedObject(const std::string& fileName,
 		UINT totalFaceCount = 0;
 
 		// Get scene root node
-		aiNode* rootNode = scene->mRootNode;
+		//aiNode* rootNode = scene->mRootNode;
+
+		// Get bone root
+		//SkinData::Bone* RootBone = CreateBoneTree(scene->mRootNode, NULL);
 
 		std::vector<Vertex::PosNormalTexTanSkinned*> VertexList;
 
@@ -178,6 +181,248 @@ bool GenericObjectLoader::loadSkinnedObject(const std::string& fileName,
 
 			meshes.push_back(myMesh);
 		} // Mesh end
+
+	} // If scene contains mesh end
+
+	// Clean up after reading file
+	DefaultLogger::kill();
+
+	return true;
+}
+
+bool GenericObjectLoader::loadSkinnedObject( const std::string& fileName, std::vector<GenericMaterial>& materials,
+	std::vector<GenericSkinnedMesh>& meshes, SkinnedData& skinnedData )
+{
+	using namespace Assimp;
+
+	// Create instance of assimp Importer class
+	Importer importer;
+
+	std::string logName = "AssimpMeshLoader.log";
+
+	DefaultLogger::create(logName.c_str(), Logger::VERBOSE);
+
+	bool isTriangulated = true;
+
+	// Read file with post processing flags
+	const aiScene* scene = importer.ReadFile(fileName,
+		aiProcess_ConvertToLeftHanded | 			// Make compatible with Direct3D
+		aiProcessPreset_TargetRealtime_Quality		// Combination of post processing flags
+		);										
+
+	// Failed reading file
+	if (!scene)
+	{
+		// Error logging
+		DefaultLogger::get()->info("Failed reading file!");
+		DefaultLogger::kill();
+
+		return false;
+	}
+
+	//----------------------------------------------------
+	// Read the scene
+	//----------------------------------------------------
+	// Check whether or not it has read at least one or more meshes
+	// Assimp splits up a mesh if more than one material was found
+	// (So it splits up an object into subsets)
+	if (scene->HasMeshes())
+	{
+		UINT totalVertexCount = 0;
+		UINT totalFaceCount = 0;
+
+		// Load skeleton
+		skinnedData.Skeleton = CreateBoneTree(scene->mRootNode, NULL);
+
+		// Read animations
+		ReadAnimations(scene, skinnedData);
+
+		std::vector<Vertex::PosNormalTexTanSkinned*> VertexList;
+
+		//------------------------------------------------------------
+		// Read materials
+		//------------------------------------------------------------
+		ReadMaterials(scene, materials);
+
+		//----------------------------------------------------------
+		// Read all scene meshes
+		//----------------------------------------------------------
+		for (UINT curMeshIndex = 0; curMeshIndex < scene->mNumMeshes; ++curMeshIndex)
+		{
+			// Get mesh name
+			aiMesh* mesh = scene->mMeshes[curMeshIndex];
+			aiString meshName = mesh->mName;
+
+			// Number of vertices and faces
+			UINT numVertices = mesh->mNumVertices;
+			UINT numFaces = mesh->mNumFaces;
+
+			//------------------------------------------------------------
+			// Create mesh
+			//------------------------------------------------------------
+			GenericSkinnedMesh myMesh;
+			//ZeroMemory(&myMesh, sizeof(myMesh));
+
+			//------------------------------------------------------------
+			// Read vertices
+			//------------------------------------------------------------
+			for (UINT j = 0; j < numVertices; ++j)
+			{
+				Vertex::PosNormalTexTanSkinned vertex;
+
+				// Vertex position
+				vertex.position.x = mesh->mVertices[j].x;
+				vertex.position.y = mesh->mVertices[j].y;
+				vertex.position.z = mesh->mVertices[j].z;
+
+				// Vertex normal
+				vertex.normal.x = mesh->mNormals[j].x;
+				vertex.normal.y = mesh->mNormals[j].y;
+				vertex.normal.z = mesh->mNormals[j].z;
+
+				// Vertex texture coordinates (UV)
+				vertex.texCoord.x = mesh->mTextureCoords[0][j].x;
+				vertex.texCoord.y = mesh->mTextureCoords[0][j].y;
+
+				vertex.tangentU.x = mesh->mTangents[j].x;
+				vertex.tangentU.y = mesh->mTangents[j].y;
+				vertex.tangentU.z = mesh->mTangents[j].z;
+				vertex.tangentU.w = -1.0f;
+
+				// Set bone indices to default values
+				// (Vertex is not affected by any bone yet)
+				vertex.boneIndices[0] = 0;
+				vertex.boneIndices[1] = 0;
+				vertex.boneIndices[2] = 0;
+				vertex.boneIndices[3] = 0;
+
+				// No weights yet
+				vertex.weights = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+				// Insert vertex to model
+				myMesh.mVertices.push_back(vertex);
+			}
+
+			//------------------------------------------------------------
+			// Read indices
+			//------------------------------------------------------------
+			// Reminder: AI_SCENE_FLAGS_NON_VERBOSE_FORMAT is set by the
+			// aiProcess_JoinIdenticalVertices post processing flag, which
+			// means that each face reference a unique set of vertices.
+			// Here you could check if AI_SCENE_FLAGS_NON_VERBOSE_FORMAT is
+			// true or not, and handle it accordingly.
+
+			for (UINT j = 0; j < numFaces; ++j)
+			{
+				// If mesh is triangulated
+				if (isTriangulated)
+				{
+					// Always three indices per face
+					for (UINT k = 0; k < 3; ++k)
+					{
+						// Insert indices to model
+						myMesh.mIndices.push_back(mesh->mFaces[j].mIndices[k]);
+					}
+				}
+
+				// Else find out how many indices there are per face
+				else
+				{
+					for (UINT k = 0; k < mesh->mFaces[j].mNumIndices; ++k)
+					{
+						// Insert indices to model
+						myMesh.mIndices.push_back(mesh->mFaces[j].mIndices[k]);
+					}
+				}
+
+			}
+
+			// Update total vertex and face count
+			totalVertexCount += numVertices;
+			totalFaceCount += numFaces;
+
+			myMesh.mMaterialIndex = mesh->mMaterialIndex;
+			myMesh.mNumFaces = numFaces;
+			myMesh.mNumVertices = numVertices;
+			myMesh.mName = materials[myMesh.mMaterialIndex].name;
+
+			//------------------------------------------------------------
+			// Read bones
+			//------------------------------------------------------------
+// 			if (mesh->HasBones())
+// 			{
+// 				ReadBones(mesh, myMesh);
+// 
+// 				// Set vertex weights
+// 				SetVertexWeights(myMesh);
+// 			}
+
+			for (UINT i = 0; i < mesh->mNumBones; ++i)
+			{
+				const aiBone* bone = mesh->mBones[i];
+
+				std::map<std::string, SkinData::Bone*>::iterator found = skinnedData.BonesByName.find(bone->mName.data);
+
+				// Bone was found
+				if (found != skinnedData.BonesByName.end())
+				{
+					bool skipAdd = false;
+					for (UINT j = 0; j < skinnedData.Bones.size(); ++j)
+					{
+						std::string boneName = bone->mName.data;
+						if (skinnedData.Bones[j]->Name == boneName)
+						{
+							skipAdd = true;
+							break;
+						}
+					}
+
+					if (!skipAdd)
+					{
+						std::string tes = found->second->Name;
+						SkinData::ReadAiMatrix(found->second->Offset, bone->mOffsetMatrix);
+
+						XMMATRIX offsetMatrix = XMLoadFloat4x4(&found->second->Offset);
+						XMMatrixTranspose(offsetMatrix);
+						XMStoreFloat4x4(&found->second->Offset, offsetMatrix);
+
+						skinnedData.Bones.push_back(found->second);
+						skinnedData.BonesToIndex[found->first] = (UINT)skinnedData.Bones.size();
+					}
+				}
+			}
+
+			meshes.push_back(myMesh);
+		} // Mesh end
+
+		skinnedData.Transforms.resize(skinnedData.Bones.size());
+		float timeStep = 1.0f/30.0f;
+
+		// Pre-calculate animations
+		for (UINT i = 0; i < skinnedData.Animations.size(); ++i)
+		{
+			skinnedData.SetAnimIndex(i);
+			float dt = 0;
+			for (float ticks = 0; ticks < skinnedData.Animations[i].mDuration; ticks += skinnedData.Animations[i].mTicksPerSecond/30.0f)
+			{
+				dt += timeStep;
+				skinnedData.Calculate(dt);
+				skinnedData.Animations[i].Transforms.push_back(std::vector<XMFLOAT4X4>());
+				std::vector<XMFLOAT4X4>& trans = skinnedData.Animations[i].Transforms.back();
+
+				for (UINT j = 0; j < skinnedData.Transforms.size(); ++j)
+				{
+					XMMATRIX offsetMatrix = XMLoadFloat4x4(&skinnedData.Bones[j]->Offset);
+					XMMATRIX globalTransform = XMLoadFloat4x4(&skinnedData.Bones[j]->GlobalTransform);
+					XMMATRIX rotationMat = XMMatrixMultiply(offsetMatrix, globalTransform);
+
+					XMFLOAT4X4 rotationMat4x4;
+
+					XMStoreFloat4x4(&rotationMat4x4, rotationMat);
+					trans.push_back(rotationMat4x4);
+				}
+			}
+		}
 
 	} // If scene contains mesh end
 
@@ -425,9 +670,9 @@ void GenericObjectLoader::ReadBones(aiMesh* mesh, GenericSkinnedMesh& myMesh)
 	{
 		aiBone* aibone = mesh->mBones[i];
 
-		SkinnedDataStructs::Bone bone;
-		bone.name = aibone->mName.data;
-		bone.offsetMatrix = XMFLOAT4X4(
+		SkinData::Bone bone;
+		bone.Name = aibone->mName.data;
+		bone.Offset = XMFLOAT4X4(
 			aibone->mOffsetMatrix.a1, aibone->mOffsetMatrix.a2, aibone->mOffsetMatrix.a3, aibone->mOffsetMatrix.a4,
 			aibone->mOffsetMatrix.b1, aibone->mOffsetMatrix.b2, aibone->mOffsetMatrix.b3, aibone->mOffsetMatrix.b4,
 			aibone->mOffsetMatrix.c1, aibone->mOffsetMatrix.c2, aibone->mOffsetMatrix.c3, aibone->mOffsetMatrix.c4,
@@ -436,11 +681,11 @@ void GenericObjectLoader::ReadBones(aiMesh* mesh, GenericSkinnedMesh& myMesh)
 
  		for (UINT j = 0; j < aibone->mNumWeights; ++j)
 		{
-			SkinnedDataStructs::VertexWeight vertexWeight;
+			SkinData::VertexWeight vertexWeight;
 			vertexWeight.VertexID = aibone->mWeights[j].mVertexId;
 			vertexWeight.Weight = aibone->mWeights[j].mWeight;
 
-			bone.weights.push_back(vertexWeight);
+			bone.Weights.push_back(vertexWeight);
 		}
 
 		myMesh.mBones.push_back(bone);
@@ -452,10 +697,10 @@ void GenericObjectLoader::SetVertexWeights(GenericSkinnedMesh& myMesh)
 {
 	for (UINT i = 0; i < myMesh.mBones.size(); ++i)
 	{
-		for (UINT j = 0; j < myMesh.mBones[i].weights.size(); ++j)
+		for (UINT j = 0; j < myMesh.mBones[i].Weights.size(); ++j)
 		{
-			UINT VertexID = myMesh.mBones[i].weights[j].VertexID;
-			float Weight = myMesh.mBones[i].weights[j].Weight;
+			UINT VertexID = myMesh.mBones[i].Weights[j].VertexID;
+			float Weight = myMesh.mBones[i].Weights[j].Weight;
 
 			if (myMesh.mVertices[VertexID].weights.x == 0.0f)
 			{
@@ -641,4 +886,72 @@ bool GenericObjectLoader::loadObject(const std::string& fileName,
 	DefaultLogger::kill();
 
 	return true;
+}
+
+//======================================================================
+// Recursively creates a bone tree
+//======================================================================
+SkinData::Bone* GenericObjectLoader::CreateBoneTree(aiNode* node,
+										SkinData::Bone* parent)
+{
+	SkinData::Bone* internalNode = new SkinData::Bone();
+	internalNode->Name = node->mName.data;
+	internalNode->Parent = parent; // Set parent, if bone is root parent == NULL
+
+	// Bone bone local transform matrix
+	SkinData::ReadAiMatrix(internalNode->LocalTransform, node->mTransformation);
+
+	// Transpose local transform matrix
+	XMMATRIX LocalTransformTranspose = XMLoadFloat4x4(&internalNode->LocalTransform);
+	XMMatrixTranspose(LocalTransformTranspose);
+	XMStoreFloat4x4(&internalNode->LocalTransform, LocalTransformTranspose);
+	internalNode->OriginalLocalTransform = internalNode->LocalTransform;
+
+	// Calculate bone to world transform matrix
+	SkinData::CalculateBoneToWorldTransform(internalNode);
+
+	// Continue for all child nodes
+	for (UINT i = 0; i < node->mNumChildren; ++i)
+	{
+		internalNode->Children.push_back(CreateBoneTree(node->mChildren[i], internalNode));
+	}
+
+	return internalNode;
+}
+
+// void GenericObjectLoader::CalculateBoneToWorldTransform(SkinData::Bone* child)
+// {
+// 	child->GlobalTransform = child->LocalTransform;
+// 	XMMATRIX Child_GlobalTransform = XMLoadFloat4x4(&child->GlobalTransform);
+// 
+// 	SkinData::Bone* parent = child->Parent;
+// 
+// 	// Climb up towards the root bone
+// 	while (parent)
+// 	{
+// 		XMMATRIX Parent_LocalTransform = XMLoadFloat4x4(&parent->LocalTransform);
+// 
+// 		XMMatrixMultiply(Child_GlobalTransform, Parent_LocalTransform);
+// 
+// 		//child->GlobalTransform *= parent->LocalTransform;
+// 		parent = parent->Parent;
+// 	}
+// 
+// 	// The final to world transform has been calculated, store it in child's GlobalTransform
+// 	XMStoreFloat4x4(&child->GlobalTransform, Child_GlobalTransform);
+// }
+
+void GenericObjectLoader::ReadAnimations( const aiScene* scene, SkinnedData& skinnedData )
+{
+	for (UINT i = 0; i < scene->mNumAnimations; ++i)
+	{
+		skinnedData.Animations.push_back(AnimEvaluator(scene->mAnimations[i]));
+	}
+
+	// Get all the animation names, so we'll be able to reference them by name and get their ID
+	for (UINT i = 0; i < skinnedData.Animations.size(); ++i)
+		skinnedData.AnimationNameToId.insert(std::map<std::string, UINT>::value_type(skinnedData.Animations[i].Name, i));
+
+	skinnedData.CurrentAnimIndex = 0;
+	skinnedData.SetAnimation("Idle");
 }

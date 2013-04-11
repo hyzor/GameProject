@@ -39,12 +39,22 @@ public:
 		std::vector<GenericMaterial>& materials,
 		std::vector<GenericSkinnedMesh>& meshes);
 
+	bool loadSkinnedObject(
+		const std::string& fileName,
+		std::vector<GenericMaterial>& materials,
+		std::vector<GenericSkinnedMesh>& meshes,
+		SkinnedData& skinnedData);
+
 private:
 	void InitMaterial(GenericMaterial* mat);
 	void ReadMaterials(const aiScene* scene, std::vector<GenericMaterial>& materials);
 
 	void ReadBones(aiMesh* mesh, GenericSkinnedMesh& myMesh);
 	//void ReadBoneKeyframes(aiNodeAnim* nodeAnim, BoneAnimation& boneAnimation);
+	SkinData::Bone* CreateBoneTree(aiNode* node, SkinData::Bone* parent);
+	SkinData::Bone* RootBone;
+	//void CalculateBoneToWorldTransform(SkinData::Bone* child);
+	void ReadAnimations(const aiScene* scene, SkinnedData& skinnedData);
 
 	void SetVertexWeights(GenericSkinnedMesh& myMesh);
 };

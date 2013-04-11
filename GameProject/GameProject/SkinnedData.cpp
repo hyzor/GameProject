@@ -195,3 +195,256 @@ void SkinnedData::getFinalTransforms(const std::string& clipName,
 	}
 }
 */
+
+AnimEvaluator::AnimEvaluator(const aiAnimation* anim)
+{
+	mLastTime = 0.0f;
+
+	// Find ticks per seconds, if not specified (0) then set it to 100
+	mTicksPerSecond = static_cast<float>(anim->mTicksPerSecond != 0.0f ? anim->mTicksPerSecond : 100.0f);
+
+	mDuration = static_cast<float>(anim->mDuration);
+	Name = std::string(anim->mName.data, anim->mName.length);
+
+	// No animation name was found
+	if (Name.size() == 0)
+	{
+		// Set animation name to "Animation + AnimationIndexer"
+		std::ostringstream strStream;
+		strStream << "Animation" << AnimationIndexer;
+		Name = strStream.str();
+	}
+
+	// Load all the channels for this animation
+	Channels.resize(anim->mNumChannels);
+	for (UINT i = 0; i < anim->mNumChannels; ++i)
+	{
+		Channels[i].Name = anim->mChannels[i]->mNodeName.data;
+
+		// Load Position keys
+		for (UINT j = 0; j < anim->mChannels[i]->mNumPositionKeys; ++j)
+			Channels[i].PositionKeys.push_back(anim->mChannels[i]->mPositionKeys[j]);
+
+		// Load Rotation keys
+		for (UINT j = 0; j < anim->mChannels[i]->mNumRotationKeys; ++j)
+			Channels[i].RotationKeys.push_back(anim->mChannels[i]->mRotationKeys[j]);
+
+		// Load Scaling keys
+		for (UINT j = 0; j < anim->mChannels[i]->mNumScalingKeys; ++j)
+			Channels[i].ScalingKeys.push_back(anim->mChannels[i]->mScalingKeys[j]);
+	}
+
+	mLastPositions.resize(anim->mNumChannels, std::make_tuple(0, 0, 0));
+}
+
+UINT AnimEvaluator::GetFrameIndexAt(float time)
+{
+	time *= mTicksPerSecond;
+
+	float _time = 0.0f;
+	if (mDuration > 0.0)
+		time = fmod(time, mDuration);
+
+	float percent = time / mDuration;
+
+	if (!PlayAnimationForward)
+		percent = (percent - 1.0f) * -1.0f;
+
+	return static_cast<UINT>((static_cast<float>(Transforms.size()) * percent));
+}
+
+void AnimEvaluator::Evaluate( float time, std::map<std::string, SkinData::Bone*>& bones )
+{
+	time *= mTicksPerSecond;
+
+	float _time = 0.0f;
+
+	if (mDuration > 0.0)
+		time = fmod(time, mDuration);
+
+	// Calculate transformations for each channel
+	for (UINT i = 0; i < Channels.size(); ++i)
+	{
+		const SkinData::AnimationChannel* channel = &Channels[i];
+		std::map<std::string, SkinData::Bone*>::iterator boneNode = bones.find(channel->Name);
+
+		// Did not find bone node
+		if (boneNode == bones.end())
+			continue;
+
+		//---------------------------------------------
+		// Position
+		//---------------------------------------------
+		aiVector3D presentPosition(0, 0, 0);
+		if (channel->PositionKeys.size() > 0)
+		{
+			// Look for present frame number
+			UINT frame = (time >= mLastTime) ? std::get<0>(mLastPositions[i]) : 0;
+
+			while (frame < channel->PositionKeys.size() - 1)
+			{
+				if (time < channel->PositionKeys[frame+1].mTime)
+					break;
+
+				frame++;
+			}
+
+			// Interpolate between this frame's value and the next frame's value
+			UINT nextFrame = (frame + 1) % channel->PositionKeys.size();
+
+			const aiVectorKey& key = channel->PositionKeys[frame];
+			const aiVectorKey& nextKey = channel->PositionKeys[nextFrame];
+
+			double diffTime = nextKey.mTime - key.mTime;
+
+			if (diffTime < 0.0)
+				diffTime += mDuration;
+			if (diffTime > 0)
+			{
+				float factor = float((time - key.mTime) / diffTime);
+				presentPosition = key.mValue + (nextKey.mValue - key.mValue) * factor;
+			}
+			else
+			{
+				presentPosition = key.mValue;
+			}
+
+			std::get<0>(mLastPositions[i]) = frame;
+		}
+
+		//---------------------------------------------
+		// Rotation
+		//---------------------------------------------
+		aiQuaternion presentRotation(1, 0, 0, 0);
+		if (channel->RotationKeys.size() > 0)
+		{
+			UINT frame = (time >= mLastTime) ? std::get<1>(mLastPositions[i]) : 0;
+
+			while (frame < channel->RotationKeys.size() - 1)
+			{
+				if (time < channel->RotationKeys[frame+1].mTime)
+					break;
+
+				frame++;
+			}
+
+			UINT nextFrame = (frame + 1) % channel->RotationKeys.size();
+
+			const aiQuatKey& key = channel->RotationKeys[frame];
+			const aiQuatKey& nextKey = channel->RotationKeys[nextFrame];
+			
+			double diffTime = nextKey.mTime - key.mTime;
+
+			if (diffTime < 0.0)
+				diffTime += mDuration;
+
+			if (diffTime > 0)
+			{
+				float factor = float((time - key.mTime) / diffTime);
+				aiQuaternion::Interpolate(presentRotation, key.mValue, nextKey.mValue, factor);
+			}
+			else
+			{
+				presentRotation = key.mValue;
+			}
+
+			std::get<1>(mLastPositions[i]) = frame;
+		}
+
+		//---------------------------------------------
+		// Scaling
+		//---------------------------------------------
+		aiVector3D presentScaling(1, 1, 1);
+		if (channel->ScalingKeys.size() > 0)
+		{
+			UINT frame = (time >= mLastTime) ? std::get<2>(mLastPositions[i]) : 0;
+
+			while (frame < channel->ScalingKeys.size() - 1)
+			{
+				if (time < channel->ScalingKeys[frame+1].mTime)
+					break;
+
+				frame++;
+			}
+
+			presentScaling = channel->ScalingKeys[frame].mValue;
+			std::get<2>(mLastPositions[i]) = frame;
+		}
+
+		aiMatrix4x4 mat = aiMatrix4x4(presentRotation.GetMatrix());
+
+		mat.a1 *= presentScaling.x; mat.b1 *= presentScaling.x; mat.c1 *= presentScaling.x;
+		mat.a2 *= presentScaling.y; mat.b2 *= presentScaling.y; mat.c2 *= presentScaling.y;
+		mat.a3 *= presentScaling.z; mat.b3 *= presentScaling.z; mat.c3 *= presentScaling.z;
+		mat.a4 = presentPosition.x; mat.b4 = presentPosition.y; mat.c4 = presentPosition.z;
+		mat.Transpose();
+
+		SkinData::ReadAiMatrix(boneNode->second->LocalTransform, mat);
+	} // Channel end
+
+	mLastTime = time;
+}
+
+SkinnedData::SkinnedData()
+{
+
+}
+
+SkinnedData::~SkinnedData()
+{
+	CurrentAnimIndex = -1;
+	Animations.clear();
+	SafeDelete(Skeleton);
+	Bones.clear();
+}
+
+bool SkinnedData::SetAnimation( const std::string& name )
+{
+	std::map<std::string, UINT>::iterator itr = AnimationNameToId.find(name);
+	UINT oldIndex = CurrentAnimIndex;
+
+	if (itr != AnimationNameToId.end())
+		CurrentAnimIndex = itr->second;
+
+	return oldIndex != CurrentAnimIndex;
+}
+
+bool SkinnedData::SetAnimIndex(UINT animIndex)
+{
+	if ((size_t)animIndex >= Animations.size())
+		return false;
+
+	UINT oldIndex = CurrentAnimIndex;
+	CurrentAnimIndex = animIndex;
+
+	return oldIndex != CurrentAnimIndex;
+}
+
+void SkinnedData::Calculate( float time )
+{
+	if ((CurrentAnimIndex < 0) | (CurrentAnimIndex >= Animations.size()))
+		return;
+
+	Animations[CurrentAnimIndex].Evaluate(time, BonesByName);
+	UpdateTransforms(Skeleton);
+}
+
+void SkinnedData::UpdateTransforms( SkinData::Bone* node )
+{
+	SkinData::CalculateBoneToWorldTransform(node);
+
+	for (std::vector<SkinData::Bone*>::iterator it = node->Children.begin(); it != node->Children.end(); ++it)
+	{
+		UpdateTransforms(*it);
+	}
+}
+
+void SkinnedData::CalcBoneMatrices()
+{
+	for (UINT i = 0; i < Transforms.size(); ++i)
+	{
+		XMMATRIX offsetMatrix = XMLoadFloat4x4(&Bones[i]->Offset);
+		XMMATRIX globalTransform = XMLoadFloat4x4(&Bones[i]->GlobalTransform);
+		XMStoreFloat4x4(&Transforms[i], XMMatrixMultiply(offsetMatrix, globalTransform));
+	}
+}
