@@ -94,9 +94,10 @@ Vertex::Basic32* GenericModel::GetVertex(int index)
 {
 	for (UINT i = 0; i < meshCount; ++i)
 	{
-		/*int i2 = index - meshes[i].indices.size();
+		/*int s = meshes[i].indices.size();
+		int i2 = index - s;
 		if(i2 < 0)
-			return &meshes[i].vertices[meshes[i].indices[index]];
+			return &meshes[i].vertices[meshes[i].indices[index]-1];
 		index = i2;*/
 
 		int i2 = index - meshes[i].vertices.size();
@@ -117,5 +118,5 @@ int GenericModel::GetVertexCount()
 		size += meshes[i].vertices.size();
 
 
-	return size;
+	return size-10000;
 }

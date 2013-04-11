@@ -12,6 +12,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <vector>
+#include "Vertex.h"
+#include <string>
+
 #include "GenericModel.h"
 
 class CollisionModel
@@ -24,13 +28,19 @@ class CollisionModel
 			float dot;
 		};
 
-		CollisionModel(GenericModel* model, XMFLOAT3 pos);
+		CollisionModel(XMFLOAT3 pos);
+
+		void LoadObj(char *file);
+		int Size();
+		XMFLOAT3 *GetPosition(int index);
 		
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir);
 
 	private:
-		GenericModel* model;
+		std::vector<XMFLOAT3> vertices;
 		XMFLOAT3 pos;
+
+		std::vector<std::string> CollisionModel::split(std::string line);
 };
 
 

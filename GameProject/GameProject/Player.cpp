@@ -104,22 +104,24 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 
 
 	//Collision
-	XMVECTOR dir = XMLoadFloat3(&XMFLOAT3(0,-10,0));
-	CollisionModel::Hit hit = world->Intersect(pos+XMLoadFloat3(&XMFLOAT3(0,-10,0)), dir); 
+	XMVECTOR dir = XMLoadFloat3(&XMFLOAT3(0,1,0));
+	CollisionModel::Hit hit = world->Intersect(pos + XMLoadFloat3(&XMFLOAT3(0,-20,0)), dir); 
 	if(hit.hit)
 	{
 		//pos -= dir;
 		//feet
-		if(hit.dot > 0 && hit.t > 0.5f)
+		//if(hit.dot > 0 && hit.t > 0.5f)
 			pos -= dir-dir*hit.t;
 		//head
-		else if(hit.dot < 0 && hit.t < 0.5f)
-			pos += dir*hit.t;
+		//else if(hit.dot < 0 && hit.t < 0.5f)
+			//pos += dir*hit.t;
 	}
 
 	
 	XMStoreFloat3(&mPosition, pos);
-	mCamera->SetPosition(mPosition);
+	XMFLOAT3 camPos;
+	XMStoreFloat3(&camPos, pos+XMLoadFloat3(&XMFLOAT3(0,-10,0)));
+	mCamera->SetPosition(camPos);
 }
 
 
