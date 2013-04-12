@@ -22,11 +22,11 @@ void CollisionModel::LoadObj(char *file)
 		if(elements.size() > 0)
 		{
 			if(elements.at(0)=="v" )
-				positions.push_back(XMFLOAT3(atof(elements.at(1).c_str()), atof(elements.at(2).c_str()), atof(elements.at(3).c_str())));
+				positions.push_back(XMFLOAT3((float)atof(elements.at(1).c_str()), (float)atof(elements.at(2).c_str()), (float)atof(elements.at(3).c_str())));
 			else if(elements.at(0)=="f" && elements.size() > 6)
 			{
-				vertices.push_back(positions.at(atof(elements.at(1).c_str())-1));
-				vertices.push_back(positions.at(atof(elements.at(4).c_str())-1));
+				vertices.push_back(positions.at(atoi(elements.at(1).c_str())-1));
+				vertices.push_back(positions.at(atoi(elements.at(4).c_str())-1));
 				vertices.push_back(positions.at(atoi(elements.at(7).c_str())-1));
 			}
 		}
@@ -39,7 +39,7 @@ void CollisionModel::LoadObj(char *file)
 	 vMin = &XMLoadFloat3(&vMinf3);
 	 vMax = &XMLoadFloat3(&vMaxf3);
 
-	for (UINT i = 0; i < Size(); i++)
+	for (int i = 0; i < Size(); i++)
 	{
 		XMVECTOR pos = XMLoadFloat3(GetPosition(i));
 
@@ -108,7 +108,7 @@ std::vector<std::string> CollisionModel::split(std::string line)
 {
 	std::vector<std::string> elements;
 	std::string element = "";
-	for(int i = 0; i < line.length(); i++)
+	for(int i = 0; i < (int)line.length(); i++)
 	{
 		if(line[i] != ' ' && line[i] != '/')
 			element += line[i];
