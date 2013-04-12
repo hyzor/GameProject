@@ -3,12 +3,12 @@
 
 Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
-	mDuckModel = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.obj", L"Data\\Models\\Collada\\");
+	mDuckModel = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.obj", L"Data\\Models\\Collada\\"); //
 	mPlayerModel = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
 
-	mDuck = new Entity(mDuckModel, XMFLOAT3(0, 0, 0));
+	mDuck = new Entity(mDuckModel, XMFLOAT3(0, 0, 0)); //
 	mDuckColl = new CollisionModel(mDuck->Position);
-	mDuckColl->LoadObj("Data\\Models\\Collada\\duck.obj");
+	mDuckColl->LoadObj("Data\\Models\\Collada\\duck.obj"); //
 
 	mPlayer = new Player(mPlayerModel, 0, "Hyzor", XMFLOAT3(0,200,50));
 

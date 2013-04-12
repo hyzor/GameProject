@@ -38,9 +38,11 @@ class CollisionModel
 		
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 
-	private:
 		XMVECTOR* vMin;
 		XMVECTOR* vMax;
+
+	private:
+
 
 		std::vector<XMFLOAT3> vertices;
 		XMFLOAT3 pos;

@@ -13,8 +13,8 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 	mPlayerID = PlayerID;
 	mIsAlive = true;
 	rot = 0;
-	Joint = new XMMATRIX();
-	*Joint = XMMatrixIdentity();
+
+	this->Joint = new XMMATRIX(XMMatrixIdentity());
 
 	mCamera = new Camera();
 
@@ -71,14 +71,15 @@ void Player::TakeDamage(float damage)
 
 void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 {
+	XMMATRIX cJoint = *Joint;
 	//switch garvity
 	if(dInput->GetKeyboardState()[DIK_E] & 0x80)
 	{
 		if(!eDown)
 		{
-			//(*Joint)(1,1) *= -1;
+			//(cJoint)(1,1) *= -1;
 			rot += 3.14/2;
-			*Joint = XMMatrixRotationX(rot);
+			cJoint = XMMatrixRotationX(rot);
 			ySpeed = 0;
 		}
 		eDown = true;
@@ -96,12 +97,13 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 
 	// Move
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
-	XMVECTOR look = XMVector3Transform(XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), *Joint);
+
+	XMVECTOR look = XMVector3Transform(XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), cJoint);
 	if (dInput->GetKeyboardState()[DIK_W] & 0x80)
 		pos += look*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_S] & 0x80)
 		pos -= look*mSpeed*dt;
-	XMVECTOR right = XMVector3Transform(XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), *Joint);
+	XMVECTOR right = XMVector3Transform(XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), cJoint);
 	if (dInput->GetKeyboardState()[DIK_D] & 0x80)
 		pos += right*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_A] & 0x80)
@@ -125,7 +127,7 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 
 	//gravity
 	ySpeed += 300*dt;
-	pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, *Joint);
+	pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, cJoint);
 
 
 
@@ -137,11 +139,11 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 	CollisionModel::Hit hit;
 
 	/*XNA::AxisAlignedBox boundingBox;
-	XMStoreFloat3(&boundingBox.Center, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), *Joint));
-	XMStoreFloat3(&boundingBox.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(6,10,6)), *Joint));*/
+	XMStoreFloat3(&boundingBox.Center, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
+	XMStoreFloat3(&boundingBox.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(6,10,6)), cJoint));*/
 
-	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), *Joint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), *Joint), dir, 20); 
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), cJoint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), cJoint), dir, 20); 
 	if(hit.hit)
 	{
 		//feet
@@ -160,8 +162,8 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 		}
 	}
 
-	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,-1)), *Joint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,5,-6)), *Joint), dir, 12); 
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,-1)), cJoint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,5,-6)), cJoint), dir, 12); 
 	if(hit.hit)
 	{
 		//front
@@ -172,8 +174,8 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 			pos -= dir*hit.t;
 	}
 
-	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-1,0,0)), *Joint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-6,5,0)), *Joint), dir, 12); 
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-1,0,0)), cJoint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-6,5,0)), cJoint), dir, 12); 
 	if(hit.hit)
 	{
 		//left
@@ -194,9 +196,12 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 	
 	XMStoreFloat3(&mPosition, pos);
 	XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), *Joint));
+	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
 	mCamera->SetPosition(camPos);
 	mCamera->UpdateViewMatrix();
+
+	delete Joint;
+	this->Joint = new XMMATRIX(cJoint);
 }
 
 

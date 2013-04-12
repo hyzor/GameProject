@@ -4,14 +4,10 @@ CollisionModel::CollisionModel(XMFLOAT3 p)
 {
 	vertices = std::vector<XMFLOAT3>();
 	this->pos = p;
-	this->vMin = new XMVECTOR();
-	this->vMax = new XMVECTOR();
 }
 
 CollisionModel::~CollisionModel()
 {
-	SafeDelete(vMin);
-	SafeDelete(vMax);
 }
 
 void CollisionModel::LoadObj(char *file)
@@ -40,8 +36,8 @@ void CollisionModel::LoadObj(char *file)
 	XMFLOAT3 vMinf3(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
 	XMFLOAT3 vMaxf3(-MathHelper::infinity, -MathHelper::infinity, -MathHelper::infinity);
 
-	 *vMin = XMLoadFloat3(&vMinf3);
-	 *vMax = XMLoadFloat3(&vMaxf3);
+	 vMin = &XMLoadFloat3(&vMinf3);
+	 vMax = &XMLoadFloat3(&vMaxf3);
 
 	for (UINT i = 0; i < Size(); i++)
 	{
@@ -83,8 +79,9 @@ CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, flo
 	Hit h;
 	h.hit = false;
 	h.t = 100000;
-	float t;
-	if(XNA::IntersectRayAxisAlignedBox(origin,dir, &GetBoundingBox(), &t) && t < length)
+	float t = 0.0f;
+
+	if(XNA::IntersectRayAxisAlignedBox(origin, dir, &GetBoundingBox(), &t) && t < length)
 	{
 		for(int i = 0; i < Size(); i+=3)
 		{
