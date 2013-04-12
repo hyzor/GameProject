@@ -51,8 +51,7 @@ private:
 
 	void ReadBones(aiMesh* mesh, GenericSkinnedMesh& myMesh);
 	//void ReadBoneKeyframes(aiNodeAnim* nodeAnim, BoneAnimation& boneAnimation);
-	SkinData::Bone* CreateBoneTree(aiNode* node, SkinData::Bone* parent);
-	SkinData::Bone* RootBone;
+	SkinData::Bone* CreateBoneTree(aiNode* node, SkinData::Bone* parent, SkinnedData& skinnedData);
 	//void CalculateBoneToWorldTransform(SkinData::Bone* child);
 	void ReadAnimations(const aiScene* scene, SkinnedData& skinnedData);
 

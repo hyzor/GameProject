@@ -9,7 +9,7 @@ AnimatedEntity::AnimatedEntity(GenericSkinnedModel* model, XMFLOAT3 position)
 {
 	mInstance.model = model;
 	mInstance.isVisible = true;
-	this->Position = Position;
+	this->Position = position;
 	this->Scale = XMFLOAT3(1, 1, 1);
 	this->Rotation = 0.0f;
 

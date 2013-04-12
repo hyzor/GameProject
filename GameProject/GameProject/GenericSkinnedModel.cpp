@@ -82,6 +82,8 @@ GenericSkinnedModel::~GenericSkinnedModel(void)
 
 void GenericSkinnedModelInstance::Update(float dt)
 {
+	//TimePos += dt;
+	model->skinnedData.Animations[model->skinnedData.CurrentAnimIndex].GetTransforms(dt);
 // 	TimePos += dt;
 // 	model->skinnedData.getFinalTransforms(ClipName, TimePos, FinalTransforms);
 // 

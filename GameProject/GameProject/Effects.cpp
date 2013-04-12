@@ -258,11 +258,11 @@ NormalMapEffect* Effects::NormalMapFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
-	BasicFX = new BasicEffect(device, L"FX/Basic.fxo");
-	BuildShadowMapFX = new BuildShadowMapEffect(device, L"FX/BuildShadowMap.fxo");
-	SkyFX = new SkyEffect(device, L"FX/Sky.fxo");
-	BasicTessFX = new BasicTessEffect(device, L"FX/BasicTess.fxo");
-	NormalMapFX = new NormalMapEffect(device, L"FX/NormalMap.fxo");
+	BasicFX = new BasicEffect(device, L"Data/FX/Basic.fxo");
+	BuildShadowMapFX = new BuildShadowMapEffect(device, L"Data/FX/BuildShadowMap.fxo");
+	SkyFX = new SkyEffect(device, L"Data/FX/Sky.fxo");
+	BasicTessFX = new BasicTessEffect(device, L"Data/FX/BasicTess.fxo");
+	NormalMapFX = new NormalMapEffect(device, L"Data/FX/NormalMap.fxo");
 }
 
 void Effects::DestroyAll()

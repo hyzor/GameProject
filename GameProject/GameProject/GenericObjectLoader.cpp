@@ -232,7 +232,7 @@ bool GenericObjectLoader::loadSkinnedObject( const std::string& fileName, std::v
 		UINT totalFaceCount = 0;
 
 		// Load skeleton
-		skinnedData.Skeleton = CreateBoneTree(scene->mRootNode, NULL);
+		skinnedData.Skeleton = CreateBoneTree(scene->mRootNode, NULL, skinnedData);
 
 		// Read animations
 		ReadAnimations(scene, skinnedData);
@@ -892,11 +892,13 @@ bool GenericObjectLoader::loadObject(const std::string& fileName,
 // Recursively creates a bone tree
 //======================================================================
 SkinData::Bone* GenericObjectLoader::CreateBoneTree(aiNode* node,
-										SkinData::Bone* parent)
+										SkinData::Bone* parent, SkinnedData& skinnedData)
 {
 	SkinData::Bone* internalNode = new SkinData::Bone();
 	internalNode->Name = node->mName.data;
 	internalNode->Parent = parent; // Set parent, if bone is root parent == NULL
+
+	skinnedData.BonesByName[internalNode->Name];
 
 	// Bone bone local transform matrix
 	SkinData::ReadAiMatrix(internalNode->LocalTransform, node->mTransformation);
@@ -913,7 +915,7 @@ SkinData::Bone* GenericObjectLoader::CreateBoneTree(aiNode* node,
 	// Continue for all child nodes
 	for (UINT i = 0; i < node->mNumChildren; ++i)
 	{
-		internalNode->Children.push_back(CreateBoneTree(node->mChildren[i], internalNode));
+		internalNode->Children.push_back(CreateBoneTree(node->mChildren[i], internalNode, skinnedData));
 	}
 
 	return internalNode;

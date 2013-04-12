@@ -243,9 +243,9 @@ UINT AnimEvaluator::GetFrameIndexAt(float time)
 
 	float _time = 0.0f;
 	if (mDuration > 0.0)
-		time = fmod(time, mDuration);
+		_time = fmod(time, mDuration);
 
-	float percent = time / mDuration;
+	float percent = _time / mDuration;
 
 	if (!PlayAnimationForward)
 		percent = (percent - 1.0f) * -1.0f;
@@ -387,7 +387,8 @@ void AnimEvaluator::Evaluate( float time, std::map<std::string, SkinData::Bone*>
 
 SkinnedData::SkinnedData()
 {
-
+	Skeleton = NULL;
+	CurrentAnimIndex = -1;
 }
 
 SkinnedData::~SkinnedData()
@@ -395,7 +396,6 @@ SkinnedData::~SkinnedData()
 	CurrentAnimIndex = -1;
 	Animations.clear();
 	SafeDelete(Skeleton);
-	Bones.clear();
 }
 
 bool SkinnedData::SetAnimation( const std::string& name )

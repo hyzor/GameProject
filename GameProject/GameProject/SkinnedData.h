@@ -28,6 +28,14 @@ namespace SkinData
 			Parent = NULL;
 		}
 
+		~Bone()
+		{
+			for (UINT i = 0; i < Children.size(); ++i)
+			{
+				delete Children[i];
+			}
+		}
+
 		std::string Name;
 		XMFLOAT4X4 Offset;
 		XMFLOAT4X4 LocalTransform;

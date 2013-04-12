@@ -235,24 +235,24 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FX\LightDef.fx">
+    <None Include="Data\FX\LightDef.fx">
       <Filter>FX</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="FX\Basic.fx">
+    <CustomBuild Include="Data\FX\Basic.fx">
       <Filter>FX</Filter>
     </CustomBuild>
-    <CustomBuild Include="FX\BuildShadowMap.fx">
+    <CustomBuild Include="Data\FX\BasicTess.fx">
       <Filter>FX</Filter>
     </CustomBuild>
-    <CustomBuild Include="FX\Sky.fx">
+    <CustomBuild Include="Data\FX\BuildShadowMap.fx">
       <Filter>FX</Filter>
     </CustomBuild>
-    <CustomBuild Include="FX\BasicTess.fx">
+    <CustomBuild Include="Data\FX\NormalMap.fx">
       <Filter>FX</Filter>
     </CustomBuild>
-    <CustomBuild Include="FX\NormalMap.fx">
+    <CustomBuild Include="Data\FX\Sky.fx">
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>
