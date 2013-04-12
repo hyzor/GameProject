@@ -58,7 +58,8 @@ private:
 
 	GenericModel* mModel;
 
-	XMMATRIX Joint;
+	XMMATRIX* Joint;
+	float rot;
 	bool eDown;
 
 	

@@ -28,6 +28,7 @@ class CollisionModel
 		};
 
 		CollisionModel(XMFLOAT3 pos);
+		~CollisionModel();
 
 		void LoadObj(char *file);
 		int Size();
@@ -38,11 +39,12 @@ class CollisionModel
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 
 	private:
+		XMVECTOR* vMin;
+		XMVECTOR* vMax;
+
 		std::vector<XMFLOAT3> vertices;
 		XMFLOAT3 pos;
 
-		XMVECTOR vMin;
-		XMVECTOR vMax;
 		XNA::AxisAlignedBox boundingBox;
 
 		std::vector<std::string> CollisionModel::split(std::string line);

@@ -4,6 +4,14 @@ CollisionModel::CollisionModel(XMFLOAT3 p)
 {
 	vertices = std::vector<XMFLOAT3>();
 	this->pos = p;
+	this->vMin = new XMVECTOR();
+	this->vMax = new XMVECTOR();
+}
+
+CollisionModel::~CollisionModel()
+{
+	SafeDelete(vMin);
+	SafeDelete(vMax);
 }
 
 void CollisionModel::LoadObj(char *file)
@@ -32,15 +40,15 @@ void CollisionModel::LoadObj(char *file)
 	XMFLOAT3 vMinf3(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
 	XMFLOAT3 vMaxf3(-MathHelper::infinity, -MathHelper::infinity, -MathHelper::infinity);
 
-	vMin = XMLoadFloat3(&vMinf3);
-	vMax = XMLoadFloat3(&vMaxf3);
+	 *vMin = XMLoadFloat3(&vMinf3);
+	 *vMax = XMLoadFloat3(&vMaxf3);
 
 	for (UINT i = 0; i < Size(); i++)
 	{
 		XMVECTOR pos = XMLoadFloat3(GetPosition(i));
 
-		vMin = XMVectorMin(vMin, pos);
-		vMax = XMVectorMax(vMax, pos);
+		*vMin = XMVectorMin(*vMin, pos);
+		*vMax = XMVectorMax(*vMax, pos);
 	}
 
 	SetPosition(pos);
@@ -59,8 +67,8 @@ XMFLOAT3 *CollisionModel::GetPosition(int index)
 void CollisionModel::SetPosition(XMFLOAT3 position)
 {
 	pos = position;
-	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)+0.5f*(vMin+vMax));
-	XMStoreFloat3(&boundingBox.Extents, 0.5f*(vMax-vMin));
+	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)+0.5f*(*vMin+*vMax));
+	XMStoreFloat3(&boundingBox.Extents, 0.5f*(*vMax-*vMin));
 }
 
 XNA::AxisAlignedBox CollisionModel::GetBoundingBox()

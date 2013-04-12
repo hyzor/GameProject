@@ -33,7 +33,7 @@ Game::~Game()
 void Game::Update(float deltaTime, DirectInput* di)
 {
 	mPlayer->Update(deltaTime, di, mDuckColl);
-//	mAnimatedEntity->Update(deltaTime);
+	//mAnimatedEntity->Update(deltaTime);
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
