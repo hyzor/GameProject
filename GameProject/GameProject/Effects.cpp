@@ -204,7 +204,7 @@ SkyEffect::~SkyEffect()
 };
 
 //==============================================================================
-// Basic effect
+// Normal effect
 //==============================================================================
 NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filename)
 	: Effect(device, filename)
@@ -213,6 +213,7 @@ NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filen
 	// Techniques
 	//---------------------------------------------------------------
 	DirLights3TexTech = mFX->GetTechniqueByName("DirLights3Tex");
+	DirLights3TexSkinnedTech = mFX->GetTechniqueByName("DirLights3TexSkinned");
 
 	//-------------
 

@@ -354,7 +354,7 @@ bool GenericObjectLoader::loadSkinnedObject( const std::string& fileName, std::v
 // 				ReadBones(mesh, myMesh);
 // 
 // 				// Set vertex weights
-// 				SetVertexWeights(myMesh);
+ 				//SetVertexWeights(myMesh);
 // 			}
 
 			for (UINT i = 0; i < mesh->mNumBones; ++i)
@@ -383,11 +383,37 @@ bool GenericObjectLoader::loadSkinnedObject( const std::string& fileName, std::v
 						SkinData::ReadAiMatrix(found->second->Offset, bone->mOffsetMatrix);
 
 						XMMATRIX offsetMatrix = XMLoadFloat4x4(&found->second->Offset);
-						XMMatrixTranspose(offsetMatrix);
+						offsetMatrix = XMMatrixTranspose(offsetMatrix);
 						XMStoreFloat4x4(&found->second->Offset, offsetMatrix);
 
 						skinnedData.Bones.push_back(found->second);
-						skinnedData.BonesToIndex[found->first] = (UINT)skinnedData.Bones.size();
+						skinnedData.BonesToIndex[found->first] = (UINT)skinnedData.Bones.size()-1;
+					}
+				}
+
+				for (UINT j = 0; j < bone->mNumWeights; ++j)
+				{
+					if (myMesh.mVertices[bone->mWeights[j].mVertexId].weights.x == 0.0f)
+					{
+						myMesh.mVertices[bone->mWeights[j].mVertexId].boneIndices[0] = (UINT)skinnedData.Bones.size()-1;
+						myMesh.mVertices[bone->mWeights[j].mVertexId].weights.x = bone->mWeights[j].mWeight;
+					}
+
+					else if (myMesh.mVertices[bone->mWeights[j].mVertexId].weights.y == 0.0f)
+					{
+						myMesh.mVertices[bone->mWeights[j].mVertexId].boneIndices[1] = (UINT)skinnedData.Bones.size()-1;
+						myMesh.mVertices[bone->mWeights[j].mVertexId].weights.y = bone->mWeights[j].mWeight;
+					}
+
+					else if (myMesh.mVertices[bone->mWeights[j].mVertexId].weights.z == 0.0f)
+					{
+						myMesh.mVertices[bone->mWeights[j].mVertexId].boneIndices[2] = (UINT)skinnedData.Bones.size()-1;
+						myMesh.mVertices[bone->mWeights[j].mVertexId].weights.z = bone->mWeights[j].mWeight;
+					}
+					else
+					{
+						myMesh.mVertices[bone->mWeights[j].mVertexId].boneIndices[3] = (UINT)skinnedData.Bones.size()-1;
+						// This weight will be figured out in the vertex shader by taking 1 - the sum of the 3 other weights
 					}
 				}
 			}
@@ -417,8 +443,8 @@ bool GenericObjectLoader::loadSkinnedObject( const std::string& fileName, std::v
 					XMMATRIX rotationMat = XMMatrixMultiply(offsetMatrix, globalTransform);
 
 					XMFLOAT4X4 rotationMat4x4;
-
 					XMStoreFloat4x4(&rotationMat4x4, rotationMat);
+
 					trans.push_back(rotationMat4x4);
 				}
 			}
@@ -898,14 +924,14 @@ SkinData::Bone* GenericObjectLoader::CreateBoneTree(aiNode* node,
 	internalNode->Name = node->mName.data;
 	internalNode->Parent = parent; // Set parent, if bone is root parent == NULL
 
-	skinnedData.BonesByName[internalNode->Name];
+	skinnedData.BonesByName[internalNode->Name] = internalNode;
 
 	// Bone bone local transform matrix
 	SkinData::ReadAiMatrix(internalNode->LocalTransform, node->mTransformation);
 
 	// Transpose local transform matrix
 	XMMATRIX LocalTransformTranspose = XMLoadFloat4x4(&internalNode->LocalTransform);
-	XMMatrixTranspose(LocalTransformTranspose);
+	LocalTransformTranspose = XMMatrixTranspose(LocalTransformTranspose);
 	XMStoreFloat4x4(&internalNode->LocalTransform, LocalTransformTranspose);
 	internalNode->OriginalLocalTransform = internalNode->LocalTransform;
 

@@ -133,18 +133,18 @@ VertexOut SkinnedVS(SkinnedVertexIn vIn)
 	}
 
 	// Now transform them to world space space
-	vOut.PosW = mul(float4(vIn.PosL, 1.0f), gWorld).xyz;
-	vOut.NormalW = mul(vIn.NormalL, (float3x3)gWorldInvTranspose);
+	vOut.PosW = mul(float4(posL, 1.0f), gWorld).xyz;
+	vOut.NormalW = mul(normalL, (float3x3)gWorldInvTranspose);
 	vOut.TangentW = float4(mul(tangentL, (float3x3)gWorld), vIn.TangentL.w);
 
 	// Transform to homogeneous clip space
-	vOut.PosH = mul(float4(vIn.PosL, 1.0f), gWorldViewProj);
+	vOut.PosH = mul(float4(posL, 1.0f), gWorldViewProj);
 
 	// Output vertex attributes for interpolation across triangle
 	vOut.Tex = mul(float4(vIn.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	// Generate projective tex coords to project shadow map onto scene
-	vOut.ShadowPosH = mul(float4(vIn.PosL, 1.0f), gShadowTransform);
+	vOut.ShadowPosH = mul(float4(posL, 1.0f), gShadowTransform);
 
 	return vOut;
 }
@@ -248,6 +248,16 @@ technique11 DirLights3Tex
 	pass P0
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_DirLight(3, true, false, false, false)));
+	}
+}
+
+technique11 DirLights3TexSkinned
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, SkinnedVS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_DirLight(3, true, false, false, false)));
 	}

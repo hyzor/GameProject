@@ -41,7 +41,6 @@ namespace SkinData
 		XMFLOAT4X4 LocalTransform;
 		XMFLOAT4X4 GlobalTransform;
 		XMFLOAT4X4 OriginalLocalTransform;
-		XMFLOAT4X4 FinalTransformation;
 		std::vector<VertexWeight> Weights;
 
 		Bone* Parent;
@@ -91,9 +90,8 @@ namespace SkinData
 		{
 			XMMATRIX Parent_LocalTransform = XMLoadFloat4x4(&parent->LocalTransform);
 
-			XMMatrixMultiply(Child_GlobalTransform, Parent_LocalTransform);
+			Child_GlobalTransform = XMMatrixMultiply(Child_GlobalTransform, Parent_LocalTransform);
 
-			//child->GlobalTransform *= parent->LocalTransform;
 			parent = parent->Parent;
 		}
 
@@ -105,21 +103,14 @@ namespace SkinData
 class AnimEvaluator
 {
 public:
-	AnimEvaluator()
-	{
-		mLastTime = 0.0f;
-		mTicksPerSecond = 0.0f;
-		mDuration = 0.0f;
-		AnimationIndexer = 0;
-		PlayAnimationForward = true;
-	}
-
+	AnimEvaluator(): mLastTime(0.0f), mTicksPerSecond(0.0f), mDuration(0.0f), PlayAnimationForward(true), AnimationIndexer(0) {}
 	AnimEvaluator(const aiAnimation* anim);
 	void Evaluate(float time, std::map<std::string, SkinData::Bone*>& bones);
 	std::vector<XMFLOAT4X4>& GetTransforms(float dt) { return Transforms[GetFrameIndexAt(dt)]; }
 	UINT GetFrameIndexAt(float time);
 
 	std::string Name;
+
 	// If the animation has no name, it's name will be
 	// Animation + AnimationIndexer
 	UINT AnimationIndexer;
@@ -133,7 +124,7 @@ public:
 class SkinnedData
 {
 public:
-	SkinnedData();
+	SkinnedData(): Skeleton(0), CurrentAnimIndex(-1) {}
 	~SkinnedData();
 
 	bool SetAnimIndex(UINT animIndex);
@@ -142,6 +133,14 @@ public:
 	void CalcBoneMatrices();
 	void Calculate(float time);
 	void UpdateTransforms(SkinData::Bone* node);
+
+	// Get transforms for use in vertex shader
+	std::vector<XMFLOAT4X4>& GetTransforms(float dt) { return Animations[CurrentAnimIndex].GetTransforms(dt); }
+
+	UINT GetAnimationIndex() const { return CurrentAnimIndex; }
+
+	float GetAnimationSpeed() const { return Animations[CurrentAnimIndex].mTicksPerSecond; }	
+	void SetAnimationSpeed(float ticksPerSecond) { Animations[CurrentAnimIndex].mTicksPerSecond = ticksPerSecond; }
 
 	SkinData::Bone* Skeleton; // Root node of scene
 	std::map<std::string, SkinData::Bone*> BonesByName;

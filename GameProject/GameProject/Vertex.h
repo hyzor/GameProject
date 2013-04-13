@@ -7,6 +7,11 @@
 // Vertices
 namespace Vertex
 {
+	struct Position
+	{
+		XMFLOAT3 position;
+	};
+
 	struct Basic32
 	{
 		XMFLOAT3 position;

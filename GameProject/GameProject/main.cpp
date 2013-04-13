@@ -215,6 +215,11 @@ void Projekt::DrawScene()
 	Effects::BasicFX->SetShadowMap(mShadowMap->getDepthMapSRV());
 	Effects::BasicFX->SetCubeMap(mSky->cubeMapSRV());
 
+	Effects::NormalMapFX->SetDirLights(mDirLights);
+	Effects::NormalMapFX->SetEyePosW(mGame->GetCamera()->GetPosition());
+	Effects::NormalMapFX->SetShadowMap(mShadowMap->getDepthMapSRV());
+	Effects::NormalMapFX->SetCubeMap(mSky->cubeMapSRV());
+
 	// Draw game
 	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
 

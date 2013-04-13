@@ -12,10 +12,10 @@ Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 
 	mPlayer = new Player(mPlayerModel, 0, "Hyzor", XMFLOAT3(0,200,50));
 
-// 	mSkinnedModel = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.DAE",
-// 		L"Data\\Models\\Collada\\AnimTest\\");
-// 
-// 	mAnimatedEntity = new AnimatedEntity(mSkinnedModel, XMFLOAT3(-50.0f, 0.0f, 0.0f));
+ 	mSkinnedModel = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.DAE",
+ 		L"Data\\Models\\Collada\\AnimTest\\");
+
+ 	mAnimatedEntity = new AnimatedEntity(mSkinnedModel, XMFLOAT3(-10.0f, 60.0f, 100.0f));
 }
 
 Game::~Game()
@@ -26,14 +26,14 @@ Game::~Game()
 	SafeDelete(mPlayer);
 	SafeDelete(mDuckColl);
 
-// 	SafeDelete(mSkinnedModel);
-// 	SafeDelete(mAnimatedEntity);
+ 	SafeDelete(mSkinnedModel);
+ 	SafeDelete(mAnimatedEntity);
 }
 
 void Game::Update(float deltaTime, DirectInput* di)
 {
 	mPlayer->Update(deltaTime, di, mDuckColl);
-	//mAnimatedEntity->Update(deltaTime);
+	mAnimatedEntity->Update(deltaTime);
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
@@ -41,8 +41,8 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
 	mDuck->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
 
-// 	activeTech = Effects::NormalMapFX->DirLights3TexTech;
-// 	mAnimatedEntity->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
+ 	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
+ 	mAnimatedEntity->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
 }
 
 Camera* Game::GetCamera()

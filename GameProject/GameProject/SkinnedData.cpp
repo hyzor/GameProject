@@ -253,14 +253,13 @@ UINT AnimEvaluator::GetFrameIndexAt(float time)
 	return static_cast<UINT>((static_cast<float>(Transforms.size()) * percent));
 }
 
-void AnimEvaluator::Evaluate( float time, std::map<std::string, SkinData::Bone*>& bones )
+void AnimEvaluator::Evaluate( float pTime, std::map<std::string, SkinData::Bone*>& bones )
 {
-	time *= mTicksPerSecond;
+	pTime *= mTicksPerSecond;
 
-	float _time = 0.0f;
-
+	float time = 0.0f;
 	if (mDuration > 0.0)
-		time = fmod(time, mDuration);
+		time = fmod(pTime, mDuration);
 
 	// Calculate transformations for each channel
 	for (UINT i = 0; i < Channels.size(); ++i)
@@ -380,15 +379,10 @@ void AnimEvaluator::Evaluate( float time, std::map<std::string, SkinData::Bone*>
 		mat.Transpose();
 
 		SkinData::ReadAiMatrix(boneNode->second->LocalTransform, mat);
+
 	} // Channel end
 
 	mLastTime = time;
-}
-
-SkinnedData::SkinnedData()
-{
-	Skeleton = NULL;
-	CurrentAnimIndex = -1;
 }
 
 SkinnedData::~SkinnedData()

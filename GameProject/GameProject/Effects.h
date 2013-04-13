@@ -315,6 +315,7 @@ public:
 
 	// Techniques
 	ID3DX11EffectTechnique* DirLights3TexTech;
+	ID3DX11EffectTechnique* DirLights3TexSkinnedTech;
 
 	// Matrices
 	ID3DX11EffectMatrixVariable* WorldViewProj;
