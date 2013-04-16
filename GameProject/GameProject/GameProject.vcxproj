@@ -112,6 +112,7 @@
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="Sky.cpp" />
+    <ClCompile Include="SoundModule.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
@@ -148,6 +149,8 @@
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="Sky.h" />
+    <ClInclude Include="SoundHelp.h" />
+    <ClInclude Include="SoundModule.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>

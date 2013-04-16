@@ -123,6 +123,8 @@ bool Projekt::Init()
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
 
+	mGame->initSoundModule(this->mhMainWnd, this->mDirectInput);
+
 	// Create sky
 	mSky = new Sky(mDirect3D->GetDevice(), L"Data/Textures/snowcube1024.dds", 5000.0f);
 

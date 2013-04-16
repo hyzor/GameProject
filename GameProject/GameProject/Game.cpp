@@ -16,6 +16,8 @@ Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
  		L"Data\\Models\\Collada\\AnimTest\\");
 
  	mAnimatedEntity = new AnimatedEntity(mSkinnedModel, XMFLOAT3(-10.0f, 60.0f, 100.0f));
+
+	this->soundModule = new SoundModule();
 }
 
 Game::~Game()
@@ -28,6 +30,7 @@ Game::~Game()
 
  	SafeDelete(mSkinnedModel);
  	SafeDelete(mAnimatedEntity);
+	SafeDelete(soundModule);
 }
 
 void Game::Update(float deltaTime, DirectInput* di)
@@ -43,9 +46,21 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
  	mAnimatedEntity->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
+	
+	Camera* cam = this->mPlayer->GetCamera();
+	XMFLOAT3 pos = cam->GetPosition();
+
+
+	this->soundModule->inputGeneration(pos.x, pos.y, pos.z);
+	this->soundModule->setListenerPosition(pos.x, pos.y, pos.z);
 }
 
 Camera* Game::GetCamera()
 {
 	return mPlayer->GetCamera();
+}
+
+void Game::initSoundModule(HWND hwnd, DirectInput* di)
+{
+	this->soundModule->initialize(hwnd, di);
 }

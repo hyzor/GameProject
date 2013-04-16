@@ -13,6 +13,8 @@
 #include "AnimatedEntity.h"
 #include "GenericSkinnedModel.h"
 
+#include "SoundModule.h"
+
 class Game
 {
 	public:
@@ -21,6 +23,7 @@ class Game
 
 		void Update(float deltaTime, DirectInput* di);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
+		void initSoundModule(HWND hwnd, DirectInput* di);
 
 		Camera* GetCamera();
 	private:
@@ -29,6 +32,7 @@ class Game
 		Entity* mDuck;
 		Player* mPlayer;
 		CollisionModel* mDuckColl;
+		SoundModule* soundModule;
 
 		AnimatedEntity* mAnimatedEntity;
 		GenericSkinnedModel* mSkinnedModel;

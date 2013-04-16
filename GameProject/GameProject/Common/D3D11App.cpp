@@ -74,6 +74,8 @@ bool D3D11App::Init()
 	if (!mDirectInput->Init(&mhAppInst, &mhMainWnd, mClientWidth, mClientHeight))
 		return false;
 
+	
+
 	return true;
 }
 
