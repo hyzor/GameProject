@@ -1,0 +1,47 @@
+Info,  T7276: Load Data\Models\Collada\AnimTest\test_Collada_DAE.DAE
+Debug, T7276: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Info,  T7276: Found a matching importer for this file format
+Info,  T7276: Import root directory is 'Data\Models\Collada\AnimTest\'
+Debug, T7276: Collada schema version is 1.4.n
+Error, T7276: Collada: Skipping ambient light for the moment
+Warn,  T7276: ScenePreprocessor: UVs are declared to be 3D but they're obviously not. Reverting to 2D.
+Info,  T7276: Entering post processing pipeline
+Debug, T7276: RemoveRedundantMatsProcess begin
+Debug, T7276: RemoveRedundantMatsProcess finished 
+Debug, T7276: FindDegeneratesProcess begin
+Debug, T7276: FindDegeneratesProcess finished
+Debug, T7276: GenUVCoordsProcess begin
+Debug, T7276: GenUVCoordsProcess finished
+Debug, T7276: TriangulateProcess begin
+Debug, T7276: TriangulateProcess finished. There was nothing to be done.
+Debug, T7276: SortByPTypeProcess begin
+Info,  T7276: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T7276: SortByPTypeProcess finished
+Debug, T7276: FindInvalidDataProcess begin
+Warn,  T7276: Simplified dummy tracks with just one key
+Debug, T7276: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T7276: SplitLargeMeshesProcess_Triangle begin
+Debug, T7276: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T7276: Generate spatially-sorted vertex cache
+Debug, T7276: GenVertexNormalsProcess begin
+Debug, T7276: GenVertexNormalsProcess finished. Normals are already there
+Debug, T7276: CalcTangentsProcess begin
+Info,  T7276: CalcTangentsProcess finished. Tangents have been calculated
+Debug, T7276: JoinVerticesProcess begin
+Debug, T7276: Mesh 0 (unnamed) | Verts in: 8832 out: 3340 | ~62.183%
+Info,  T7276: JoinVerticesProcess finished | Verts in: 8832 out: 3340 | ~62.2%
+Debug, T7276: SplitLargeMeshesProcess_Vertex begin
+Debug, T7276: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Debug, T7276: MakeLeftHandedProcess begin
+Debug, T7276: MakeLeftHandedProcess finished
+Debug, T7276: FlipUVsProcess begin
+Debug, T7276: FlipUVsProcess finished
+Debug, T7276: FlipWindingOrderProcess begin
+Debug, T7276: FlipWindingOrderProcess finished
+Debug, T7276: LimitBoneWeightsProcess begin
+Debug, T7276: LimitBoneWeightsProcess end
+Debug, T7276: ImproveCacheLocalityProcess begin
+Debug, T7276: Mesh 0 | ACMR in: 1.645041 out: 1.162024 | ~29.4%
+Info,  T7276: Cache relevant are 1 meshes (2944 faces). Average output ACMR is 1.162024
+Debug, T7276: ImproveCacheLocalityProcess finished. 
+Info,  T7276: Leaving post processing pipeline

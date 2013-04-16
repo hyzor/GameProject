@@ -19,8 +19,8 @@ namespace Launcher
         public Form1()
         {
             InitializeComponent();
-            pictureBox1.Location = pictureBox2.Location;
-            pictureBox1.Size = pictureBox2.Size;
+            comboBox_resolution.SelectedIndex = comboBox_resolution.Items.Count-1;
+            fh = new FileHandler();
         }
 
         private void button_Launch_Click(object sender, EventArgs e)
@@ -37,7 +37,7 @@ namespace Launcher
             }
             else
             {
-                fh.Save(textBox_Tag.Text, textBox_IP.Text);
+                fh.Save(textBox_Tag.Text, textBox_IP.Text, comboBox_resolution.Text);
                 //Process.Start(@"C:\Users\Mathias\Documents\GitHub\GameProject\GameProject\Debug\GameProject.exe");
             }
         }
@@ -90,6 +90,11 @@ namespace Launcher
             {
                 e.Handled = true;
             }
+        }
+
+        private void comboBox_resolution_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -19,6 +19,8 @@ D3D11App::D3D11App(HINSTANCE hInstance)
 	mMaximized(false),
 	mResizing(false)
 {
+	mIsFullscreen = 0;
+
 	// Bind pointer to this object
 	gd3d11App = this;
 }
@@ -59,7 +61,6 @@ bool D3D11App::Init()
 	//-------------------------------------------
 	// Init Direct3D
 	//-------------------------------------------
-
 	if (!mDirect3D->Init(&mhMainWnd, mClientWidth, mClientHeight))
 		return false;
 
@@ -258,6 +259,23 @@ LRESULT D3D11App::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+void D3D11App::SetResolution(UINT Width, UINT Height)
+{
+	mClientWidth = Width;
+	mClientHeight = Height;
+	mDirect3D->GetSwapChain()->GetFullscreenState(&mIsFullscreen, NULL);
+
+	if (mIsFullscreen)
+	{
+	}
+	else
+	{
+		SetWindowPos(mhMainWnd, HWND_TOP, (GetSystemMetrics(SM_CXSCREEN)*0.5) - (mClientWidth*0.5), (GetSystemMetrics(SM_CYSCREEN)*0.5) - (mClientHeight*0.5), mClientWidth, mClientHeight, SWP_FRAMECHANGED);
+	}
+
+	OnResize();
+}
+
 //====================================================================
 // Initialize Win32 window
 //====================================================================
@@ -349,4 +367,10 @@ UINT D3D11App::GetWindowHeight() const
 void D3D11App::OnResize()
 {
 	mDirect3D->OnResize();
+}
+
+void D3D11App::SetFullscreen(bool fullscreen)
+{
+	mIsFullscreen = fullscreen;
+	mDirect3D->GetSwapChain()->SetFullscreenState(mIsFullscreen, NULL);
 }

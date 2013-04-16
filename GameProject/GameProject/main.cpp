@@ -10,6 +10,8 @@
 
 #include "Entity.h"
 
+#include "Settings.h"
+
 class Projekt : public D3D11App
 {
 public:
@@ -107,6 +109,8 @@ Projekt::~Projekt()
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
 	RenderStates::DestroyAll();
+
+	Settings::GetInstance()->Shutdown();
 }
 
 bool Projekt::Init()
@@ -114,14 +118,25 @@ bool Projekt::Init()
 	if (!D3D11App::Init())
 		return false;
 
+	// Read game settings
+	if (!Settings::GetInstance()->ReadFile("Data\\Settings.txt"))
+		return false;
+
 	// Initialize effects, input layouts and texture manager
 	Effects::InitAll(mDirect3D->GetDevice());
 	InputLayouts::InitAll(mDirect3D->GetDevice());
-	mTextureMgr.init(mDirect3D->GetDevice());
+	mTextureMgr.Init(mDirect3D->GetDevice());
 	RenderStates::InitAll(mDirect3D->GetDevice());
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
+
+	// Set if window is fullscreen or not
+	D3D11App::SetFullscreen(Settings::GetInstance()->GetData().IsFullscreen);
+
+	// Resize window after we've created our Game object
+	D3D11App::SetResolution(Settings::GetInstance()->GetData().Width,
+		Settings::GetInstance()->GetData().Height);
 
 	// Create sky
 	mSky = new Sky(mDirect3D->GetDevice(), L"Data/Textures/snowcube1024.dds", 5000.0f);
@@ -176,11 +191,8 @@ void Projekt::OnResize()
 {
 	D3D11App::OnResize();
 
-	mGame->GetCamera()->SetLens(0.25f*MathHelper::pi, AspectRatio(), 1.0f, 1000.0f);
+	mGame->GetCamera()->SetLens(0.25f*MathHelper::pi, D3D11App::AspectRatio(), 1.0f, 1000.0f);
 	mGame->GetCamera()->ComputeFrustum();
-
-	XMVECTOR myVec;
-	myVec.m128_f32[0];
 }
 
 void Projekt::DrawScene()
@@ -204,8 +216,8 @@ void Projekt::DrawScene()
 	//---------------------------------------------------------------------------
 
 	// Possible Wireframe render state
-	if (mDirectInput->GetKeyboardState()[DIK_E] && 0x80)
-		mDirect3D->GetImmediateContext()->RSSetState(RenderStates::WireFrameRS);
+// 	if (mDirectInput->GetKeyboardState()[DIK_E] && 0x80)
+// 		mDirect3D->GetImmediateContext()->RSSetState(RenderStates::WireFrameRS);
 
 	//--------------------------------------------------------------
 	// Set shader constants
@@ -242,8 +254,34 @@ void Projekt::DrawScene()
 
 void Projekt::UpdateScene(float dt)
 {
+	//-----------------------------------
+	// TO DO:
+	// Replace with menu instead of quit
+	//-----------------------------------
 	if (mDirectInput->GetKeyboardState()[DIK_ESCAPE] && 0x80)
 		SendMessage(mhMainWnd, WM_DESTROY, 0, 0);
+
+	//-------------------------------------------------------------
+	// TEST --- REMOVE ME
+	//-------------------------------------------------------------
+	if (mDirectInput->GetKeyboardState()[DIK_1] && 0x80)
+		D3D11App::SetResolution(800, 600);
+
+	if (mDirectInput->GetKeyboardState()[DIK_2] && 0x80)
+		D3D11App::SetResolution(1024, 768);
+
+	if (mDirectInput->GetKeyboardState()[DIK_3] && 0x80)
+		D3D11App::SetResolution(1680, 1050);
+
+	if (mDirectInput->GetKeyboardState()[DIK_4] && 0x80)
+		D3D11App::SetResolution(1920, 1080);
+
+	if (mDirectInput->GetKeyboardState()[DIK_5] && 0x80)
+		D3D11App::SetFullscreen(true);
+
+	if (mDirectInput->GetKeyboardState()[DIK_6] && 0x80)
+		D3D11App::SetFullscreen(false);
+	//-------------------------------------------------------------
 
 	// Update objects
 	mGame->Update(dt, mDirectInput);

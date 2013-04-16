@@ -27,12 +27,11 @@ public:
 
 
 
-	void SetPosition(XMFLOAT3 position) {mPosition=position;};
-
-	int GetID() const {return mPlayerID;};
-	XMFLOAT3 GetPosition() const {return mPosition;};
-	Camera* GetCamera() {return mCamera;};
-	bool IsAlive() const {return mIsAlive;};
+	void SetPosition(XMFLOAT3 position) { mPosition=position; }
+	int GetID() const { return mPlayerID; }
+	XMFLOAT3 GetPosition() const { return mPosition; }
+	Camera* GetCamera() { return mCamera; }
+	bool IsAlive() const { return mIsAlive; }
 
 
 	void TakeDamage(float damage);

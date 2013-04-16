@@ -40,6 +40,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tp_create = new System.Windows.Forms.TabPage();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.comboBox_resolution = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tp_join.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -61,6 +62,7 @@
             // tp_join
             // 
             this.tp_join.BackColor = System.Drawing.Color.Transparent;
+            this.tp_join.Controls.Add(this.comboBox_resolution);
             this.tp_join.Controls.Add(this.panel1);
             this.tp_join.Controls.Add(this.button_Launch);
             this.tp_join.Controls.Add(this.pictureBox2);
@@ -93,6 +95,7 @@
             this.textBox_IP.Name = "textBox_IP";
             this.textBox_IP.Size = new System.Drawing.Size(182, 20);
             this.textBox_IP.TabIndex = 4;
+            this.textBox_IP.Text = "127.0.0.1";
             this.textBox_IP.TextChanged += new System.EventHandler(this.textBox_IP_TextChanged);
             this.textBox_IP.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_IP_KeyDown);
             this.textBox_IP.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_IP_KeyPress);
@@ -103,6 +106,7 @@
             this.textBox_Tag.Name = "textBox_Tag";
             this.textBox_Tag.Size = new System.Drawing.Size(182, 20);
             this.textBox_Tag.TabIndex = 1;
+            this.textBox_Tag.Text = "adadsdsd";
             // 
             // label_IP
             // 
@@ -133,7 +137,7 @@
             this.button_Launch.Location = new System.Drawing.Point(319, 178);
             this.button_Launch.Name = "button_Launch";
             this.button_Launch.Size = new System.Drawing.Size(119, 24);
-            this.button_Launch.TabIndex = 5;
+            this.button_Launch.TabIndex = 3;
             this.button_Launch.Text = "Launch Game";
             this.button_Launch.UseVisualStyleBackColor = false;
             this.button_Launch.Click += new System.EventHandler(this.button_Launch_Click);
@@ -169,6 +173,25 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            // 
+            // comboBox_resolution
+            // 
+            this.comboBox_resolution.BackColor = System.Drawing.Color.Silver;
+            this.comboBox_resolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_resolution.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.comboBox_resolution.FormattingEnabled = true;
+            this.comboBox_resolution.Items.AddRange(new object[] {
+            "800 x 600",
+            "1024 x 768 ",
+            "1280 x 800",
+            "1600 x 900",
+            "1680 x 1050",
+            "1920 x 1080"});
+            this.comboBox_resolution.Location = new System.Drawing.Point(8, 61);
+            this.comboBox_resolution.Name = "comboBox_resolution";
+            this.comboBox_resolution.Size = new System.Drawing.Size(137, 21);
+            this.comboBox_resolution.TabIndex = 4;
+            this.comboBox_resolution.SelectedIndexChanged += new System.EventHandler(this.comboBox_resolution_SelectedIndexChanged);
             // 
             // Form1
             // 
@@ -208,6 +231,7 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private FileHandler fh;
         private System.Windows.Forms.TextBox textBox_IP;
+        private System.Windows.Forms.ComboBox comboBox_resolution;
     }
 }
 

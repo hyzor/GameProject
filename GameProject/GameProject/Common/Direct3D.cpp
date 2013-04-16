@@ -98,7 +98,7 @@ bool Direct3D::Init(HWND* mainWindow, int& _clientWidth, int& _clientHeight)
 	sd.OutputWindow = *mainWindow;					  // Specify window we render into
 	sd.Windowed = true;								  // Windowed mode or full-screen mode
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;	      // Let display driver select most efficient presentation method
-	sd.Flags = 0;									  // Optional flags
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;									  // Optional flags
 
 	// We have to find and use the same IDXGIFactory that was used to create the device before
 	IDXGIDevice* dxgiDevice = 0;
@@ -195,6 +195,9 @@ void Direct3D::OnResize()
 
 void Direct3D::Shutdown()
 {
+	// Switch to windowed mode before releasing swap chain
+	mSwapChain->SetFullscreenState(FALSE, NULL);
+
 	ReleaseCOM(mRenderTargetView);
 	ReleaseCOM(mDepthStencilView);
 	ReleaseCOM(mSwapChain);

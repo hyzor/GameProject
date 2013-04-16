@@ -22,12 +22,12 @@ TextureManager::~TextureManager(void)
 	mTextureSRV.clear();
 }
 
-void TextureManager::init(ID3D11Device* device)
+void TextureManager::Init(ID3D11Device* device)
 {
 	md3dDevice = device;
 }
 
-ID3D11ShaderResourceView* TextureManager::createTexture(std::wstring fileName)
+ID3D11ShaderResourceView* TextureManager::CreateTexture(std::wstring fileName)
 {
 	ID3D11ShaderResourceView* srv = 0;
 

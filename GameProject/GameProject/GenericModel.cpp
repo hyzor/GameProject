@@ -30,7 +30,7 @@ GenericModel::GenericModel(ID3D11Device* device, TextureManager* textureMgr, con
 
 		if (mats[i].diffuseMapName != L"")
 		{
-			ID3D11ShaderResourceView* _diffuseMapSRV = textureMgr->createTexture(texturePath + mats[i].diffuseMapName);
+			ID3D11ShaderResourceView* _diffuseMapSRV = textureMgr->CreateTexture(texturePath + mats[i].diffuseMapName);
 			diffuseMapSRV.push_back(_diffuseMapSRV);
 		}
 		else
@@ -40,7 +40,7 @@ GenericModel::GenericModel(ID3D11Device* device, TextureManager* textureMgr, con
 
 		if (mats[i].normalMapName != L"")
 		{
-			ID3D11ShaderResourceView* _normalMapSRV = textureMgr->createTexture(texturePath + mats[i].normalMapName);
+			ID3D11ShaderResourceView* _normalMapSRV = textureMgr->CreateTexture(texturePath + mats[i].normalMapName);
 			normalMapSRV.push_back(_normalMapSRV);
 		}
 		else

@@ -16,9 +16,9 @@ public:
 	TextureManager(void);
 	~TextureManager(void);
 
-	void init(ID3D11Device* device);
+	void Init(ID3D11Device* device);
 
-	ID3D11ShaderResourceView* createTexture(std::wstring fileName);
+	ID3D11ShaderResourceView* CreateTexture(std::wstring fileName);
 
 private:
 	ID3D11Device* md3dDevice;

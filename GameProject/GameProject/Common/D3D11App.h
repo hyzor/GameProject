@@ -21,6 +21,9 @@ public:
 	UINT GetWindowWidth() const;
 	UINT GetWindowHeight() const;
 
+	void SetResolution(UINT Width, UINT Height);
+	void SetFullscreen(bool isFullscreen);
+
 	// Game loop
 	int Run();
 
@@ -39,6 +42,8 @@ protected:
 	bool InitMainWindow();
 
 	void CalculateFrameStats();
+
+	BOOL mIsFullscreen;
 
 	HINSTANCE mhAppInst;
 	HWND mhMainWnd;
