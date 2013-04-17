@@ -126,7 +126,7 @@ bool SoundModule::initializeDirectSound(HWND hwnd)
 	}
 
 
-	this->listener->SetPosition(0.0f, 0.0f, 0.0f, DS3D_IMMEDIATE);
+	this->listener->SetPosition(0.0f, 0.0f, 0.0f, DS3D_DEFERRED);
 
 	return true;
 }
@@ -409,17 +409,19 @@ bool SoundModule::playWaveFile(float x, float y, float z, int soundID)
 				return false;
 			}
 
-			result = secondary3DBuffers.at(i)->SetPosition(x, y, z, DS3D_IMMEDIATE);
+			result = secondary3DBuffers.at(i)->SetPosition(x, y, z, DS3D_DEFERRED);
 			if(FAILED(result))
 			{
 				return false;
 			}
 
-			result = secondary3DBuffers.at(i)->SetMinDistance(20.0f, DS3D_IMMEDIATE);
+			result = secondary3DBuffers.at(i)->SetMinDistance(20.0f, DS3D_DEFERRED);
 			if(FAILED(result))
 			{
 				return false;
 			}
+
+			this->listener->CommitDeferredSettings();
 
 			result = secondaryBuffers.at(i)->Play(0, 0, 0);
 			if(FAILED(result))
@@ -443,7 +445,7 @@ void SoundModule::playSound(float x, float y, float z, int soundID)
 
 void SoundModule::setListenerPosition(float x, float y, float z)
 {
-	this->listener->SetPosition(x,y,z, DS3D_IMMEDIATE);
+	this->listener->SetPosition(x,y,z, DS3D_DEFERRED);
 }
 
 HRESULT SoundModule::setSFXVolume(long vlm)
