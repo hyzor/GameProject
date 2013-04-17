@@ -1,4 +1,4 @@
-Info,  T7324: Load Data\Models\OBJ\Cop\cop.obj
-Debug, T7324: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
-Error, T7324: Unable to open file "Data\Models\OBJ\Cop\cop.obj".
-Info,  T7324: Failed reading file!
+Info,  T6660: Load Data\Models\OBJ\Cop\cop.obj
+Debug, T6660: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Error, T6660: Unable to open file "Data\Models\OBJ\Cop\cop.obj".
+Info,  T6660: Failed reading file!
