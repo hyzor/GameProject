@@ -44,7 +44,12 @@ bool SoundModule::initialize(HWND hwnd, DirectInput* di)
 		return false;
 	}
 
+	this->listener->CommitDeferredSettings();
+
+	result = this->initiationPlay(); //In order to make DirectSound create a primarybuffer (it does this during the first play()-call)
+	
 	this->setSFXVolume(DSBVOLUME_MAX);
+	
 
 	return result;
 }
@@ -579,4 +584,39 @@ void SoundModule::inputGeneration(float x, float y, float z)
 	{
 		this->playSound(0,0,0, PlayerGrunt);
 	}
+}
+
+HRESULT SoundModule::initiationPlay()
+{
+	HRESULT result;
+
+	result = this->secondaryBuffers.at(0)->SetCurrentPosition(0);
+	if(FAILED(result))
+		MessageBox(0, L"here",0,0);
+	
+	result = this->secondaryBuffers.at(0)->SetVolume(-9999);
+	if(FAILED(result))
+		MessageBox(0, L"here",0,0);
+	
+	result = secondary3DBuffers.at(0)->SetPosition(0, 0, 0, DS3D_DEFERRED);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+	result = this->listener->CommitDeferredSettings();
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+	result = this->secondaryBuffers.at(0)->Play(0,0,0);
+	if(FAILED(result))
+		MessageBox(0, L"here",0,0);
+
+	result = this->secondaryBuffers.at(0)->Stop();
+	if(FAILED(result))
+		MessageBox(0, L"here",0,0);
+
+	return result;
 }

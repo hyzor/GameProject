@@ -1,47 +1,47 @@
-Info,  T3752: Load Data\Models\Collada\AnimTest\test_Collada_DAE.DAE
-Debug, T3752: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
-Info,  T3752: Found a matching importer for this file format
-Info,  T3752: Import root directory is 'Data\Models\Collada\AnimTest\'
-Debug, T3752: Collada schema version is 1.4.n
-Error, T3752: Collada: Skipping ambient light for the moment
-Warn,  T3752: ScenePreprocessor: UVs are declared to be 3D but they're obviously not. Reverting to 2D.
-Info,  T3752: Entering post processing pipeline
-Debug, T3752: RemoveRedundantMatsProcess begin
-Debug, T3752: RemoveRedundantMatsProcess finished 
-Debug, T3752: FindDegeneratesProcess begin
-Debug, T3752: FindDegeneratesProcess finished
-Debug, T3752: GenUVCoordsProcess begin
-Debug, T3752: GenUVCoordsProcess finished
-Debug, T3752: TriangulateProcess begin
-Debug, T3752: TriangulateProcess finished. There was nothing to be done.
-Debug, T3752: SortByPTypeProcess begin
-Info,  T3752: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
-Debug, T3752: SortByPTypeProcess finished
-Debug, T3752: FindInvalidDataProcess begin
-Warn,  T3752: Simplified dummy tracks with just one key
-Debug, T3752: FindInvalidDataProcess finished. Everything seems to be OK.
-Debug, T3752: SplitLargeMeshesProcess_Triangle begin
-Debug, T3752: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
-Debug, T3752: Generate spatially-sorted vertex cache
-Debug, T3752: GenVertexNormalsProcess begin
-Debug, T3752: GenVertexNormalsProcess finished. Normals are already there
-Debug, T3752: CalcTangentsProcess begin
-Info,  T3752: CalcTangentsProcess finished. Tangents have been calculated
-Debug, T3752: JoinVerticesProcess begin
-Debug, T3752: Mesh 0 (unnamed) | Verts in: 8832 out: 3340 | ~62.183%
-Info,  T3752: JoinVerticesProcess finished | Verts in: 8832 out: 3340 | ~62.2%
-Debug, T3752: SplitLargeMeshesProcess_Vertex begin
-Debug, T3752: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
-Debug, T3752: MakeLeftHandedProcess begin
-Debug, T3752: MakeLeftHandedProcess finished
-Debug, T3752: FlipUVsProcess begin
-Debug, T3752: FlipUVsProcess finished
-Debug, T3752: FlipWindingOrderProcess begin
-Debug, T3752: FlipWindingOrderProcess finished
-Debug, T3752: LimitBoneWeightsProcess begin
-Debug, T3752: LimitBoneWeightsProcess end
-Debug, T3752: ImproveCacheLocalityProcess begin
-Debug, T3752: Mesh 0 | ACMR in: 1.645041 out: 1.162024 | ~29.4%
-Info,  T3752: Cache relevant are 1 meshes (2944 faces). Average output ACMR is 1.162024
-Debug, T3752: ImproveCacheLocalityProcess finished. 
-Info,  T3752: Leaving post processing pipeline
+Info,  T7964: Load Data\Models\Collada\AnimTest\test_Collada_DAE.DAE
+Debug, T7964: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Info,  T7964: Found a matching importer for this file format
+Info,  T7964: Import root directory is 'Data\Models\Collada\AnimTest\'
+Debug, T7964: Collada schema version is 1.4.n
+Error, T7964: Collada: Skipping ambient light for the moment
+Warn,  T7964: ScenePreprocessor: UVs are declared to be 3D but they're obviously not. Reverting to 2D.
+Info,  T7964: Entering post processing pipeline
+Debug, T7964: RemoveRedundantMatsProcess begin
+Debug, T7964: RemoveRedundantMatsProcess finished 
+Debug, T7964: FindDegeneratesProcess begin
+Debug, T7964: FindDegeneratesProcess finished
+Debug, T7964: GenUVCoordsProcess begin
+Debug, T7964: GenUVCoordsProcess finished
+Debug, T7964: TriangulateProcess begin
+Debug, T7964: TriangulateProcess finished. There was nothing to be done.
+Debug, T7964: SortByPTypeProcess begin
+Info,  T7964: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T7964: SortByPTypeProcess finished
+Debug, T7964: FindInvalidDataProcess begin
+Warn,  T7964: Simplified dummy tracks with just one key
+Debug, T7964: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T7964: SplitLargeMeshesProcess_Triangle begin
+Debug, T7964: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T7964: Generate spatially-sorted vertex cache
+Debug, T7964: GenVertexNormalsProcess begin
+Debug, T7964: GenVertexNormalsProcess finished. Normals are already there
+Debug, T7964: CalcTangentsProcess begin
+Info,  T7964: CalcTangentsProcess finished. Tangents have been calculated
+Debug, T7964: JoinVerticesProcess begin
+Debug, T7964: Mesh 0 (unnamed) | Verts in: 8832 out: 3340 | ~62.183%
+Info,  T7964: JoinVerticesProcess finished | Verts in: 8832 out: 3340 | ~62.2%
+Debug, T7964: SplitLargeMeshesProcess_Vertex begin
+Debug, T7964: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Debug, T7964: MakeLeftHandedProcess begin
+Debug, T7964: MakeLeftHandedProcess finished
+Debug, T7964: FlipUVsProcess begin
+Debug, T7964: FlipUVsProcess finished
+Debug, T7964: FlipWindingOrderProcess begin
+Debug, T7964: FlipWindingOrderProcess finished
+Debug, T7964: LimitBoneWeightsProcess begin
+Debug, T7964: LimitBoneWeightsProcess end
+Debug, T7964: ImproveCacheLocalityProcess begin
+Debug, T7964: Mesh 0 | ACMR in: 1.645041 out: 1.162024 | ~29.4%
+Info,  T7964: Cache relevant are 1 meshes (2944 faces). Average output ACMR is 1.162024
+Debug, T7964: ImproveCacheLocalityProcess finished. 
+Info,  T7964: Leaving post processing pipeline
