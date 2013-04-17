@@ -198,7 +198,7 @@ bool GenericObjectLoader::loadSkinnedObject( const std::string& fileName, std::v
 	// Create instance of assimp Importer class
 	Importer importer;
 
-	std::string logName = "Logs\\AssimpMeshLoader.log";
+	std::string logName = "Logs\\AssimpMeshLoaderSKINNED.log";
 
 	DefaultLogger::create(logName.c_str(), Logger::VERBOSE);
 
