@@ -1,6 +1,8 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
+#define PI 3.1415926535897932384626433832795
+
 #include <d3dUtilities.h>
 #include "Weapon.h"
 #include "GenericSkinnedModel.h"

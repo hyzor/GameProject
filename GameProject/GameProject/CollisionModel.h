@@ -34,7 +34,6 @@ class CollisionModel
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
 		void SetPosition(XMFLOAT3 position);
-		XNA::AxisAlignedBox GetBoundingBox();
 		
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 
@@ -50,6 +49,62 @@ class CollisionModel
 		XNA::AxisAlignedBox boundingBox;
 
 		std::vector<std::string> CollisionModel::split(std::string line);
+
+		
+		class Plane
+		{
+			public:
+				Plane(XMFLOAT3 pos, XMFLOAT3 dir);
+				bool intersectsTriangle(XMVECTOR* move, XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2, float flip);
+				bool intersectsRay(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length, float flip);
+
+				XMFLOAT3 dir;
+				XMFLOAT3 pos;
+		};
+
+		class SplitNode
+		{
+			public:
+				SplitNode(XMVECTOR vMin, XMVECTOR vMax);
+				virtual ~SplitNode();
+				virtual bool HasGeometry();
+				virtual void Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2);
+				virtual void CleanUp();
+				virtual Hit Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length);
+			protected:
+				Plane* plane;
+		};
+
+		class SplitNodeParent : public SplitNode
+		{
+			public:
+				SplitNodeParent(XMVECTOR vMin, XMVECTOR vMax, int layer);
+				~SplitNodeParent();
+				bool HasGeometry();
+				void Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2);
+				void CleanUp();
+				Hit Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length);
+			private:
+				SplitNode *left;
+				SplitNode *right;
+		};
+
+		class SplitNodeLeaf : public SplitNode
+		{
+			public:
+				SplitNodeLeaf(XMVECTOR vMin, XMVECTOR vMax);
+				~SplitNodeLeaf();
+				bool HasGeometry();
+				void Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2);
+				void CleanUp();
+				Hit Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length);
+			private:
+				std::vector<XMFLOAT3*> left;
+				std::vector<XMFLOAT3*> right;
+		};
+
+
+		SplitNodeParent* SplitTree;
 };
 
 

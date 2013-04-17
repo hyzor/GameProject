@@ -26,7 +26,7 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 	Weapon* weapon = new Weapon();
 	Weapon::Properties prop;
 	prop.Type = Weapon::TYPE_RAILGUN;
-	prop.Damage = 1.0f;
+	prop.Damage = 1.0f;                  //Objekt orienterat!!
 	prop.Cooldown = 5.0f;
 	prop.NumProjectiles = 1;
 	weapon->Init(prop);
@@ -72,21 +72,24 @@ void Player::TakeDamage(float damage)
 void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 {
 	XMMATRIX cJoint = *Joint;
+	XMVECTOR pos = XMLoadFloat3(&mPosition);
+
 	//switch garvity
 	if(dInput->GetKeyboardState()[DIK_E] & 0x80)
 	{
 		if(!eDown)
 		{
-			//(cJoint)(1,1) *= -1;
-			rot += 3.14f * 0.5f;
+			rot += (float)PI/2;
+			if(rot > 2*(float)PI-0.1f)
+				rot = 0;
 			cJoint = XMMatrixRotationX(rot);
+			//mCamera->Roll(PI/2);
 			ySpeed = 0;
 		}
 		eDown = true;
 	}
 	else
 		eDown = false;
-
 
 	// Health lower than 0, die
 	if (mHealth < 0.0f)
@@ -96,14 +99,12 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 		mWeapons[i]->Update(dt);
 
 	// Move
-	XMVECTOR pos = XMLoadFloat3(&mPosition);
-
-	XMVECTOR look = XMVector3Transform(XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), cJoint);
+	XMVECTOR look = XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
 	if (dInput->GetKeyboardState()[DIK_W] & 0x80)
 		pos += look*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_S] & 0x80)
 		pos -= look*mSpeed*dt;
-	XMVECTOR right = XMVector3Transform(XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1))), cJoint);
+	XMVECTOR right = XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
 	if (dInput->GetKeyboardState()[DIK_D] & 0x80)
 		pos += right*mSpeed*dt;
 	if (dInput->GetKeyboardState()[DIK_A] & 0x80)
@@ -162,27 +163,27 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 		}
 	}
 
-	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,-1)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,5,-6)), cJoint), dir, 12); 
+	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,1)), cJoint);
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,2.5f,-3)), cJoint), dir, 6); 
 	if(hit.hit)
 	{
 		//front
-		if(hit.t > 6)
-			pos += dir*12-dir*hit.t;
+		if(hit.t > 3)
+			pos -= dir*6-dir*hit.t;
 		//back
-		if(hit.t < 6)
-			pos -= dir*hit.t;
+		if(hit.t < 3)
+			pos += dir*hit.t;
 	}
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-1,0,0)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-6,5,0)), cJoint), dir, 12); 
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-3,2.5f,0)), cJoint), dir, 6); 
 	if(hit.hit)
 	{
 		//left
-		if(hit.t > 6)
-			pos -= dir*12-dir*hit.t;
+		if(hit.t > 3)
+			pos -= dir*6-dir*hit.t;
 		//right
-		if(hit.t < 6)
+		if(hit.t < 3)
 			pos += dir*hit.t;
 	}
 
