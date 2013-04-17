@@ -573,4 +573,8 @@ void SoundModule::inputGeneration(float x, float y, float z)
 		currentVolume = this->getSFXVolume();
 		this->setSFXVolume(currentVolume - 500);
 	}
+	if(this->dInput->GetKeyboardState()[DIK_NUMPAD1] && 0x80)
+	{
+		this->playSound(0,0,0, PlayerGrunt);
+	}
 }
