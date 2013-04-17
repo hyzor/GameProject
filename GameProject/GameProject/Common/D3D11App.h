@@ -22,7 +22,8 @@ public:
 	UINT GetWindowHeight() const;
 
 	void SetResolution(UINT Width, UINT Height);
-	void SetFullscreen(bool isFullscreen);
+	void SetFullscreen(bool toFullscreen);
+	void SwitchFullscreen();
 
 	// Game loop
 	int Run();

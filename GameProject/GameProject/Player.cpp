@@ -78,7 +78,7 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 		if(!eDown)
 		{
 			//(cJoint)(1,1) *= -1;
-			rot += 3.14/2;
+			rot += 3.14f * 0.5f;
 			cJoint = XMMatrixRotationX(rot);
 			ySpeed = 0;
 		}

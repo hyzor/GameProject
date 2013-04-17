@@ -104,7 +104,6 @@ int D3D11App::Run()
 			if (!mAppPaused)
 			{
 				CalculateFrameStats();
-				//DetectInput(mTimer.getDeltaTime());
 				mDirectInput->Update();
 				UpdateScene(mTimer.getDeltaTime());
 				DrawScene();
@@ -254,6 +253,13 @@ LRESULT D3D11App::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 
+	case WM_SYSCOMMAND:
+		// ALT + ENTER
+		if (SC_KEYMENU == (wParam & 0xFFF0))
+		{
+			SwitchFullscreen();
+		}
+		return 0;
 	}
 
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
@@ -265,12 +271,13 @@ void D3D11App::SetResolution(UINT Width, UINT Height)
 	mClientHeight = Height;
 	mDirect3D->GetSwapChain()->GetFullscreenState(&mIsFullscreen, NULL);
 
-	if (mIsFullscreen)
+	// Resize window and set window position at center of screen
+	if (!mIsFullscreen)
 	{
-	}
-	else
-	{
-		SetWindowPos(mhMainWnd, HWND_TOP, (GetSystemMetrics(SM_CXSCREEN)*0.5) - (mClientWidth*0.5), (GetSystemMetrics(SM_CYSCREEN)*0.5) - (mClientHeight*0.5), mClientWidth, mClientHeight, SWP_FRAMECHANGED);
+		SetWindowPos(mhMainWnd, HWND_TOP,
+			static_cast<int>((GetSystemMetrics(SM_CXSCREEN)*0.5) - (mClientWidth*0.5)),
+			static_cast<int>((GetSystemMetrics(SM_CYSCREEN)*0.5) - (mClientHeight*0.5)),
+			mClientWidth, mClientHeight, SWP_FRAMECHANGED);
 	}
 
 	OnResize();
@@ -369,8 +376,23 @@ void D3D11App::OnResize()
 	mDirect3D->OnResize();
 }
 
-void D3D11App::SetFullscreen(bool fullscreen)
+void D3D11App::SetFullscreen(bool toFullscreen)
 {
-	mIsFullscreen = fullscreen;
+	mIsFullscreen = toFullscreen ? TRUE : FALSE;
+
+	// Pause and stop timer while setting to fullsceen
+	mAppPaused = true;
+	mTimer.stop();
+
 	mDirect3D->GetSwapChain()->SetFullscreenState(mIsFullscreen, NULL);
+
+	// Resume program and start timer again
+	mAppPaused = false;
+	mTimer.start();
+}
+
+void D3D11App::SwitchFullscreen()
+{
+	mIsFullscreen = !mIsFullscreen;
+	SetFullscreen(mIsFullscreen != FALSE);
 }
