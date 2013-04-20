@@ -12,11 +12,11 @@ CollisionModel::~CollisionModel()
 	SafeDelete(SplitTree);
 }
 
-void CollisionModel::LoadObj(char *file)
+void CollisionModel::LoadObj(const std::string& fileName)
 {
 	std::vector<XMFLOAT3> positions;
 
-	std::ifstream infile(file);
+	std::ifstream infile(fileName);
 	std::string line;
 	while (std::getline(infile, line))
 	{
@@ -71,7 +71,7 @@ int CollisionModel::Size()
 
 XMFLOAT3 *CollisionModel::GetPosition(int index)
 {
-	return &vertices[index];
+	return &vertices.at(index);
 }
 
 void CollisionModel::SetPosition(XMFLOAT3 position)

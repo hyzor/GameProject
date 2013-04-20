@@ -1,19 +1,17 @@
 #include "Game.h"
 
-
 Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
-	mDuckModel = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.obj", L"Data\\Models\\Collada\\"); //
-	mPlayerModel = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
+	mDuckModel = GenericHandler::GetInstance()->GetGenericModel("Duck");
+	mPlayerModel = GenericHandler::GetInstance()->GetGenericModel("Player");
 
-	mDuck = new Entity(mDuckModel, XMFLOAT3(0, 0, 0)); //
+	mDuck = new Entity(mDuckModel, XMFLOAT3(0, 0, 0)); 
 	mDuckColl = new CollisionModel(mDuck->Position);
-	mDuckColl->LoadObj("Data\\Models\\Collada\\duck.obj"); //
+	mDuckColl->LoadObj("Data\\Models\\Collada\\duck.obj");
 
 	mPlayer = new Player(mPlayerModel, 0, "Hyzor", XMFLOAT3(0,200,50));
 
- 	mSkinnedModel = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.DAE",
- 		L"Data\\Models\\Collada\\AnimTest\\");
+	mSkinnedModel = GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel");
 
  	mAnimatedEntity = new AnimatedEntity(mSkinnedModel, XMFLOAT3(-10.0f, 60.0f, 100.0f));
 }

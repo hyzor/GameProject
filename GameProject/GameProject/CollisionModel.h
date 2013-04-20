@@ -30,7 +30,7 @@ class CollisionModel
 		CollisionModel(XMFLOAT3 pos);
 		~CollisionModel();
 
-		void LoadObj(char *file);
+		void LoadObj(const std::string& fileName);
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
 		void SetPosition(XMFLOAT3 position);
@@ -41,7 +41,6 @@ class CollisionModel
 		XMVECTOR* vMax;
 
 	private:
-
 
 		std::vector<XMFLOAT3> vertices;
 		XMFLOAT3 pos;

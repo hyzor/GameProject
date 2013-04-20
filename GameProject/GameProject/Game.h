@@ -12,6 +12,7 @@
 
 #include "AnimatedEntity.h"
 #include "GenericSkinnedModel.h"
+#include "GenericHandler.h"
 
 class Game
 {

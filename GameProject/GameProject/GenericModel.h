@@ -36,6 +36,9 @@ public:
 
 	Vertex::Basic32* GetVertex(int index);
 	int GetVertexCount();
+
+	//
+	void CreatePositions(const std::string& fileName);
 };
 
 struct GenericModelInstance

@@ -12,6 +12,8 @@
 
 #include "Settings.h"
 
+#include "GenericHandler.h"
+
 class Projekt : public D3D11App
 {
 public:
@@ -127,6 +129,9 @@ bool Projekt::Init()
 	InputLayouts::InitAll(mDirect3D->GetDevice());
 	mTextureMgr.Init(mDirect3D->GetDevice());
 	RenderStates::InitAll(mDirect3D->GetDevice());
+
+	// Initialize models
+	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
