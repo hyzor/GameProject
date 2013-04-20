@@ -9,6 +9,7 @@ CollisionModel::CollisionModel(XMFLOAT3 p)
 CollisionModel::~CollisionModel()
 {
 	//SafeDelete(BBTree);
+	SafeDelete(SplitTree);
 }
 
 void CollisionModel::LoadObj(char *file)

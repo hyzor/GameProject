@@ -103,7 +103,6 @@ class CollisionModel
 				std::vector<XMFLOAT3*> right;
 		};
 
-
 		SplitNodeParent* SplitTree;
 };
 
