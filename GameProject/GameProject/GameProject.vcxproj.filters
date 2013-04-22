@@ -99,9 +99,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -141,10 +138,13 @@
     <ClCompile Include="Duck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedModel.cpp">
-      <Filter>Models\Skinned</Filter>
-    </ClCompile>
     <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Railgun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,9 +218,6 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -263,13 +260,13 @@
     <ClInclude Include="Duck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Models</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedModel.h">
-      <Filter>Models\Skinned</Filter>
-    </ClInclude>
     <ClInclude Include="World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Railgun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

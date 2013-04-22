@@ -23,15 +23,9 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 	SetPosition(mPosition);
 
 	// Weapons
-	Weapon* weapon = new Weapon();
-	Weapon::Properties prop;
-	prop.Type = Weapon::TYPE_RAILGUN;
-	prop.Damage = 1.0f;                  //Objekt orienterat!!
-	prop.Cooldown = 5.0f;
-	prop.NumProjectiles = 1;
-	weapon->Init(prop);
-	mWeapons.push_back(weapon);
-	mCurWeaponIndex = 0;
+	mWeapons = std::vector<Weapon*>();
+	mWeapons.push_back(new Railgun());
+	this->mCurWeaponIndex = 0;
 }
 
 
@@ -46,7 +40,7 @@ Player::~Player()
 
 void Player::Shoot()
 {
-	mWeapons[mCurWeaponIndex]->FireProjectile(0,0); //Objekt orienterat!!
+	mWeapons.at(mCurWeaponIndex)->FireProjectile(); //Objekt orienterat!!
 	/*if (mWeapons[mCurWeaponIndex]->GetCooldown() > 0.0f)
 		return false;
 

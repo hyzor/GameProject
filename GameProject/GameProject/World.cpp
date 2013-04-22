@@ -6,7 +6,7 @@ World::World(int platformAmount)
 	for(int i(0); i != mPlatformAmount; ++i)
 	{
 		mPlatforms.push_back(new Duck());
-		mPlatforms.at(i)->Initialize(XMFLOAT3((float)i*200+50, (float)-i*200, (float)i*200));
+		mPlatforms.at(i)->Initialize(XMFLOAT3((float)i*200, (float)-i*200, (float)i*200));
 	}
 }
 

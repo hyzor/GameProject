@@ -1,49 +1,37 @@
-#ifndef WEAPON_H_
-#define WEAPON_H_
-
+#ifndef WEAPON_H
+#define WEAPON_H
 #include "d3dUtilities.h"
 #include "ParticleSystem.h"
 
 class Weapon
 {
 public:
-	Weapon(void);
-	~Weapon(void);
-
-	enum TypeList
-	{
-		TYPE_RAILGUN = 0
-	};
-
-	struct Properties
-	{
-		int Type;
-		float Damage;
-		float Cooldown;
-		int NumProjectiles;
-	};
-
-	void Update(float dt);
-
-	void FireProjectile(int type, UINT numProjectiles);
-
-	void Init(Weapon::Properties properties);
-
+	Weapon(/* Variabler för att initiera particlesystem */);
+	virtual ~Weapon();
+	virtual void Update(float dt);
+	void Draw(/* Kod för att rita ut vapnet */);
+	
+	virtual void Reload() {}
+	virtual void FireProjectile() = 0;
 	void ResetCooldown();
 
-	int GetType() const;
-	float GetDamage() const;
-	float GetCooldown() const;
-	UINT GetNumProjectiles() const;
+	float getDamage() const { return this->mProperties.damage; }
+	float getCooldown() const { return this->mProperties.currColdown; }
+	int getProjectiles() const { return this->mProperties.currProjectiles; }
+
+protected:
+	struct Properties
+	{
+		float damage;
+		float cooldown;
+		float currColdown;
+		int maxProjectiles;
+		int currProjectiles;
+	};
+
+	Properties mProperties;
 
 private:
-	int mType;
-	float mDamage;
-	float mCooldown;
-	float mCurCooldown;
-	UINT mNumProjectiles;
-
 	ParticleSystem mParticleSystem;
 };
-
 #endif

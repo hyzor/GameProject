@@ -11,27 +11,22 @@
 #include <DirectInput.h>
 #include "CollisionModel.h"
 #include "Entity.h"
-#include "World.h"
+#include "Railgun.h"
 
 class Player
 {
 public:
-
 	Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3 Position);
 	~Player();
 
-
 	void Update(float dt, DirectInput* dInput, World* world);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
-
-
 
 	void SetPosition(XMFLOAT3 position) { mPosition=position; }
 	int GetID() const { return mPlayerID; }
 	XMFLOAT3 GetPosition() const { return mPosition; }
 	Camera* GetCamera() { return mCamera; }
 	bool IsAlive() const { return mIsAlive; }
-
 
 	void TakeDamage(float damage);
 
@@ -49,8 +44,8 @@ private:
 
 	std::string mNickname;
 
-	std::vector<Weapon*> mWeapons;
 	UINT mCurWeaponIndex;
+	std::vector<Weapon*> mWeapons;
 
 	Camera* mCamera;
 
@@ -63,5 +58,4 @@ private:
 	
 	void Shoot();
 };
-
 #endif
