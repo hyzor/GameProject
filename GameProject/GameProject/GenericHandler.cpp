@@ -8,19 +8,8 @@ GenericHandler::GenericHandler()
 
 GenericHandler::~GenericHandler()
 {
-#ifndef _DEBUG | DEBUG
-	std::map<std::string, GenericModel*>::iterator GenericCurr, GenericEnd;
-	for(GenericCurr = mGModels.begin(), GenericEnd = mGModels.end(); GenericCurr != GenericEnd; GenericCurr++)
-	{
-		SafeDelete(GenericCurr->second);
-	}
-
-	std::map<std::string, GenericSkinnedModel*>::iterator SkinnedCurr, SkinnedEnd;
-	for(SkinnedCurr = mGSModels.begin(), SkinnedEnd = mGSModels.end(); SkinnedCurr != SkinnedEnd; SkinnedCurr++)
-	{
-		SafeDelete(SkinnedCurr->second);
-	}
-#endif
+	mGModels.clear();
+	mGSModels.clear();
 }
 
 void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMgr)
