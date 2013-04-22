@@ -25,11 +25,13 @@ class Game
 
 		Camera* GetCamera();
 	private:
-		GenericModel* mDuckModel;
-		GenericModel* mPlayerModel; 
 		Entity* mDuck;
-		Player* mPlayer;
 		CollisionModel* mDuckColl;
+
+		Entity* mDuck2;
+		CollisionModel* mDuckColl2;
+
+		Player* mPlayer;
 
 		AnimatedEntity* mAnimatedEntity;
 		GenericSkinnedModel* mSkinnedModel;

@@ -113,6 +113,7 @@ Projekt::~Projekt()
 	RenderStates::DestroyAll();
 
 	Settings::GetInstance()->Shutdown();
+	GenericHandler::GetInstance()->Shutdown();
 }
 
 bool Projekt::Init()

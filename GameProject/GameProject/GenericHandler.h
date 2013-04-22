@@ -13,17 +13,16 @@ pekare och kalla på rätt funktion med rätt key
 class GenericHandler
 {
 public:
-	static GenericHandler* GetInstance()
-	{
-		static GenericHandler instance;
-		return &instance;
-	}
+	static GenericHandler* GetInstance();
 	~GenericHandler();
 	void Initialize(ID3D11Device* device, TextureManager* mTextureMgr);
 	GenericModel* GetGenericModel(std::string key);
 	GenericSkinnedModel* GetGenericSkinnedModel(std::string key);
 
+	void Shutdown();
+
 private:
+	static GenericHandler* mInstance;
 	GenericHandler();
 	GenericHandler(GenericHandler const&) {}
 	void operator=(GenericHandler const&) {}
