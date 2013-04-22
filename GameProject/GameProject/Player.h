@@ -11,10 +11,7 @@
 #include <DirectInput.h>
 #include "CollisionModel.h"
 #include "Entity.h"
-
-
-
-
+#include "World.h"
 
 class Player
 {
@@ -24,7 +21,7 @@ public:
 	~Player();
 
 
-	void Update(float dt, DirectInput* dInput, CollisionModel* world);
+	void Update(float dt, DirectInput* dInput, World* world);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
 

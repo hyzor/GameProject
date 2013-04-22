@@ -35,7 +35,6 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 }
 
 
-
 Player::~Player()
 {
 	SafeDelete(mCamera);
@@ -62,14 +61,12 @@ void Player::Shoot()
 	mWeapons[mCurWeaponIndex]->ResetCooldown();*/
 }
 
-
 void Player::TakeDamage(float damage)
 {
 	mHealth -= damage;
 }
 
-
-void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
+void Player::Update(float dt, DirectInput* dInput, World* world)
 {
 	XMMATRIX cJoint = *Joint;
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
@@ -204,8 +201,6 @@ void Player::Update(float dt, DirectInput* dInput, CollisionModel* world)
 	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);
 }
-
-
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {

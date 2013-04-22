@@ -12,7 +12,7 @@ CollisionModel::~CollisionModel()
 	SafeDelete(SplitTree);
 }
 
-void CollisionModel::LoadObj(const std::string& fileName)
+void CollisionModel::LoadObj(std::string fileName)
 {
 	std::vector<XMFLOAT3> positions;
 
@@ -55,7 +55,7 @@ void CollisionModel::LoadObj(const std::string& fileName)
 	XMStoreFloat3(&s, *vMax-*vMin);
 	//BBTree = new BBNodeParent(this, p, s, 0);
 
-	SplitTree = new SplitNodeParent(*vMin, *vMax, 5);
+	SplitTree = new SplitNodeParent(*vMin, *vMax, 2);
 	for(int i = 0; i < Size(); i+=3)
 		SplitTree->Add(GetPosition(i+0), GetPosition(i+1), GetPosition(i+2));
 	SplitTree->CleanUp();
@@ -105,8 +105,9 @@ CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, flo
 					h.t = t;
 				}
 		}*/
-	if(XNA::IntersectRayAxisAlignedBox(origin, dir, &boundingBox, &t) && t < length)
-		h = SplitTree->Intersects(&XMLoadFloat3(&XMFLOAT3(0,0,0)),&origin, &dir, length);
+	XMVECTOR npos = XMLoadFloat3(&pos) * XMLoadFloat3(&XMFLOAT3(1,1,-1));
+	if(XNA::IntersectRayAxisAlignedBox(npos - origin, dir, &boundingBox, &t) && t < length)
+		h = SplitTree->Intersects(&npos,&origin, &dir, length);
 
 	return h;
 }

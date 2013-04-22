@@ -30,7 +30,7 @@ class CollisionModel
 		CollisionModel(XMFLOAT3 pos);
 		~CollisionModel();
 
-		void LoadObj(const std::string& fileName);
+		void LoadObj(std::string fileName);
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
 		void SetPosition(XMFLOAT3 position);

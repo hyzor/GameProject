@@ -5,14 +5,15 @@
 #include <D3D11App.h>
 #include <Camera.h>
 #include <TextureManager.h>
+#include <vector>
 
-#include "GenericModel.h"
 #include "Entity.h"
 #include "Player.h"
 
 #include "AnimatedEntity.h"
-#include "GenericSkinnedModel.h"
 #include "GenericHandler.h"
+
+#include "World.h"
 
 class Game
 {
@@ -25,18 +26,10 @@ class Game
 
 		Camera* GetCamera();
 	private:
-		Entity* mDuck;
-		CollisionModel* mDuckColl;
-
-		Entity* mDuck2;
-		CollisionModel* mDuckColl2;
-
+		World* mWorld;
 		Player* mPlayer;
 
 		AnimatedEntity* mAnimatedEntity;
 		GenericSkinnedModel* mSkinnedModel;
 };
-
-
-
 #endif

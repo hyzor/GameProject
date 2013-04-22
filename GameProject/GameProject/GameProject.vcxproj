@@ -95,9 +95,11 @@
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Common\TextureManager.cpp" />
     <ClCompile Include="Common\xnacollision.cpp" />
+    <ClCompile Include="Duck.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FrustumCulling.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GenericHandler.cpp" />
     <ClCompile Include="GenericSkinnedMesh.cpp" />
     <ClCompile Include="GenericSkinnedModel.cpp" />
     <ClCompile Include="main.cpp" />
@@ -106,15 +108,18 @@
     <ClCompile Include="GenericModel.cpp" />
     <ClCompile Include="GenericObjectLoader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
+    <ClCompile Include="SkinnedModel.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Weapon.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedEntity.h" />
@@ -133,25 +138,31 @@
     <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Common\TextureManager.h" />
     <ClInclude Include="Common\xnacollision.h" />
+    <ClInclude Include="Duck.h" />
     <ClInclude Include="Effects.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FrustumCulling.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GenericHandler.h" />
     <ClInclude Include="GenericMesh.h" />
     <ClInclude Include="GenericModel.h" />
     <ClInclude Include="GenericObjectLoader.h" />
     <ClInclude Include="GenericSkinnedMesh.h" />
     <ClInclude Include="GenericSkinnedModel.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SkinnedData.h" />
+    <ClInclude Include="SkinnedModel.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Weapon.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
