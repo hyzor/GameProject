@@ -54,8 +54,8 @@ class CollisionModel
 		{
 			public:
 				Plane(XMFLOAT3 pos, XMFLOAT3 dir);
-				bool intersectsTriangle(XMVECTOR* move, XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2, float flip);
-				bool intersectsRay(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length, float flip);
+				bool intersectsTriangle(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2, float flip);
+				bool intersectsRay(XMVECTOR* origin, XMVECTOR* dir, float length, float flip);
 
 				XMFLOAT3 dir;
 				XMFLOAT3 pos;
@@ -69,7 +69,7 @@ class CollisionModel
 				virtual bool HasGeometry();
 				virtual void Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2);
 				virtual void CleanUp();
-				virtual Hit Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length);
+				virtual Hit Intersects(XMVECTOR* origin, XMVECTOR* dir, float length);
 			protected:
 				Plane* plane;
 		};
@@ -82,7 +82,7 @@ class CollisionModel
 				bool HasGeometry();
 				void Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2);
 				void CleanUp();
-				Hit Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length);
+				Hit Intersects(XMVECTOR* origin, XMVECTOR* dir, float length);
 			private:
 				SplitNode *left;
 				SplitNode *right;
@@ -96,7 +96,7 @@ class CollisionModel
 				bool HasGeometry();
 				void Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2);
 				void CleanUp();
-				Hit Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length);
+				Hit Intersects(XMVECTOR* origin, XMVECTOR* dir, float length);
 			private:
 				std::vector<XMFLOAT3*> left;
 				std::vector<XMFLOAT3*> right;

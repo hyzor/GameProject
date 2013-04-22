@@ -12,6 +12,7 @@
 #include "CollisionModel.h"
 #include "Entity.h"
 #include "Railgun.h"
+#include "World.h"
 
 class Player
 {

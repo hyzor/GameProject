@@ -8,7 +8,6 @@ CollisionModel::CollisionModel(XMFLOAT3 p)
 
 CollisionModel::~CollisionModel()
 {
-	//SafeDelete(BBTree);
 	SafeDelete(SplitTree);
 }
 
@@ -53,9 +52,8 @@ void CollisionModel::LoadObj(std::string fileName)
 	XMFLOAT3 s;
 	XMStoreFloat3(&p, *vMin);
 	XMStoreFloat3(&s, *vMax-*vMin);
-	//BBTree = new BBNodeParent(this, p, s, 0);
 
-	SplitTree = new SplitNodeParent(*vMin, *vMax, 2);
+	SplitTree = new SplitNodeParent(*vMin, *vMax, 5);
 	for(int i = 0; i < Size(); i+=3)
 		SplitTree->Add(GetPosition(i+0), GetPosition(i+1), GetPosition(i+2));
 	SplitTree->CleanUp();
@@ -77,7 +75,7 @@ XMFLOAT3 *CollisionModel::GetPosition(int index)
 void CollisionModel::SetPosition(XMFLOAT3 position)
 {
 	pos = position;
-	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)+*vMin+0.5f*(*vMax-*vMin));
+	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1))+*vMin+0.5f*(*vMax-*vMin));
 	XMStoreFloat3(&boundingBox.Extents, 0.5f*(*vMax-*vMin));
 }
 
@@ -87,7 +85,7 @@ CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, flo
 	origin *= XMLoadFloat3(&XMFLOAT3(1,1,-1)); //transform problem
 	dir *= XMLoadFloat3(&XMFLOAT3(1,1,-1)); //transform problem
 	
-	Hit h;// = BBTree->Intersects(XMLoadFloat3(&pos), origin, dir, length);
+	Hit h;
 	h.hit = false;
 	h.t = 100000;
 	float t;
@@ -105,9 +103,14 @@ CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, flo
 					h.t = t;
 				}
 		}*/
-	XMVECTOR npos = XMLoadFloat3(&pos) * XMLoadFloat3(&XMFLOAT3(1,1,-1));
-	if(XNA::IntersectRayAxisAlignedBox(npos - origin, dir, &boundingBox, &t) && t < length)
-		h = SplitTree->Intersects(&npos,&origin, &dir, length);
+	XMVECTOR npos = XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1));
+	if(XNA::IntersectRayAxisAlignedBox(origin, dir, &boundingBox, &t) && t < length)
+	{
+		//h.t = 0;
+		//h.hit = true;
+		//return h;
+		h = SplitTree->Intersects(&(origin-npos), &dir, length);
+	}
 
 	return h;
 }
@@ -147,26 +150,26 @@ CollisionModel::Plane::Plane(XMFLOAT3 pos, XMFLOAT3 dir)
 	this->dir = dir;
 }
 
-bool CollisionModel::Plane::intersectsRay(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length, float flip)
+bool CollisionModel::Plane::intersectsRay(XMVECTOR* origin, XMVECTOR* dir, float length, float flip)
 {
-	XMVECTOR newPos = *move - XMLoadFloat3(&pos);
-	XMVECTOR v1 = newPos - *origin;
+	XMVECTOR newPos = XMLoadFloat3(&pos);
+	XMVECTOR v1 = *origin - newPos;
 	if(XMVectorGetX(XMVector3Dot(v1, XMLoadFloat3(&this->dir)))*flip < 0)
 		return true;
-	v1 *= *dir*length;
+	v1 += *dir * length;
 	if(XMVectorGetX(XMVector3Dot(v1, XMLoadFloat3(&this->dir)))*flip < 0)
 		return true;
 	return false;
 }
 
-bool CollisionModel::Plane::intersectsTriangle(XMVECTOR* move, XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2, float flip)
+bool CollisionModel::Plane::intersectsTriangle(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2, float flip)
 {
-	XMVECTOR newPos = *move - XMLoadFloat3(&this->pos);
-	if(XMVectorGetX(XMVector3Dot(newPos - XMLoadFloat3(v0), XMLoadFloat3(&this->dir)))*flip < 0)
+	XMVECTOR newPos = XMLoadFloat3(&this->pos);
+	if(XMVectorGetX(XMVector3Dot(XMLoadFloat3(v0)-newPos, XMLoadFloat3(&this->dir)))*flip < 0)
 		return true;
-	if(XMVectorGetX(XMVector3Dot(newPos - XMLoadFloat3(v1), XMLoadFloat3(&this->dir)))*flip < 0)
+	if(XMVectorGetX(XMVector3Dot(XMLoadFloat3(v1)-newPos, XMLoadFloat3(&this->dir)))*flip < 0)
 		return true;
-	if(XMVectorGetX(XMVector3Dot(newPos - XMLoadFloat3(v2), XMLoadFloat3(&this->dir)))*flip < 0)
+	if(XMVectorGetX(XMVector3Dot(XMLoadFloat3(v2)-newPos, XMLoadFloat3(&this->dir)))*flip < 0)
 		return true;
 	return false;
 }
@@ -202,7 +205,7 @@ void CollisionModel::SplitNode::Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2){}
 
 void CollisionModel::SplitNode::CleanUp(){}
 
-CollisionModel::Hit CollisionModel::SplitNode::Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length)
+CollisionModel::Hit CollisionModel::SplitNode::Intersects(XMVECTOR* origin, XMVECTOR* dir, float length)
 {
 	CollisionModel::Hit h;
 	h.hit = false;
@@ -244,9 +247,9 @@ bool CollisionModel::SplitNodeParent::HasGeometry()
 
 void CollisionModel::SplitNodeParent::Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2)
 {
-	if(plane->intersectsTriangle(&XMLoadFloat3(&XMFLOAT3(0,0,0)), v0, v1, v2, 1))
+	if(plane->intersectsTriangle(v0, v1, v2, 1))
 		left->Add(v0, v1, v2);
-	if(plane->intersectsTriangle(&XMLoadFloat3(&XMFLOAT3(0,0,0)), v0, v1, v2, -1))
+	if(plane->intersectsTriangle(v0, v1, v2, -1))
 		right->Add(v0, v1, v2);
 }
 
@@ -256,16 +259,16 @@ void CollisionModel::SplitNodeParent::CleanUp()
 	if(!right->HasGeometry()) SafeDelete(right);
 }
 
-CollisionModel::Hit CollisionModel::SplitNodeParent::Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length)
+CollisionModel::Hit CollisionModel::SplitNodeParent::Intersects(XMVECTOR* origin, XMVECTOR* dir, float length)
 {
 	CollisionModel::Hit h1;
 	h1.hit = false;
-	if(left != NULL && plane->intersectsRay(move, origin, dir, length, 1))
-		h1 = left->Intersects(move, origin, dir, length);
+	if(left != NULL && plane->intersectsRay(origin, dir, length, 1))
+		h1 = left->Intersects(origin, dir, length);
 	CollisionModel::Hit h2;
 	h2.hit = false;
-	if(right != NULL && plane->intersectsRay(move, origin, dir, length, -1))
-		h2 = right->Intersects(move, origin, dir, length);
+	if(right != NULL && plane->intersectsRay(origin, dir, length, -1))
+		h2 = right->Intersects(origin, dir, length);
 
 	if(h1.hit)
 	{
@@ -295,13 +298,13 @@ bool CollisionModel::SplitNodeLeaf::HasGeometry()
 
 void CollisionModel::SplitNodeLeaf::Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2)
 {
-	if(plane->intersectsTriangle(&XMLoadFloat3(&XMFLOAT3(0,0,0)), v0, v1, v2, 1))
+	if(plane->intersectsTriangle(v0, v1, v2, 1))
 	{
 		left.push_back(v0);
 		left.push_back(v1);
 		left.push_back(v2);
 	}
-	if(plane->intersectsTriangle(&XMLoadFloat3(&XMFLOAT3(0,0,0)), v0, v1, v2, -1))
+	if(plane->intersectsTriangle(v0, v1, v2, -1))
 	{
 		right.push_back(v0);
 		right.push_back(v1);
@@ -311,7 +314,7 @@ void CollisionModel::SplitNodeLeaf::Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* v2
 
 void CollisionModel::SplitNodeLeaf::CleanUp(){}
 
-CollisionModel::Hit CollisionModel::SplitNodeLeaf::Intersects(XMVECTOR* move, XMVECTOR* origin, XMVECTOR* dir, float length)
+CollisionModel::Hit CollisionModel::SplitNodeLeaf::Intersects(XMVECTOR* origin, XMVECTOR* dir, float length)
 {
 
 	float t;
@@ -319,7 +322,7 @@ CollisionModel::Hit CollisionModel::SplitNodeLeaf::Intersects(XMVECTOR* move, XM
 	h.hit = false;
 	h.t = MathHelper::infinity;
 
-	if(plane->intersectsRay(move, origin, dir, length, 1))
+	if(plane->intersectsRay(origin, dir, length, 1))
 		for(int i = 0; i < (int)left.size(); i+=3)
 		{
 			XMVECTOR v0 = XMLoadFloat3(left[i+0]);
@@ -333,7 +336,7 @@ CollisionModel::Hit CollisionModel::SplitNodeLeaf::Intersects(XMVECTOR* move, XM
 				}
 		}
 
-	if(plane->intersectsRay(move, origin, dir, length, -1))
+	if(plane->intersectsRay(origin, dir, length, -1))
 		for(int i = 0; i < (int)right.size(); i+=3)
 		{
 			XMVECTOR v0 = XMLoadFloat3(right[i+0]);
