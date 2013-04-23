@@ -14,6 +14,7 @@
 #include "GenericSkinnedModel.h"
 
 #include "SoundModule.h"
+#include "SoundHelp.h"
 
 class Game
 {

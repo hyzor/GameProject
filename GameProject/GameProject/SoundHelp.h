@@ -11,9 +11,9 @@ enum Sound3D
 	Jump = 5
 };
 
-enum sound
+enum Sound
 {
-	Background = 1
+	Song1 = 0
 };
 
 

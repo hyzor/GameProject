@@ -13,6 +13,7 @@
 #include <vector>
 #include <DirectInput.h>
 #include <Camera.h>
+#include "OggVorbisPlayer.h"
 
 
 struct Position
@@ -58,7 +59,6 @@ class SoundModule
 		IDirectSoundBuffer* primaryBuffer;
 		IDirectSound3DListener8* listener;
 
-		IDirectSoundBuffer8* secondaryBackgroundBuffer;
 		std::vector<SoundSource> sounds3D;
 		std::vector<SoundSource> sounds;
 		std::vector<IDirectSoundBuffer8*> secondaryBuffers; 
@@ -66,6 +66,7 @@ class SoundModule
 		std::vector<int> IDIndices;
 
 		bool SFXMuted;
+		OggVorbisPlayer ovp;
 
 		/////////////////////////////////////////
 
@@ -77,15 +78,18 @@ class SoundModule
 		void createAllSounds();
 		void createSound(char*, bool is3DSound, int soundID);
 		bool loadWaveFiles();
+		void setListenerOrientation(float x, float y, float z, float xTop, float yTop, float zTop);
 		HRESULT initiationPlay();
-
-
+		
 	public:
 		SoundModule();
 		SoundModule(const SoundModule&);
 		void setListenerPosition(float x, float y, float z);
+		void updateListener(float x, float y, float z);
+		void updateOggVorbPlayer();
 		void setSoundPosition(float x, float y, float z);
 		void playSound(float x, float y, float z, int soundID);
+		void playMusic();
 		virtual ~SoundModule();
 		bool initialize(HWND hwnd, DirectInput* di);
 		void shutDown();
@@ -96,6 +100,7 @@ class SoundModule
 		HRESULT getSFXVolume() const;
 		long getMusicVolume() const;
 		void inputGeneration(float x, float y, float z);
+		void loadMusic(int soundID);
 };
 
 

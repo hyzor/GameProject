@@ -5,9 +5,7 @@ SoundModule::SoundModule()
 	this->directSound = NULL;;
 	this->primaryBuffer = NULL;
 	this->listener = NULL;
-	this->secondaryBackgroundBuffer = NULL;
 	this->SFXMuted = false;
-
 }
 
 SoundModule::SoundModule(const SoundModule& SM)
@@ -49,7 +47,8 @@ bool SoundModule::initialize(HWND hwnd, DirectInput* di)
 	result = this->initiationPlay(); //In order to make DirectSound create a primarybuffer (it does this during the first play()-call)
 	
 	this->setSFXVolume(DSBVOLUME_MAX);
-	
+
+	this->ovp.useDirectSound(this->directSound);
 
 	return result;
 }
@@ -62,6 +61,9 @@ void SoundModule::shutDown()
 	{
 		shutDownWaveFile(&(this->secondaryBuffers.at(i)), &(this->secondary3DBuffers.at(i)));
 	}
+
+	//this->ovp.stop();
+	this->ovp.shutDownPlayer(); 
 
 	// Shutdown the Direct Sound API.
 	shutDownDirectSound();
@@ -107,20 +109,20 @@ bool SoundModule::initializeDirectSound(HWND hwnd)
 
 	// Setup the format of the primary sound bufffer.
 	// In this case it is a .WAV file recorded at 44,100 samples per second in 16-bit stereo (cd audio format).
-	waveFormat.wFormatTag = WAVE_FORMAT_PCM;
-	waveFormat.nSamplesPerSec = 44100;
-	waveFormat.wBitsPerSample = 16;
-	waveFormat.nChannels = 2;
-	waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
-	waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
-	waveFormat.cbSize = 0;
+	//waveFormat.wFormatTag = WAVE_FORMAT_PCM;
+	//waveFormat.nSamplesPerSec = 44100;
+	//waveFormat.wBitsPerSample = 16;
+	//waveFormat.nChannels = 2;
+	//waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
+	//waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
+	//waveFormat.cbSize = 0;
 
-	// Set the primary buffer to be the wave format specified.
-	result = primaryBuffer->SetFormat(&waveFormat);
-	if(FAILED(result))
-	{
-		return false;
-	}
+	//// Set the primary buffer to be the wave format specified.
+	//result = primaryBuffer->SetFormat(&waveFormat);
+	//if(FAILED(result))
+	//{
+	//	return false;
+	//}
 
 
 	// Obtain a listener interface.
@@ -153,6 +155,9 @@ void SoundModule::shutDownDirectSound()
 		this->primaryBuffer = 0;
 	}
 
+	
+	
+
 	// Release the direct sound interface pointer.
 	if(this->directSound)
 	{
@@ -176,7 +181,7 @@ bool SoundModule::loadWaveFile(char* filename, IDirectSoundBuffer8** secondaryBu
 	unsigned long bufferSize;
 
 	// Open the wave file in binary.
-	error = fopen_s(&filePtr, filename/*"../../grunt_01.wav"*/, "rb");
+	error = fopen_s(&filePtr, filename, "rb");
 	if(error != 0)
 	{
 		MessageBox(0, L"here", 0, 0);
@@ -355,13 +360,10 @@ void SoundModule::shutDownWaveFile(IDirectSoundBuffer8** secondaryBuffer, IDirec
 
 void SoundModule::createAllSounds()
 {
-	Position standardPos;
-	standardPos.x = 0.0f;
-	standardPos.y = 0.0f;
-	standardPos.z = 0.0f;
-
 	createSound(/*"../../grunt_01.wav"*/ "Data/Sounds/grunt_01.wav", true, PlayerGrunt);
 	createSound(/*"../../firing_weapon_03.wav*/ "Data/Sounds/firing_weapon_03.wav", true, FireWeapon);
+
+	createSound("Data/Sounds/14_Aerials.ogg", false, Song1);
 }
 
 void SoundModule::createSound(char* path,  bool is3DSound, int ID)
@@ -480,7 +482,6 @@ HRESULT SoundModule::setMusicVolume(long vlm)
 	else if(vlm < DSBVOLUME_MIN)
 		vlm = DSBVOLUME_MIN;
 
-	result = this->secondaryBackgroundBuffer->SetVolume(vlm);
 
 	return result;
 }
@@ -554,7 +555,6 @@ long SoundModule::getMusicVolume() const
 {
 	long vlm;
 
-	this->secondaryBackgroundBuffer->GetVolume(&vlm);
 
 	return vlm;
 }
@@ -619,4 +619,30 @@ HRESULT SoundModule::initiationPlay()
 		MessageBox(0, L"here",0,0);
 
 	return result;
+}
+
+void SoundModule::setListenerOrientation(float x, float y, float z, float xTop, float yTop, float zTop)
+{
+	this->listener->SetOrientation(x, y, z, xTop, yTop, zTop, DS3D_DEFERRED);
+}
+
+void SoundModule::updateOggVorbPlayer()
+{
+	this->ovp.update();
+}
+
+void SoundModule::playMusic()
+{
+	this->ovp.play(true);
+}
+
+void SoundModule::loadMusic(int sID)
+{
+	for(int i = 0; i < this->sounds.size(); i++)
+	{
+		if(sID == this->sounds.at(i).soundID)
+		{
+			this->ovp.openOggFile(this->sounds.at(i).path);
+		}
+	}
 }

@@ -30,6 +30,8 @@ Game::~Game()
 
  	SafeDelete(mSkinnedModel);
  	SafeDelete(mAnimatedEntity);
+
+	//this->soundModule->shutDown();
 	SafeDelete(soundModule);
 }
 
@@ -53,6 +55,7 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 
 	this->soundModule->inputGeneration(pos.x, pos.y, pos.z);
 	this->soundModule->setListenerPosition(pos.x, pos.y, pos.z);
+	this->soundModule->updateOggVorbPlayer();
 }
 
 Camera* Game::GetCamera()
@@ -63,4 +66,6 @@ Camera* Game::GetCamera()
 void Game::initSoundModule(HWND hwnd, DirectInput* di)
 {
 	this->soundModule->initialize(hwnd, di);
+	this->soundModule->loadMusic(Song1);
+	this->soundModule->playMusic();
 }
