@@ -7,13 +7,14 @@ enum Sound3D
 	FireWeapon = 1,
 	EnemyGrunt = 2,
 	SwitchSound = 3,
-	Walking = 4,
+	Running = 4,
 	Jump = 5
 };
 
 enum Sound
 {
-	Song1 = 0
+	Song1 = 0,
+	Song2 = 1
 };
 
 

@@ -6,6 +6,8 @@ SoundModule::SoundModule()
 	this->primaryBuffer = NULL;
 	this->listener = NULL;
 	this->SFXMuted = false;
+	this->musicMuted = false;
+	this->muteTimer = clock();
 }
 
 SoundModule::SoundModule(const SoundModule& SM)
@@ -48,8 +50,8 @@ bool SoundModule::initialize(HWND hwnd, DirectInput* di)
 	
 	this->setSFXVolume(DSBVOLUME_MAX);
 
-	this->ovp.useDirectSound(this->directSound);
-
+	//this->ovp.useDirectSound(this->directSound);
+	this->ovp.initDirectSound(hwnd);
 	return result;
 }
 
@@ -360,10 +362,12 @@ void SoundModule::shutDownWaveFile(IDirectSoundBuffer8** secondaryBuffer, IDirec
 
 void SoundModule::createAllSounds()
 {
-	createSound(/*"../../grunt_01.wav"*/ "Data/Sounds/grunt_01.wav", true, PlayerGrunt);
-	createSound(/*"../../firing_weapon_03.wav*/ "Data/Sounds/firing_weapon_03.wav", true, FireWeapon);
+	createSound("Data/Sounds/grunt_01.wav", true, PlayerGrunt);
+	createSound("Data/Sounds/firing_weapon_03.wav", true, FireWeapon);
+	createSound("Data/Sounds/running.wav", true, Running);
 
 	createSound("Data/Sounds/14_Aerials.ogg", false, Song1);
+	createSound("Data/Sounds/Storaged.ogg", false, Song2);
 }
 
 void SoundModule::createSound(char* path,  bool is3DSound, int ID)
@@ -402,13 +406,83 @@ bool SoundModule::loadWaveFiles()
 	return result;
 }
 
-bool SoundModule::playWaveFile(float x, float y, float z, int soundID)
+bool SoundModule::playWaveFile(float x, float y, float z, int soundID, bool looping)
+{
+	HRESULT result;
+	DWORD status;
+
+	for(int i = 0; i < this->secondaryBuffers.size(); i++)
+	{
+		if(soundID == this->IDIndices.at(i))
+		{
+			secondaryBuffers.at(i)->GetStatus(&status);
+
+			if(!(status == DSBSTATUS_PLAYING))
+			{
+
+				result = secondaryBuffers.at(i)->SetCurrentPosition(0);
+				if(FAILED(result))
+				{
+					return false;
+				}
+
+				result = secondary3DBuffers.at(i)->SetPosition(x, y, z, DS3D_DEFERRED);
+				if(FAILED(result))
+				{
+					return false;
+				}
+
+				result = secondary3DBuffers.at(i)->SetMinDistance(20.0f, DS3D_DEFERRED);
+				if(FAILED(result))
+				{
+					return false;
+				}
+
+				this->listener->CommitDeferredSettings();
+
+			
+
+			
+
+				if(!looping)
+				{
+					result = secondaryBuffers.at(i)->Play(0, 0, 0);
+					if(FAILED(result))
+					{
+						return false;
+					}
+				}
+				else if(looping)
+				{
+					result = secondaryBuffers.at(i)->Play(0, 0, DSBPLAY_LOOPING);
+					if(FAILED(result))
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+void SoundModule::playSound(float x, float y, float z, int soundID, bool looping)
+{
+	bool result = playWaveFile(x, y, z, soundID, looping);
+	if(!result)
+	{
+		MessageBox(0, L"Failing playing sound.", 0, 0);
+	}
+}
+
+bool SoundModule::playSound(XMFLOAT3 pos, int sID)
 {
 	HRESULT result;
 	
 	for(int i = 0; i < this->secondaryBuffers.size(); i++)
 	{
-		if(soundID == this->IDIndices.at(i))
+		if(sID == this->IDIndices.at(i))
 		{
 			result = secondaryBuffers.at(i)->SetCurrentPosition(0);
 			if(FAILED(result))
@@ -416,7 +490,7 @@ bool SoundModule::playWaveFile(float x, float y, float z, int soundID)
 				return false;
 			}
 
-			result = secondary3DBuffers.at(i)->SetPosition(x, y, z, DS3D_DEFERRED);
+			result = secondary3DBuffers.at(i)->SetPosition(pos.x, pos.y, pos.z, DS3D_DEFERRED);
 			if(FAILED(result))
 			{
 				return false;
@@ -436,17 +510,6 @@ bool SoundModule::playWaveFile(float x, float y, float z, int soundID)
 				return false;
 			}
 		}
-	}
-
-	return true;
-}
-
-void SoundModule::playSound(float x, float y, float z, int soundID)
-{
-	bool result = playWaveFile(x, y, z, soundID);
-	if(!result)
-	{
-		MessageBox(0, L"Failing playing sound.", 0, 0);
 	}
 }
 
@@ -482,6 +545,7 @@ HRESULT SoundModule::setMusicVolume(long vlm)
 	else if(vlm < DSBVOLUME_MIN)
 		vlm = DSBVOLUME_MIN;
 
+	this->ovp.setVolume(vlm);
 
 	return result;
 }
@@ -530,6 +594,9 @@ HRESULT SoundModule::setVolume(long vlm, int SoundID)
 				return false;
 		}
 	}
+
+	this->ovp.setVolume(vlm);
+
 	return result;
 }
 
@@ -555,6 +622,7 @@ long SoundModule::getMusicVolume() const
 {
 	long vlm;
 
+	vlm = this->ovp.getVolume();
 
 	return vlm;
 }
@@ -564,7 +632,13 @@ void SoundModule::inputGeneration(float x, float y, float z)
 	long currentVolume = 0;
 	if(this->dInput->GetKeyboardState()[DIK_M] && 0x80 )
 	{
-		this->muteSFX();
+		clock_t curTime = clock();
+		if((curTime - this->muteTimer) > 500 )
+		{
+			this->muteSFX();
+			this->muteMusic();
+			this->muteTimer = clock();
+		}
 	}
 	if((this->dInput->GetMouseState().rgbButtons[0] && 0x80 ))
 	{
@@ -574,16 +648,62 @@ void SoundModule::inputGeneration(float x, float y, float z)
 	{
 		currentVolume = this->getSFXVolume();
 		this->setSFXVolume(currentVolume + 500);
+
+		currentVolume = 0;
+		currentVolume = this->getMusicVolume();
+		this->setMusicVolume(currentVolume + 500);
 	}
 	if(this->dInput->GetKeyboardState()[DIK_SUBTRACT] && 0x80 )
 	{
 		currentVolume = this->getSFXVolume();
 		this->setSFXVolume(currentVolume - 500);
+
+		currentVolume = 0;
+		currentVolume = this->getMusicVolume();
+		this->setMusicVolume(currentVolume - 500);
 	}
 	if(this->dInput->GetKeyboardState()[DIK_NUMPAD1] && 0x80)
 	{
 		this->playSound(0,0,0, PlayerGrunt);
 	}
+	if(this->dInput->GetKeyboardState()[DIK_N] && 0x80)
+	{
+		this->loadMusic(Song2);
+		this->playMusic();
+	}
+	if( (this->dInput->GetKeyboardState()[DIK_W] || this->dInput->GetKeyboardState()[DIK_A] ||
+		this->dInput->GetKeyboardState()[DIK_S] || this->dInput->GetKeyboardState()[DIK_D]) && 0x80)
+	{
+		this->playSound(0, 0, 0, Running, false);
+	}
+	else
+	{
+		this->stopSound(Running);
+	}
+}
+
+bool SoundModule::stopSound(int sID)
+{
+	HRESULT result;
+	DWORD status;
+
+	for(int i = 0; i < this->secondaryBuffers.size(); i++)
+	{
+		if(sID == this->IDIndices.at(i))
+		{
+			
+			this->secondaryBuffers.at(i)->GetStatus(&status);
+
+			if((status == DSBSTATUS_PLAYING))
+			{
+				this->secondaryBuffers.at(i)->Stop();
+				this->secondaryBuffers.at(i)->SetCurrentPosition(0);
+			}
+			
+		}
+	}
+
+	return true;
 }
 
 HRESULT SoundModule::initiationPlay()
@@ -645,4 +765,23 @@ void SoundModule::loadMusic(int sID)
 			this->ovp.openOggFile(this->sounds.at(i).path);
 		}
 	}
+}
+
+HRESULT SoundModule::muteMusic()
+{
+	if(!(this->musicMuted))
+	{
+		this->ovp.setVolume(DSBVOLUME_MIN);
+	}
+	else
+	{
+		this->ovp.setVolume(DSBVOLUME_MAX);
+	}
+
+	if(this->musicMuted)
+		this->musicMuted = false;
+	else
+		this->musicMuted = true;
+
+	return true;
 }

@@ -14,6 +14,7 @@
 #include <DirectInput.h>
 #include <Camera.h>
 #include "OggVorbisPlayer.h"
+#include <time.h>
 
 
 struct Position
@@ -66,7 +67,9 @@ class SoundModule
 		std::vector<int> IDIndices;
 
 		bool SFXMuted;
+		bool musicMuted;
 		OggVorbisPlayer ovp;
+		clock_t muteTimer;
 
 		/////////////////////////////////////////
 
@@ -74,7 +77,7 @@ class SoundModule
 		void shutDownDirectSound();
 		bool loadWaveFile(char*, IDirectSoundBuffer8**, IDirectSound3DBuffer8**, int IDIndex);
 		void shutDownWaveFile(IDirectSoundBuffer8**, IDirectSound3DBuffer8**);
-		bool playWaveFile(float x, float y, float z, int soundID );
+		bool playWaveFile(float x, float y, float z, int soundID, bool looping = false);
 		void createAllSounds();
 		void createSound(char*, bool is3DSound, int soundID);
 		bool loadWaveFiles();
@@ -88,16 +91,19 @@ class SoundModule
 		void updateListener(float x, float y, float z);
 		void updateOggVorbPlayer();
 		void setSoundPosition(float x, float y, float z);
-		void playSound(float x, float y, float z, int soundID);
+		void playSound(float x, float y, float z, int soundID, bool looping = false);
+		bool playSound(XMFLOAT3, int soundID);
+		bool stopSound(int sID);
 		void playMusic();
 		virtual ~SoundModule();
 		bool initialize(HWND hwnd, DirectInput* di);
 		void shutDown();
 		HRESULT setSFXVolume(long vlm);
 		HRESULT setMusicVolume(long vlm);
+		HRESULT muteMusic();
 		HRESULT muteSFX(); //mutes SFX, call again to unmute
 		HRESULT setVolume(long vlm, int SoundID);
-		HRESULT getSFXVolume() const;
+		long getSFXVolume() const;
 		long getMusicVolume() const;
 		void inputGeneration(float x, float y, float z);
 		void loadMusic(int soundID);

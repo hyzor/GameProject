@@ -8,6 +8,7 @@ OggVorbisPlayer::OggVorbisPlayer()
 	this->almostDone = false;
 	this->done = false;
 	this->loop = false;
+	this->initDS = false;
 }
 
 OggVorbisPlayer::OggVorbisPlayer(const OggVorbisPlayer& ovp)
@@ -23,6 +24,7 @@ OggVorbisPlayer::~OggVorbisPlayer()
 void OggVorbisPlayer::useDirectSound(IDirectSound8* _ds)
 {
 	this->ds = _ds;
+	this->initDS = false;
 }
 
 bool OggVorbisPlayer::openOggFile(char* filePath)
@@ -31,6 +33,19 @@ bool OggVorbisPlayer::openOggFile(char* filePath)
 	WAVEFORMATEX wfm;
 	DSBUFFERDESC bDesc;
 	HRESULT result;
+
+	//if another song has already been loaded, deallocate
+	if(this->sBuffer)
+	{
+		this->sBuffer->Release();
+		this->sBuffer = NULL;
+
+		if(&this->vf)
+		ov_clear(&this->vf);
+	}
+
+	
+		
 
 	f = fopen(filePath, "rb");
 	if(FAILED(f))
@@ -50,7 +65,7 @@ bool OggVorbisPlayer::openOggFile(char* filePath)
 	wfm.wFormatTag = 1;
 
 	bDesc.dwSize = sizeof(bDesc);
-	bDesc.dwFlags = 0;
+	bDesc.dwFlags = DSBCAPS_CTRLVOLUME;
 	bDesc.lpwfxFormat = &wfm;
 	bDesc.dwReserved = 0;
 	bDesc.dwBufferBytes = BUFFERSIZE_HALF * 2;
@@ -84,10 +99,6 @@ bool OggVorbisPlayer::openOggFile(char* filePath)
 	}
 
 	this->sBuffer->Unlock(buff, size, NULL, NULL);
-	/*if(vi != NULL)
-	{
-		delete vi;
-	}*/
 
 	return true;
 }
@@ -173,4 +184,79 @@ void OggVorbisPlayer::shutDownPlayer()
 		this->sBuffer = 0;
 	}
 	ov_clear(&this->vf);
+
+	if(this->initDS)
+		delete this->ds;
+}
+
+bool OggVorbisPlayer::initDirectSound(HWND hwnd)
+{
+	HRESULT result;
+	DSBUFFERDESC bufferDesc;
+
+	result = DirectSoundCreate8(NULL, &this->ds, NULL);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+
+	result = ds->SetCooperativeLevel(hwnd, DSSCL_PRIORITY);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+
+
+	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
+	bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
+	bufferDesc.dwBufferBytes = 0;
+	bufferDesc.dwReserved = 0;
+	bufferDesc.lpwfxFormat = NULL;
+	bufferDesc.guid3DAlgorithm = GUID_NULL;
+
+
+	result = ds->CreateSoundBuffer(&bufferDesc, &this->sBuffer, NULL);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+	this->initDS = true;
+
+	return true;
+}
+
+void OggVorbisPlayer::setVolume(long vlm)
+{
+	HRESULT r;
+
+	r = this->sBuffer->SetVolume(vlm);
+	/*if(r == DSERR_CONTROLUNAVAIL)
+	{
+		MessageBox(0, L"1", 0, 0);
+	}
+	else if(r == DS_OK)
+	{
+		MessageBox(0, L"no issue", 0, 0);
+	}
+	else if(r == DSERR_INVALIDPARAM)
+	{
+		MessageBox(0, L"2", 0, 0);
+	}
+	else if(r == DSERR_PRIOLEVELNEEDED)
+	{
+		MessageBox(0, L"3", 0, 0);
+	}*/
+}
+
+
+long OggVorbisPlayer::getVolume() const
+{
+	long vlm = 0;
+
+	this->sBuffer->GetVolume(&vlm);
+
+	return vlm;
 }

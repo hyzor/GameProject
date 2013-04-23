@@ -21,6 +21,7 @@ class OggVorbisPlayer
 		bool almostDone;
 		bool loop;
 		bool done;
+		bool initDS;
 
 		OggVorbis_File vf;
 		IDirectSoundBuffer* sBuffer;
@@ -30,12 +31,15 @@ class OggVorbisPlayer
 		OggVorbisPlayer(const OggVorbisPlayer& ovp);
 		virtual ~OggVorbisPlayer();
 
+		bool initDirectSound(HWND);
 		void useDirectSound(IDirectSound8* _ds);
 		bool openOggFile(char* filePath);
 		void close();
 		void play(bool loop = false);
 		void stop();
 		void update();
+		void setVolume(long vlm);
+		long getVolume() const;
 
 		void shutDownPlayer();
 		
