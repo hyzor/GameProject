@@ -112,6 +112,7 @@ int D3D11App::Run()
 			{
 				Sleep(100);
 			}
+			UpdateNetwork();
 		}
 	}
 

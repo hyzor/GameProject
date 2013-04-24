@@ -1,11 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Network.h"
 #include <d3dUtilities.h>
 #include <D3D11App.h>
 #include <Camera.h>
 #include <TextureManager.h>
 #include <vector>
+#include <typeinfo>
 
 #include "Entity.h"
 #include "Player.h"
@@ -14,6 +16,7 @@
 #include "GenericHandler.h"
 
 #include "World.h"
+#include "Package.h"
 
 class Game
 {
@@ -23,6 +26,7 @@ class Game
 
 		void Update(float deltaTime, DirectInput* di);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
+		void HandlePackage(Package* p);
 
 		Camera* GetCamera();
 	private:
@@ -31,5 +35,7 @@ class Game
 
 		AnimatedEntity* mAnimatedEntity;
 		GenericSkinnedModel* mSkinnedModel;
+
+		float t;
 };
 #endif

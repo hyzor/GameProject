@@ -40,19 +40,7 @@ Player::~Player()
 
 void Player::Shoot()
 {
-	mWeapons.at(mCurWeaponIndex)->FireProjectile(); //Objekt orienterat!!
-	/*if (mWeapons[mCurWeaponIndex]->GetCooldown() > 0.0f)
-		return false;
-
-	if(mWeapons[mCurWeaponIndex]->GetType() == Weapon::TYPE_RAILGUN)
-	{
-		// Shoot laser beam
-		// Emit new particles going forward in a straight line
-		// Forming a type of beam
-		mWeapons[mCurWeaponIndex]->FireProjectile(Weapon::TYPE_RAILGUN, mWeapons[mCurWeaponIndex]->GetNumProjectiles());
-	}
-
-	mWeapons[mCurWeaponIndex]->ResetCooldown();*/
+	mWeapons.at(mCurWeaponIndex)->FireProjectile();
 }
 
 void Player::TakeDamage(float damage)
@@ -129,10 +117,6 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 	bool OnGround = false;
 	XMVECTOR dir;
 	CollisionModel::Hit hit;
-
-	/*XNA::AxisAlignedBox boundingBox;
-	XMStoreFloat3(&boundingBox.Center, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
-	XMStoreFloat3(&boundingBox.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(6,10,6)), cJoint));*/
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), cJoint);
 	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), cJoint), dir, 20); 

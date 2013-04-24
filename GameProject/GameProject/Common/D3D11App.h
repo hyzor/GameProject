@@ -33,6 +33,7 @@ public:
 	virtual void OnResize(); 
 	virtual void UpdateScene(float dt)=0;
 	virtual void DrawScene()=0;
+	virtual void UpdateNetwork()=0;
 
 	// Convenience overrides for handling mouse input
 	virtual void OnMouseDown(WPARAM btnState, int x, int y){ }

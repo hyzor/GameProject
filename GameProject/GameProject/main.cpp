@@ -1,3 +1,4 @@
+#include "Game.h"
 #include "GenericModel.h"
 #include "GenericSkinnedModel.h"
 #include "Player.h"
@@ -6,13 +7,13 @@
 #include "FrustumCulling.h"
 #include "RenderStates.h"
 
-#include "Game.h"
 
 #include "Entity.h"
 
 #include "Settings.h"
 
 #include "GenericHandler.h"
+
 
 class Projekt : public D3D11App
 {
@@ -23,6 +24,7 @@ public:
 	bool Init();
 	void OnResize();
 	void UpdateScene(float dt);
+	void UpdateNetwork();
 	void DrawScene();
 
 private:
@@ -114,6 +116,8 @@ Projekt::~Projekt()
 
 	Settings::GetInstance()->Shutdown();
 	GenericHandler::GetInstance()->Shutdown();
+
+	Network::GetInstance()->Close();
 }
 
 bool Projekt::Init()
@@ -136,6 +140,9 @@ bool Projekt::Init()
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
+
+	Network::GetInstance()->Initialize();
+	Network::GetInstance()->Start();
 
 	// Set if window is fullscreen or not
 	D3D11App::SetFullscreen(Settings::GetInstance()->GetData().IsFullscreen);
@@ -189,6 +196,7 @@ bool Projekt::Init()
 // 	mSceneBounds.Radius = sqrtf(extent.x*extent.x + extent.y*extent.y + extent.z*extent.z);
 
 	OnResize();
+
 
 	return true;
 }
@@ -292,6 +300,8 @@ void Projekt::UpdateScene(float dt)
 	// Update objects
 	mGame->Update(dt, mDirectInput);
 
+	
+
 	// Update shadow map
 	mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);
 
@@ -303,4 +313,25 @@ void Projekt::UpdateScene(float dt)
 	outs << L"    " << mFrustumCulling->GetNumVisible() << 
 		L" objects visible out of " << mGenericInstances.size();
 	mMainWndCaption = outs.str();
+}
+
+void Projekt::UpdateNetwork()
+{
+	if(Network::GetInstance()->Running())
+	{
+		Package* p = Network::GetInstance()->GetPackage();
+		if(p->Size() > 0)
+			mGame->HandlePackage(p);
+		delete p;
+
+		for(int i = 0; i < Network::GetInstance()->Queue().size(); i++)
+		{
+			p = Network::GetInstance()->Pop();
+			Network::GetInstance()->SendPackage(p->GetData(), p->Size());
+			delete p;
+		}
+	}
+	else
+		while(!Network::GetInstance()->Queue().empty())
+			delete Network::GetInstance()->Pop();
 }

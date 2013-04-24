@@ -15,6 +15,8 @@ public:
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 	void Update(float dt);
 
+	void SetPosition(XMFLOAT3 pos);
+
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;
 	float Rotation;

@@ -16,10 +16,7 @@ AnimatedEntity::AnimatedEntity(GenericSkinnedModel* model, XMFLOAT3 position)
 	this->Scale = XMFLOAT3(1, 1, 1);
 	this->Rotation = 0.0f;
 
-	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
-	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
-	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+	SetPosition(position);
 }
 
 
@@ -86,4 +83,14 @@ void AnimatedEntity::Draw( ID3D11DeviceContext* dc, ID3DX11EffectTechnique* acti
 void AnimatedEntity::Update(float dt)
 {
 	mInstance.Update(dt);
+}
+
+void AnimatedEntity::SetPosition(XMFLOAT3 pos)
+{
+	this->Position = pos;
+
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
 }
