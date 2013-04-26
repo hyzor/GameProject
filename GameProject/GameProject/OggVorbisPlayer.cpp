@@ -112,10 +112,12 @@ void OggVorbisPlayer::play(bool _loop)
 	this->done = false;
 	this->almostDone = false;
 }
+
 void OggVorbisPlayer::stop()
 {
 	this->sBuffer->Stop();
 }
+
 void OggVorbisPlayer::update()
 {
 	DWORD pos;

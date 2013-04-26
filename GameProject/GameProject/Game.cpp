@@ -50,12 +50,7 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
  	mAnimatedEntity->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
 	
 	Camera* cam = this->mPlayer->GetCamera();
-	XMFLOAT3 pos = cam->GetPosition();
-
-
-	this->soundModule->inputGeneration(pos.x, pos.y, pos.z);
-	this->soundModule->setListenerPosition(pos.x, pos.y, pos.z);
-	this->soundModule->updateOggVorbPlayer();
+	this->soundModule->updateAndPlay(cam);
 }
 
 Camera* Game::GetCamera()
@@ -66,6 +61,6 @@ Camera* Game::GetCamera()
 void Game::initSoundModule(HWND hwnd, DirectInput* di)
 {
 	this->soundModule->initialize(hwnd, di);
-	this->soundModule->loadMusic(Song1);
-	this->soundModule->playMusic();
+	//this->soundModule->loadMusic();
+	//this->soundModule->playMusic();
 }

@@ -5,12 +5,7 @@
 #pragma comment(lib, "vorbis_static.lib")
 #pragma comment(lib, "ogg_static.lib")
 
-#include <vorbis/codec.h>
-#include <vorbis/vorbisfile.h>
-#include <Windows.h>
-#include <MMReg.h>
-#include <dsound.h>
-
+#include "SoundHelp.h"
 const int BUFFERSIZE_HALF = 15 * 1024;
 
 class OggVorbisPlayer
