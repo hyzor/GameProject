@@ -184,10 +184,10 @@ void OggVorbisPlayer::shutDownPlayer()
 	{
 		this->sBuffer->Release();
 		this->sBuffer = 0;
+		ov_clear(&this->vf);
 	}
-	ov_clear(&this->vf);
-
-	if(this->initDS)
+	
+	if(this->initDS && this->ds)
 		delete this->ds;
 }
 

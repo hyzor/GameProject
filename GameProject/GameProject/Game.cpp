@@ -50,7 +50,8 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
  	mAnimatedEntity->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
 	
 	Camera* cam = this->mPlayer->GetCamera();
-	this->soundModule->updateAndPlay(cam);
+	XMFLOAT3 playerPos = this->mPlayer->GetPosition();
+	this->soundModule->updateAndPlay(cam, playerPos);
 }
 
 Camera* Game::GetCamera()

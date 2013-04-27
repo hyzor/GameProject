@@ -49,14 +49,17 @@ class SoundModule
 
 		std::vector<SoundSource> sounds3D;
 		std::vector<SoundSource> sounds;
-		std::vector<IDirectSoundBuffer8*> sBuffers; 
+		std::vector<IDirectSoundBuffer8*> sBuffers; //buffers to play sounds that the player generates
 		std::vector<IDirectSound3DBuffer*> s3DBuffers;
+		std::vector<IDirectSoundBuffer8*> sEnemyBuffers; //buffers to play sounds that the enemies generates
+		std::vector<IDirectSound3DBuffer*> s3DEnemyBuffers;
 		std::vector<int> IDIndices;
 
 		bool SFXMuted;
 		bool musicMuted;
 		bool musicLoaded;
 		int currSong;
+		int nrOfEnemies;
 		OggVorbisPlayer ovp;
 		clock_t muteTimer, musicSwapTimer;
 
@@ -88,9 +91,9 @@ class SoundModule
 		HRESULT setVolume(long vlm, int SoundID);
 		long getSFXVolume() const;
 		long getMusicVolume() const;
-		void inputGeneration();
+		void inputGeneration(XMFLOAT3 playerPos);
 		void loadMusic(int sID = 0);
-		bool updateAndPlay(Camera* pCamera);
+		bool updateAndPlay(Camera* pCamera, XMFLOAT3 playerPos);
 };
 
 
