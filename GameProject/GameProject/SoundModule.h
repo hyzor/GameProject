@@ -72,7 +72,7 @@ class SoundModule
 		void createAllSounds();
 		void createSound(char* path, bool is3DSound, int soundID);
 		bool loadWaveFiles();
-		HRESULT initiationPlay();
+		bool initiationPlay();
 		
 	public:
 		SoundModule();

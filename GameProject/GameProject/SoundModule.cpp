@@ -63,7 +63,7 @@ void SoundModule::shutDown()
 {
 
 	// There is one secondary 3D buffer for each secondary buffer. So one loop is possible.
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		shutDownWaveFile(&(this->sBuffers.at(i)), &(this->s3DBuffers.at(i)));
 	}
@@ -79,7 +79,6 @@ bool SoundModule::initializeDirectSound(HWND hwnd)
 {
 	HRESULT result;
 	DSBUFFERDESC bufferDesc;
-	WAVEFORMATEX waveFormat;
 
 
 	// Initialize the direct sound interface pointer for the default sound device.
@@ -375,7 +374,7 @@ void SoundModule::createSound(char* path,  bool is3DSound, int ID)
 bool SoundModule::loadWaveFiles()
 {
 	bool result;
-	for(int i = 0; i < this->sounds3D.size(); i++)
+	for(unsigned int i = 0; i < this->sounds3D.size(); i++)
 	{	
 		IDirectSoundBuffer8* SB;
 		IDirectSound3DBuffer* SB3D;
@@ -395,7 +394,7 @@ bool SoundModule::playSFX(XMFLOAT3 pos, int sID, bool looping)
 	HRESULT result;
 	DWORD status;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		if(sID == this->IDIndices.at(i))
 		{
@@ -454,7 +453,7 @@ bool SoundModule::playDuplicateSFX(XMFLOAT3 pos, int sID, bool looping)
 	IDirectSoundBuffer* duplicate = NULL;
 	IDirectSound3DBuffer8* duplicate3D = NULL;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		if(sID == this->IDIndices.at(i))
 		{
@@ -588,7 +587,7 @@ HRESULT SoundModule::setSFXVolume(long vlm)
 	else if(vlm < DSBVOLUME_MIN)
 		vlm = DSBVOLUME_MIN;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		result = this->sBuffers.at(i)->SetVolume(vlm);
 		if(FAILED(result))
@@ -618,7 +617,7 @@ HRESULT SoundModule::muteSFX()
 {
 	HRESULT result = true;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		if(this->SFXMuted)
 		{
@@ -649,7 +648,7 @@ HRESULT SoundModule::setVolume(long vlm, int SoundID)
 	else if(vlm < DSBVOLUME_MIN)
 		vlm = DSBVOLUME_MIN;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		if(SoundID == (this->IDIndices.at(i)))
 		{
@@ -671,7 +670,7 @@ long SoundModule::getSFXVolume() const
 	long vlm = 0;
 	int nrOfSounds = 0;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		this->sBuffers.at(i)->GetVolume(&vlm);
 		averageVlm += vlm;
@@ -772,17 +771,24 @@ bool SoundModule::stopSound(int sID)
 	HRESULT result;
 	DWORD status;
 
-	for(int i = 0; i < this->sBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
 	{
 		if(sID == this->IDIndices.at(i))
 		{
 			
-			this->sBuffers.at(i)->GetStatus(&status);
+			result = this->sBuffers.at(i)->GetStatus(&status);
+			if(FAILED(result))
+				return false;
 
 			if((status == DSBSTATUS_PLAYING))
 			{
-				this->sBuffers.at(i)->Stop();
-				this->sBuffers.at(i)->SetCurrentPosition(0);
+				result = this->sBuffers.at(i)->Stop();
+				if(FAILED(result))
+				return false;
+
+				result = this->sBuffers.at(i)->SetCurrentPosition(0);
+				if(FAILED(result))
+				return false;
 			}
 			
 		}
@@ -791,7 +797,7 @@ bool SoundModule::stopSound(int sID)
 	return true;
 }
 
-HRESULT SoundModule::initiationPlay()
+bool SoundModule::initiationPlay()
 {
 	HRESULT result;
 
@@ -823,7 +829,7 @@ HRESULT SoundModule::initiationPlay()
 	if(FAILED(result))
 		MessageBox(0, L"here",0,0);
 
-	return result;
+	return true;
 }
 
 void SoundModule::playMusic()
@@ -834,12 +840,15 @@ void SoundModule::playMusic()
 
 void SoundModule::loadMusic(int sID)
 {
-	for(int i = 0; i < this->sounds.size(); i++)
+	for(unsigned int i = 0; i < this->sounds.size(); i++)
 	{
 		if(sID == this->sounds.at(i).soundID)
 		{
 			this->ovp.openOggFile(this->sounds.at(i).path);
 			this->musicLoaded = true;
+			long vlm = 0;
+			vlm = this->getSFXVolume();
+			this->setMusicVolume(vlm);
 		}
 	}
 }
@@ -863,7 +872,6 @@ HRESULT SoundModule::muteMusic()
 		else
 			this->musicMuted = true;
 	}
-
 	return true;
 }
 
@@ -885,7 +893,7 @@ bool SoundModule::updateAndPlay(Camera* pCamera, XMFLOAT3 pPos)
 	if(FAILED(result))
 		return false;
 
-	for(int i = 0; i < this->s3DBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->s3DBuffers.size(); i++)
 	{
 		this->s3DBuffers.at(i)->SetPosition(pos.x, pos.y, pos.z, DS3D_DEFERRED);
 	}
