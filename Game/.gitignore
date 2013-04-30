@@ -1,0 +1,6 @@
+# Ignore everything below this folder...
+*
+
+# ...but these files
+!README.md
+!.gitignore
