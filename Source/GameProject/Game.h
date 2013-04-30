@@ -18,6 +18,9 @@
 #include "World.h"
 #include "Package.h"
 
+#include "SoundModule.h"
+#include "SoundHelp.h"
+
 class Game
 {
 	public:
@@ -27,12 +30,14 @@ class Game
 		void Update(float deltaTime, DirectInput* di);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
 		void HandlePackage(Package* p);
+		void initSoundModule(HWND hwnd, DirectInput* di);
 
 		Camera* GetCamera();
 	private:
 		World* mWorld;
 		Player* mPlayer;
 
+		SoundModule* soundModule;
 		AnimatedEntity* mAnimatedEntity;
 		GenericSkinnedModel* mSkinnedModel;
 

@@ -139,6 +139,9 @@ bool Projekt::Init()
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
 
+	//init soundmodule
+	mGame->initSoundModule(this->mhMainWnd, this->mDirectInput);
+
 	Network::GetInstance()->Initialize();
 	Network::GetInstance()->Start();
 
