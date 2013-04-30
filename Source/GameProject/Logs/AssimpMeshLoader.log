@@ -1,0 +1,4 @@
+Info,  T5680: Load Data\Models\OBJ\Cop\cop.obj
+Debug, T5680: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Error, T5680: Unable to open file "Data\Models\OBJ\Cop\cop.obj".
+Info,  T5680: Failed reading file!

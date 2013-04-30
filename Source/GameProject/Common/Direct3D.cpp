@@ -42,7 +42,7 @@ bool Direct3D::Init(HWND* mainWindow, int& _clientWidth, int& _clientHeight)
 		0,						// Display adapter (Default)
 		md3dDriverType,			// Driver type (For 3D HW Acceleration)
 		0,						// Software driver (No software device)
-		createDeviceFlags,		// Flags (i.e. Debug, Single thread)
+		0/*createDeviceFlags*/,		// Flags (i.e. Debug, Single thread)
 		0,						// Feature level (Check what version of D3D is supported. D3D11 forced in this case)
 		0,						// Number of feature levels
 		D3D11_SDK_VERSION,		// SDK version
