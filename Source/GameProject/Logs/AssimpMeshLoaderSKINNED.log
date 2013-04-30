@@ -1,0 +1,47 @@
+Info,  T5680: Load Data\Models\Collada\AnimTest\test_Collada_DAE.DAE
+Debug, T5680: Assimp 3.0.1262 x86 msvc debug shared singlethreaded
+Info,  T5680: Found a matching importer for this file format
+Info,  T5680: Import root directory is 'Data\Models\Collada\AnimTest\'
+Debug, T5680: Collada schema version is 1.4.n
+Error, T5680: Collada: Skipping ambient light for the moment
+Warn,  T5680: ScenePreprocessor: UVs are declared to be 3D but they're obviously not. Reverting to 2D.
+Info,  T5680: Entering post processing pipeline
+Debug, T5680: RemoveRedundantMatsProcess begin
+Debug, T5680: RemoveRedundantMatsProcess finished 
+Debug, T5680: FindDegeneratesProcess begin
+Debug, T5680: FindDegeneratesProcess finished
+Debug, T5680: GenUVCoordsProcess begin
+Debug, T5680: GenUVCoordsProcess finished
+Debug, T5680: TriangulateProcess begin
+Debug, T5680: TriangulateProcess finished. There was nothing to be done.
+Debug, T5680: SortByPTypeProcess begin
+Info,  T5680: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T5680: SortByPTypeProcess finished
+Debug, T5680: FindInvalidDataProcess begin
+Warn,  T5680: Simplified dummy tracks with just one key
+Debug, T5680: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T5680: SplitLargeMeshesProcess_Triangle begin
+Debug, T5680: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T5680: Generate spatially-sorted vertex cache
+Debug, T5680: GenVertexNormalsProcess begin
+Debug, T5680: GenVertexNormalsProcess finished. Normals are already there
+Debug, T5680: CalcTangentsProcess begin
+Info,  T5680: CalcTangentsProcess finished. Tangents have been calculated
+Debug, T5680: JoinVerticesProcess begin
+Debug, T5680: Mesh 0 (unnamed) | Verts in: 8832 out: 3340 | ~62.183%
+Info,  T5680: JoinVerticesProcess finished | Verts in: 8832 out: 3340 | ~62.2%
+Debug, T5680: SplitLargeMeshesProcess_Vertex begin
+Debug, T5680: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Debug, T5680: MakeLeftHandedProcess begin
+Debug, T5680: MakeLeftHandedProcess finished
+Debug, T5680: FlipUVsProcess begin
+Debug, T5680: FlipUVsProcess finished
+Debug, T5680: FlipWindingOrderProcess begin
+Debug, T5680: FlipWindingOrderProcess finished
+Debug, T5680: LimitBoneWeightsProcess begin
+Debug, T5680: LimitBoneWeightsProcess end
+Debug, T5680: ImproveCacheLocalityProcess begin
+Debug, T5680: Mesh 0 | ACMR in: 1.645041 out: 1.162024 | ~29.4%
+Info,  T5680: Cache relevant are 1 meshes (2944 faces). Average output ACMR is 1.162024
+Debug, T5680: ImproveCacheLocalityProcess finished. 
+Info,  T5680: Leaving post processing pipeline

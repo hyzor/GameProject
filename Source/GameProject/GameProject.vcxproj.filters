@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{069ed813-eec0-4c15-9d3e-8565f1ddffb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FX">
+      <UniqueIdentifier>{add6ac54-824b-4ed9-aaa3-d5769124052f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Backbone">
+      <UniqueIdentifier>{d7426afd-01aa-4b7f-b669-7703a315c27e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{8f7a66f1-ca9d-45ab-b259-07bceceeff73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Models\Skinned">
+      <UniqueIdentifier>{18a975af-7eb6-4167-bf2f-c9be42d12141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Logging">
+      <UniqueIdentifier>{bc53626e-cef9-469f-b023-a6646a1523bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\Camera.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\d3dUtilities.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MathHelper.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\TextureManager.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\xnacollision.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GeometryGenerator.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericObjectLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericMesh.cpp">
+      <Filter>Models</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericModel.cpp">
+      <Filter>Models</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericSkinnedModel.cpp">
+      <Filter>Models\Skinned</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericSkinnedMesh.cpp">
+      <Filter>Models\Skinned</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\D3D11App.cpp">
+      <Filter>Common\Backbone</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DirectInput.cpp">
+      <Filter>Common\Backbone</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GameTimer.cpp">
+      <Filter>Common\Backbone</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Direct3D.cpp">
+      <Filter>Common\Backbone</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>Models\Skinned</Filter>
+    </ClCompile>
+    <ClCompile Include="FrustumCulling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Logger.cpp">
+      <Filter>Common\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Duck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Railgun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Package.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\TextureManager.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Camera.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dUtilities.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dx11effect.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\LightDef.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MathHelper.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\xnacollision.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GeometryGenerator.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericObjectLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericMesh.h">
+      <Filter>Models</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericModel.h">
+      <Filter>Models</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericSkinnedModel.h">
+      <Filter>Models\Skinned</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericSkinnedMesh.h">
+      <Filter>Models\Skinned</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\D3D11App.h">
+      <Filter>Common\Backbone</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DirectInput.h">
+      <Filter>Common\Backbone</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GameTimer.h">
+      <Filter>Common\Backbone</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Direct3D.h">
+      <Filter>Common\Backbone</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>Models\Skinned</Filter>
+    </ClInclude>
+    <ClInclude Include="FrustumCulling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Logger.h">
+      <Filter>Common\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\log.h">
+      <Filter>Common\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Railgun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Package.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\FX\LightDef.fx">
+      <Filter>FX</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Data\FX\Basic.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Data\FX\BasicTess.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Data\FX\BuildShadowMap.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Data\FX\NormalMap.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Data\FX\Sky.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
