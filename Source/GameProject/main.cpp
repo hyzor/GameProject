@@ -6,7 +6,7 @@
 #include "Sky.h"
 #include "FrustumCulling.h"
 #include "RenderStates.h"
-
+#include "PyEngine.h"
 
 #include "Entity.h"
 
@@ -114,6 +114,7 @@ Projekt::~Projekt()
 
 	Settings::GetInstance()->Shutdown();
 	GenericHandler::GetInstance()->Shutdown();
+	PyEngine::GetInstance()->ShutDown();
 
 	Network::GetInstance()->Close();
 }
@@ -135,6 +136,7 @@ bool Projekt::Init()
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
+	PyEngine::GetInstance()->Initialize();
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);

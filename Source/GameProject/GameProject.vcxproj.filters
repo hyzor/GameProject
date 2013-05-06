@@ -159,6 +159,9 @@
     <ClCompile Include="SoundModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PyEngine.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\TextureManager.h">
@@ -295,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="SoundHelp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PyEngine.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

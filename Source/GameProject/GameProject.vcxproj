@@ -43,8 +43,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\include;$(SolutionDir)\External\boost_1_51;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\lib\x86;$(SolutionDir)\External\boost_1_51\lib;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\External\Python\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\include;$(SolutionDir)\External\boost_1_51;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\External\Python\libs;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\lib\x86;$(SolutionDir)\External\boost_1_51\lib;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\Game\$(PlatformName)$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
@@ -65,7 +65,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3dx11.lib;dxerr.lib;Effects11d_2010.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SulutionDir)boost_1_51\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)boost_1_51\lib</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -90,6 +90,7 @@
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="OggVorbisPlayer.cpp" />
     <ClCompile Include="Package.cpp" />
+    <ClCompile Include="PyEngine.cpp" />
     <ClCompile Include="SoundModule.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="AnimatedEntity.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="OggVorbisPlayer.h" />
     <ClInclude Include="Package.h" />
+    <ClInclude Include="PyEngine.h" />
     <ClInclude Include="SoundHelp.h" />
     <ClInclude Include="SoundModule.h" />
     <ClInclude Include="Weapon.h" />
