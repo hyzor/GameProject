@@ -11,12 +11,19 @@ Platform::~Platform()
 	SafeDelete(mEntity);
 }
 
-void Platform::Initialize(XMFLOAT3 pos)
+void Platform::Initialize(int id, XMFLOAT3 pos)
 {
+	this->mID = id;
 	this->mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel(mModelName), pos);
 	this->mCollision = new CollisionModel(pos);
 	std::string finalPath = mFilePath + mModelName + ".obj";
 	this->mCollision->LoadObj(finalPath);
+}
+
+void Platform::Move(XMFLOAT3 pos)
+{
+	mEntity->Position = pos;
+	mCollision->SetPosition(pos);
 }
 
 void Platform::Update(float dt)

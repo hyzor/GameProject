@@ -25,6 +25,7 @@ void Game::Update(float deltaTime, DirectInput* di)
 	mPlayer->Update(deltaTime, di, mWorld);
 
 	mAnimatedEntity->Update(deltaTime);
+	mWorld->Update(deltaTime);
 
 	t+=deltaTime;
 	if(t > 1)

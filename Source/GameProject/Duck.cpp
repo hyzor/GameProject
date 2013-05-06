@@ -10,9 +10,9 @@ Duck::~Duck()
 {
 }
 
-void Duck::Initialize(XMFLOAT3 pos)
+void Duck::Initialize(int id, XMFLOAT3 pos)
 {
-	Platform::Initialize(pos);
+	Platform::Initialize(id, pos);
 }
 
 void Duck::Update(float dt)

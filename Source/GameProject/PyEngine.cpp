@@ -183,7 +183,7 @@ HRESULT PyEngine::LoadModule(std::string scriptName)
 	if(mCurrScript != scriptName)
 	{
 		mCurrScript = scriptName;
-		PyObject* lScriptName = PyString_FromString(scriptName.c_str());
+		PyObject* lScriptName = PyString_FromString(mCurrScript.c_str());
 		if(!lScriptName) // Standard koll för null, så att vårt program inte kraschar
 		{
 			return E_FAIL;
@@ -234,12 +234,10 @@ void PyEngine::AddStatusEvent(StatusEvent ev)
 
 bool PyEngine::CheckReturns() const
 {
-	if(mFuncReturns.size() > 0)
-		return true;
-	return false;
+	return mFuncReturns.size() > 0;
 }
 
-void PyEngine::Tick(float dt)
+void PyEngine::Update(float dt)
 {
 	//NotifyAfter
 	for(UINT i(0); i != mTimer.size(); ++i)

@@ -114,7 +114,7 @@ Projekt::~Projekt()
 
 	Settings::GetInstance()->Shutdown();
 	GenericHandler::GetInstance()->Shutdown();
-	PyEngine::GetInstance()->ShutDown();
+	Python->ShutDown();
 
 	Network::GetInstance()->Close();
 }
@@ -136,7 +136,8 @@ bool Projekt::Init()
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
-	PyEngine::GetInstance()->Initialize();
+	Python->Initialize();
+	Python->LoadModule("py_script");
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);

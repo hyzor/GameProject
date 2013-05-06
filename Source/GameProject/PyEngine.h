@@ -14,6 +14,8 @@
 #include <Python.h>
 #endif
 
+#define Python PyEngine::GetInstance() // Definierar om så att man slipper så mycket extrakod
+
 typedef struct _object PyObject;
 
 struct TimerEvent
@@ -59,7 +61,7 @@ public:
 
 	void Print(std::string msg); // Aldrig använt denna, men den är rätt självförklarande
 
-	void Tick(float dt); // En update för motorn.. Kan döpas om till update för att vara konsekvent
+	void Update(float dt); // Update för timerevents
 
 	HRESULT LoadModule(std::string scriptName); // Måste kallas på med rätt namn på scriptet som ska köras innan ett nytt script ska köras
 	bool CheckReturns() const; // Används för att se om det ligger något i returvektorn

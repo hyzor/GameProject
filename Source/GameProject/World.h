@@ -2,6 +2,7 @@
 #define WORLD_H
 #include <vector>
 #include "Duck.h"
+#include "PyEngine.h"
 
 class World
 {
@@ -15,5 +16,6 @@ public:
 private:
 	int mPlatformAmount;
 	std::vector<Platform*> mPlatforms;
+	std::vector<double> mdReturns;
 };
 #endif

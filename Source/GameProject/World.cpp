@@ -6,8 +6,26 @@ World::World(int platformAmount)
 	for(int i(0); i != mPlatformAmount; ++i)
 	{
 		mPlatforms.push_back(new Duck());
-		mPlatforms.at(i)->Initialize(XMFLOAT3((float)i*200, (float)-i*200, (float)i*200));
+		mPlatforms[i]->Initialize(i, XMFLOAT3((float)i*200, (float)-i*200, (float)i*200));
 	}
+	//Python->LoadModule("platform_script");
+	//Python->CallFunction(
+	//	Python->GetFunction("CreatePlatforms"),
+	//	Python->CreateArg(this->mPlatformAmount));
+	//Python->Update(0.0f);
+	//if(Python->CheckReturns())
+	//{
+	//	Python->ConvertDoubles(this->mdReturns);
+	//	Python->ClearReturns();
+	//	int index = 0;
+	//	for(int i(0); i != mPlatformAmount; ++i)
+	//	{
+	//		mPlatforms.push_back(new Duck());
+	//		mPlatforms.at(i)->Initialize(i, XMFLOAT3((float)mdReturns[index], (float)mdReturns[index+1], (float)mdReturns[index+2]));
+	//		index += 3;
+	//	}
+	//	mdReturns.clear();
+	//}
 }
 
 World::~World()
@@ -18,6 +36,20 @@ World::~World()
 
 void World::Update(float dt)
 {
+	//Python->LoadModule("platform_script");
+	//Python->Update(dt);
+	//if(Python->CheckReturns())
+	//{
+	//	Python->ConvertDoubles(this->mdReturns);
+	//	Python->ClearReturns();
+	//	int index = 0;
+	//	for(int i(0); i != mPlatformAmount; ++i)
+	//	{
+	//		mPlatforms.at(i)->Move(XMFLOAT3((float)mdReturns[index], (float)mdReturns[index+1], (float)mdReturns[index+2]));
+	//		index += 3;
+	//	}
+	//	mdReturns.clear();
+	//}
 	for(int i(0); i != mPlatformAmount; ++i)
 		mPlatforms.at(i)->Update(dt);
 }
