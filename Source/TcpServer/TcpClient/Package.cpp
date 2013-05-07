@@ -1,6 +1,5 @@
 #include "Package.h"
 
-
 Package::Package()
 {
 	this->size = 0;

@@ -38,10 +38,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(IncludePath);$(SolutionDir)..\External\boost_1_51</IncludePath>
+    <IncludePath>..\..\External\Python\include;$(IncludePath);$(SolutionDir)..\External\boost_1_51</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(LibraryPath);$(SolutionDir)..\External\boost_1_51\lib</LibraryPath>
+    <LibraryPath>..\..\External\Python\libs;$(LibraryPath);$(SolutionDir)..\External\boost_1_51\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(IncludePath);C:\Program Files (x86)\boost\boost_1_51\boost</IncludePath>
@@ -76,9 +76,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Package.cpp" />
+    <ClCompile Include="PyEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Package.h" />
+    <ClInclude Include="PyEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

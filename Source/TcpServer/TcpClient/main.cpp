@@ -5,9 +5,9 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include "Package.h"
+#include "PyEngine.h"
 
 using boost::asio::ip::tcp;
-
 
 void addSockets();
 
@@ -20,6 +20,7 @@ int main()
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
+	Python->Initialize();
 
 	std::cout << "Port: ";
 	int port;
@@ -32,6 +33,7 @@ int main()
 
 
 	delete acceptor;
+	Python->ShutDown();
 
 	return 0;
 }
