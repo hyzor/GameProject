@@ -12,14 +12,14 @@ static PyObject* WrapPyEnginePrint(PyObject* self, PyObject* args)
 	if(!lpPyEngine)
 	{
 		std::cout << "Failed to get the game pointer" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	const char* lpSrc;
 	if(!PyArg_ParseTuple(args, "s", &lpSrc))
 	{
 		PyErr_SetString(PyExc_RuntimeError, "PyEngine.Print wants a single string argument");
-		return NULL;
+		return nullptr;
 	}
 
 	lpPyEngine->Print(std::string(lpSrc));
@@ -35,7 +35,7 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 	if(!lpPyEngine)
 	{
 		std::cout << "Failed to get the game pointer" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	float lTime;
@@ -43,15 +43,15 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 	PyObject* PyArgs;
 	if(!PyArg_ParseTuple(args, "fOO", &lTime, &lpFunc, &PyArgs))
 	{
-		return NULL;
+		return nullptr;
 	}
 	
 	if(!PyCallable_Check(lpFunc))
 	{
-		return NULL;
+		return nullptr;
 	}
 
-	PyObject* lpArgs = NULL;
+	PyObject* lpArgs = nullptr;
 	if(PyArgs != Py_None)
 	{
 		lpArgs = PyList_New(1);
@@ -70,7 +70,7 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 	if(!lpPyEngine)
 	{
 		std::cout << "Failed to get the game pointer" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	const char* status;
@@ -80,19 +80,19 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 	{
 		if(PyErr_Occurred())
 			PyErr_Print();
-		return NULL;
+		return nullptr;
 	}
 
 	if(!PyCallable_Check(lpFunc))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	std::string s_copy = status;
 
 	Py_INCREF(lpFunc);
 
-	PyObject* lpArgs = NULL;
+	PyObject* lpArgs = nullptr;
 	if(PyArgs != Py_None)
 	{
 		lpArgs = PyList_New(1);
@@ -110,13 +110,13 @@ static PyMethodDef PyEngineMethods[] =
 	{ "Print",			WrapPyEnginePrint,		METH_VARARGS,	"Use PyEngine to print a message" },
 	{ "NotifyAfter",	PyEngineNotifyAfter,	METH_VARARGS,	"Notify after a specific amount of time" },
 	{ "NotifyWhen",		PyEngineNotifyWhen,		METH_VARARGS,	"Notify when a specific trigger has been met" },
-	{ NULL,				NULL,					0,				NULL },
+	{ nullptr,				nullptr,					0,				nullptr },
 };
 
 PyEngine* PyEngine::mInstance = 0;
 
 PyEngine::PyEngine()
-	: mModule(NULL)
+	: mModule(nullptr)
 {
 }
 
@@ -166,8 +166,8 @@ HRESULT PyEngine::InitScriptInterface()
 
 	mModule = Py_InitModule("PyEngine", PyEngineMethods);
 
-	PyObject* capsule = PyCapsule_New((void*) this, "PyEngine._C_API", NULL);
-	if (NULL == capsule)
+	PyObject* capsule = PyCapsule_New((void*) this, "PyEngine._C_API", nullptr);
+	if (!capsule)
 	{
 		std::cout << "Failed to capsule PyEngine module" << std::endl;
 		return E_FAIL;
@@ -184,7 +184,7 @@ HRESULT PyEngine::LoadModule(std::string scriptName)
 	{
 		mCurrScript = scriptName;
 		PyObject* lScriptName = PyString_FromString(mCurrScript.c_str());
-		if(!lScriptName) // Standard koll för null, så att vårt program inte kraschar
+		if(!lScriptName)
 		{
 			return E_FAIL;
 		}
@@ -195,7 +195,7 @@ HRESULT PyEngine::LoadModule(std::string scriptName)
 			PyErr_Print();
 			return E_FAIL;
 		}
-		Py_DECREF(lScriptName); // Plocka bort referensen av vår python string
+		Py_DECREF(lScriptName);
 	}
 	return S_OK;
 }
@@ -211,7 +211,7 @@ PyObject* PyEngine::GetFunction(const char* funcName)
 
 		std::cout << "Can not find " << funcName << " or its not a callable function" << std::endl;
 		Py_XDECREF(lpFunction);
-		lpFunction = NULL;
+		lpFunction = nullptr;
 	}
 
 	return lpFunction;
@@ -240,32 +240,33 @@ bool PyEngine::CheckReturns() const
 void PyEngine::Update(float dt)
 {
 	//NotifyAfter
-	for(UINT i(0); i != mTimer.size(); ++i)
+	for(auto& i(mTimer.begin()); i != mTimer.end(); ++i)
 	{
-		mTimer[i].mTime -= dt;
+		i->mTime -= dt;
 
-		if(mTimer[i].mTime <= 0) //Om tiden har gått ut, så anropa funktionen och plocka bort från vectorn
+		if(i->mTime <= 0)
 		{
-			if(mTimer[i].mArgs)
-				CallFunction(mTimer[i].mFunc, PyList_AsTuple(mTimer[i].mArgs));
+			if(i->mArgs)
+				CallFunction(i->mFunc, PyList_AsTuple(i->mArgs));
 			else
-				CallFunction(mTimer[i].mFunc, NULL);
-			mTimer.erase(mTimer.begin()+i);
+				CallFunction(i->mFunc, nullptr);
+
+			mTimer.erase(i);
 		}
 	}
 
 	//NotifyWhen
 	if(mStatus.size() > 0)
 	{
-		for(UINT i(0); i != mStatus.size(); ++i)
+		for(auto& i(mStatus.begin()); i != mStatus.end(); ++i)
 		{
-			if(mStatus[i].mArgs)
-				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, PyList_AsTuple(mStatus[i].mArgs));
+			if(i->mArgs)
+				i->mReturns = CallFunction(i->mFunc, PyList_AsTuple(i->mArgs));
 			else
-				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, NULL);
+				i->mReturns = CallFunction(i->mFunc, nullptr);
 
-			if(mStatus[i].mReturns != Py_None && mStatus[i].mReturns != NULL)
-				mFuncReturns.push_back(mStatus[i].mReturns);
+			if(i->mReturns != Py_None && i->mReturns != nullptr)
+				mFuncReturns.push_back(i->mReturns);
 		}
 		mStatus.clear();
 	}
@@ -290,20 +291,20 @@ void PyEngine::MakeTuple(PyObject* &args)
 
 PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 {
-	if(args != NULL && !PyTuple_Check(args))
+	if(args != nullptr && !PyTuple_Check(args))
 		this->MakeTuple(args);
 
 	PyObject* lpReturns;
 	if(args)
 		lpReturns = PyObject_CallObject(func, args);
 	else
-		lpReturns = PyObject_CallObject(func, NULL);
+		lpReturns = PyObject_CallObject(func, nullptr);
 
 	if(!lpReturns)
 	{
 		std::cout << "Something went wrong with calling the function!" << std::endl;
 		PyErr_Print();
-		return NULL;
+		return nullptr;
 	}
 
 	return lpReturns;
@@ -311,13 +312,13 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 
 void PyEngine::ConvertInts(std::vector<int> &r_vec)
 {
-	for(int i(0); i != mFuncReturns.size(); ++i)
+	for(auto& currReturn(mFuncReturns.begin()); currReturn != mFuncReturns.end(); ++currReturn)
 	{
-		int lNumReturns = PyTuple_Size(mFuncReturns[i]);
+		int lNumReturns = PyTuple_Size(*currReturn);
 
-		if(PyInt_Check(mFuncReturns[i]))
+		if(PyInt_Check(*currReturn))
 		{
-			r_vec.push_back(PyInt_AsLong(mFuncReturns[i]));
+			r_vec.push_back(PyInt_AsLong(*currReturn));
 			continue;
 		}
 
@@ -325,7 +326,7 @@ void PyEngine::ConvertInts(std::vector<int> &r_vec)
 		{
 			for(int j(0); j != lNumReturns; ++j)
 			{
-				PyObject* item = PyTuple_GetItem(mFuncReturns[i], j);
+				PyObject* item = PyTuple_GetItem(*currReturn, j);
 				if(!PyInt_Check(item))
 				{
 					PyErr_Print();
@@ -339,13 +340,13 @@ void PyEngine::ConvertInts(std::vector<int> &r_vec)
 
 void PyEngine::ConvertStrings(std::vector<std::string> &r_vec)
 {
-	for(int i(0); i != mFuncReturns.size(); ++i)
+	for(auto& currReturn(mFuncReturns.begin()); currReturn != mFuncReturns.end(); ++currReturn)
 	{
-		int lNumReturns = PyTuple_Size(mFuncReturns[i]);
+		int lNumReturns = PyTuple_Size(*currReturn);
 
-		if(PyString_Check(mFuncReturns[i])) 
+		if(PyString_Check(*currReturn))
 		{
-			r_vec.push_back(PyString_AsString(mFuncReturns[i]));
+			r_vec.push_back(PyString_AsString(*currReturn));
 			continue;
 		}
 
@@ -353,7 +354,7 @@ void PyEngine::ConvertStrings(std::vector<std::string> &r_vec)
 		{
 			for(int j(0); j != lNumReturns; ++j)
 			{
-				PyObject* item = PyTuple_GetItem(mFuncReturns[i], j);
+				PyObject* item = PyTuple_GetItem(*currReturn, j);
 				if(!PyString_Check(item))
 				{
 					PyErr_Print();
@@ -367,13 +368,13 @@ void PyEngine::ConvertStrings(std::vector<std::string> &r_vec)
 
 void PyEngine::ConvertDoubles(std::vector<double> &r_vec)
 {
-	for(int i(0); i != mFuncReturns.size(); ++i)
+	for(auto& currReturn(mFuncReturns.begin()); currReturn != mFuncReturns.end(); ++currReturn)
 	{
-		int lNumReturns = PyTuple_Size(mFuncReturns[i]);
+		int lNumReturns = PyTuple_Size(*currReturn);
 
-		if(PyFloat_Check(mFuncReturns[i]))
+		if(PyFloat_Check(*currReturn))
 		{
-			r_vec.push_back(PyFloat_AsDouble(mFuncReturns[i]));
+			r_vec.push_back(PyFloat_AsDouble(*currReturn));
 			continue;
 		}
 
@@ -381,7 +382,7 @@ void PyEngine::ConvertDoubles(std::vector<double> &r_vec)
 		{
 			for(int j(0); j != lNumReturns; ++j)
 			{
-				PyObject* item = PyTuple_GetItem(mFuncReturns[i], j);
+				PyObject* item = PyTuple_GetItem(*currReturn, j);
 				if(!PyFloat_Check(item))
 				{
 					PyErr_Print();

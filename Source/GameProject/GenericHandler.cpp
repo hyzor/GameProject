@@ -41,19 +41,17 @@ GenericSkinnedModel* GenericHandler::GetGenericSkinnedModel(std::string key)
 
 void GenericHandler::Shutdown()
 {
-	std::map<std::string, GenericModel*>::iterator GMitr;
-	for(GMitr = mGModels.begin(); GMitr != mGModels.end(); GMitr++)
+	for(auto& it(mGModels.begin()); it != mGModels.end(); ++it)
 	{
-		if(GMitr->second)
-			SafeDelete(GMitr->second);
+		if(it->second)
+			SafeDelete(it->second);
 	}
 	mGModels.clear();
 
-	std::map<std::string, GenericSkinnedModel*>::iterator GSMitr;
-	for(GSMitr = mGSModels.begin(); GSMitr != mGSModels.end(); GSMitr++)
+	for(auto& it(mGSModels.begin()); it != mGSModels.end(); ++it)
 	{
-		if(GSMitr->second)
-			SafeDelete(GSMitr->second);
+		if(it->second)
+			SafeDelete(it->second);
 	}
 	mGSModels.clear();
 
