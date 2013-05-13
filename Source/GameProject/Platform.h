@@ -3,6 +3,7 @@
 #include "GenericHandler.h"
 #include "CollisionModel.h"
 #include "Entity.h"
+#include "PlatformSwitch.h"
 
 /* Abstract base class for different platforms */
 
@@ -20,6 +21,7 @@ public:
 
 protected:
 	std::string mModelName;
+	std::vector<PlatformSwitch> mSwitches;
 	int mID;
 
 private:

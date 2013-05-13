@@ -137,7 +137,6 @@ bool Projekt::Init()
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
 	Python->Initialize();
-	Python->LoadModule("py_script");
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);

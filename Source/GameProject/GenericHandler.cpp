@@ -23,7 +23,14 @@ void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMg
 {
 	// Initializing GenericModel objects
 	mGModels["Duck"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.obj", L"Data\\Models\\Collada\\");
-	mGModels["Player"] = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
+	//mGModels["Player"] = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
+
+	mGModels["Switch"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Switch.obj", L"Data\\Models\\Collada\\");
+
+	//mGModels["Platform1"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform1.obj", L"Data\\Models\\Collada\\");
+	//mGModels["Platform2"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform2.obj", L"Data\\Models\\Collada\\");
+	//mGModels["Platform3"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform3.obj", L"Data\\Models\\Collada\\");
+	//mGModels["Platform4"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform4.obj", L"Data\\Models\\Collada\\");
 
 	// Initializing GenericSkinnedModel objects
 	mGSModels["SkinnedModel"] = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.DAE", L"Data\\Models\\Collada\\AnimTest\\");
@@ -31,12 +38,16 @@ void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMg
 
 GenericModel* GenericHandler::GetGenericModel(std::string key)
 {
-	return mGModels[key];
+	if(mGModels[key])
+		return mGModels[key];
+	return nullptr;
 }
 
 GenericSkinnedModel* GenericHandler::GetGenericSkinnedModel(std::string key)
 {
-	return mGSModels[key];
+	if(mGSModels[key])
+		return mGSModels[key];
+	return nullptr;
 }
 
 void GenericHandler::Shutdown()

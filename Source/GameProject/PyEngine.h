@@ -170,19 +170,19 @@ PyObject* PyEngine::CreateArg(A arg1, B arg2, C arg3)
 
 /* 
 Exempel för att kalla på funktion i Python utanför motorn:
-PyEngine::GetInstance()->CallFunction(
-	PyEngine::GetInstance()->GetFunction("FunktionsNamn"),
-	PyEngine::GetInstance()->CreateArg(var1, var2));
+Python->CallFunction(
+	Python->GetFunction("FunktionsNamn"),
+	Python->CreateArg(var1, var2));
 
 Exempel för att få tillbaka returer i en loop ifrån Python:
 std::vector<std::string> vNames;
 std::vector<int> vPositions;
-PyEngine::GetInstance()->Tick( dt ); <- Viktigt att kalla på denna innan man tror att man ska få returer eftersom de skapas i Tick av NotifyWhen
-if(PyEngine::GetInstance()->CheckReturns())
+Python->Tick( dt ); <- Viktigt att kalla på denna innan man tror att man ska få returer eftersom de skapas i Tick av NotifyWhen
+if(Python->CheckReturns())
 {
-	PyEngine::GetInstance()->ConvertInts(vPositions);
-	PyEngine::GetInstance()->ConvertStrings(vNames);
-	PyEngine::GetInstance()->ClearReturns();
+	Python->ConvertInts(vPositions);
+	Python->ConvertStrings(vNames);
+	Python->ClearReturns();
 	this->mName = vNames[0];
 	XMFLOAT3 Pos = XMFLOAT3(vPositions[0], vPositions[1], vPositions[2]);
 	vNames.clear();
