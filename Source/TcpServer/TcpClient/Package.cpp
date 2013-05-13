@@ -1,15 +1,16 @@
 #include "Package.h"
 
+
 Package::Package()
 {
-	this->size = 0;
+	this->size = sizeof(Package::Header);
 	this->data = new char();
 }
 
 Package::Package(char* data, int size)
 {
 	this->data = data;
-	this->size = size;
+	this->size = sizeof(Package::Header)+size;
 
 	setHeader();
 	setBody();
@@ -24,7 +25,7 @@ Package::Package(Package::Header header, Package::Body body)
 	*h = header;
 	for(int i = 0; i < h->contentsize; i++)
 		*(data+sizeof(Package::Header)+i) = *(body.data+i);
-	delete [] body.data;
+	if(!body.data) delete [] body.data;
 
 	setHeader();
 	setBody();
@@ -70,16 +71,34 @@ void Package::setBody()
 	body.data = (data+sizeof(Header));
 }
 
+void Package::SetId(int id)
+{
+	Header* h = (Header*)data;
+	h->id = id;
+	header.id = h->id;
+}
 
 
-Package::Body::Body(){}
-Package::Header::Header(){}
-
+Package::Body::Body(){From(0); this->data = 0;}
 Package::Body::Body(char* data)
 {
 	this->data = data;
+	From(0);
 }
 
+void Package::Body::From(int at)
+{
+	this->readAt = at;
+}
+
+char* Package::Body::Read(int size)
+{
+	char* ret = data + readAt;
+	readAt += size;
+	return ret;
+}
+
+Package::Header::Header(){}
 Package::Header::Header(int operation, int id, int contentsize)
 {
 	this->operation = operation;

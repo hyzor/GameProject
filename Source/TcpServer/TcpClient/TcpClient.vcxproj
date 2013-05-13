@@ -74,12 +74,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Package.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PyEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Package.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PyEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

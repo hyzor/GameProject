@@ -4,41 +4,47 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <queue>
 #include "Package.h"
-#include "PyEngine.h"
+#include "Game.h"
 
 using boost::asio::ip::tcp;
 
+
 void addSockets();
+void sendPackage();
 
 boost::asio::io_service io_service;
 tcp::acceptor* acceptor;
 
 std::vector<tcp::socket*> sockets;
+
+Game* game;
+std::queue<PackageTo*>* send2;
+
 int main()
 {
-#if defined(DEBUG) | defined(_DEBUG)
-	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-#endif
-	Python->Initialize();
-
 	std::cout << "Port: ";
 	int port;
 	std::cin >> port;
 	acceptor = new tcp::acceptor(io_service, tcp::endpoint(tcp::v4(), port));
 
+	send2 = new std::queue<PackageTo*>();
+	game = new Game(send2);
+
 	std::cout << "Server running" << std::endl;
 	boost::thread f(addSockets);
+	boost::thread SendPackage(sendPackage);
 	f.join();
 
 
 	delete acceptor;
-	Python->ShutDown();
+	delete game;
 
 	return 0;
 }
 
-void getSendPackade(tcp::socket *s);
+void getPackade(tcp::socket *s);
 
 void addSockets()
 {
@@ -48,11 +54,11 @@ void addSockets()
 		acceptor->accept(*s);
 		sockets.push_back(s);
 		std::cout << s << " connected\n";
-		boost::thread GetSendPackage(boost::bind(getSendPackade, s));
+		boost::thread GetPackage(boost::bind(getPackade, s));
 	}
 }
 
-void getSendPackade(tcp::socket *s)
+void getPackade(tcp::socket *s)
 {
 	while(true)
 	{
@@ -77,25 +83,56 @@ void getSendPackade(tcp::socket *s)
 		else //new package
 		{
 			Package p = Package(buf, len);
+			game->HandelPackage(&p, (char*)s);
+		}
+	}
+}
 
-			std::cout << "Forwarding package from " << s << " :" << std::endl 
-				<< "  operation: " << p.GetHeader().operation << std::endl
-				<< "  id       : " << p.GetHeader().id << std::endl
-				<< "  body size: " << p.GetHeader().contentsize << std::endl
+void sendPackage()
+{
+	while(true)
+	{
+		game->Update();
+
+		while(!send2->empty())
+		{
+			Package* p = send2->front()->p;
+			char* to = send2->front()->to;
+			send2->pop();
+
+			std::cout << "Forwarding package from " << p->GetHeader().id << " to " << (int)to << " :" << std::endl 
+				<< "  operation: " << p->GetHeader().operation << std::endl
+				<< "  id       : " << p->GetHeader().id << std::endl
+				<< "  body size: " << p->GetHeader().contentsize << std::endl
 				<< "  body     : ";
-			for(int i = 0; i < p.GetHeader().contentsize; i++)
-				std::cout << p.GetBody().data[i];
+			for(int i = 0; i < p->GetHeader().contentsize; i++)
+				std::cout << p->GetBody().data[i];
 			std::cout << std::endl;
 
-
-			for(int i = 0; i < sockets.size(); i++) //forward package
+			if(to == 0)
 			{
-				if(s != sockets[i]) 
+				for(int i = 0; i < sockets.size(); i++)
 				{
-					boost::system::error_code ignored_error;
-					boost::asio::write(*sockets[i], boost::asio::buffer(buf, len), boost::asio::transfer_all(), ignored_error);
+					if(p->GetHeader().id != (int)sockets[i])
+					{
+						boost::system::error_code ignored_error;
+						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), ignored_error);
+					}
 				}
 			}
+			else
+			{
+				for(int i = 0; i < sockets.size(); i++)
+				{
+					if(to == (char*)sockets[i])
+					{
+						boost::system::error_code ignored_error;
+						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), ignored_error);
+					}
+				}
+			}
+
+			delete p;
 		}
 	}
 }

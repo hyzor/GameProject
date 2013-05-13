@@ -114,7 +114,7 @@ Projekt::~Projekt()
 
 	Settings::GetInstance()->Shutdown();
 	GenericHandler::GetInstance()->Shutdown();
-	Python->ShutDown();
+	//Python->ShutDown();
 
 	Network::GetInstance()->Close();
 }
@@ -136,7 +136,7 @@ bool Projekt::Init()
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
-	Python->Initialize();
+	//Python->Initialize();
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
@@ -323,11 +323,11 @@ void Projekt::UpdateNetwork()
 	if(Network::GetInstance()->Running())
 	{
 		Package* p = Network::GetInstance()->GetPackage();
-		if(p->Size() > 0)
+		if(p != NULL)
 			mGame->HandlePackage(p);
 		delete p;
 
-		for(UINT i = 0; i < Network::GetInstance()->Queue().size(); i++)
+		for(int i = 0; i < Network::GetInstance()->Queue().size(); i++)
 		{
 			p = Network::GetInstance()->Pop();
 			Network::GetInstance()->SendPackage(p->GetData(), p->Size());

@@ -3,11 +3,6 @@
 World::World(int platformAmount)
 	: mPlatformAmount(platformAmount), mPlatforms(std::vector<Platform*>())
 {
-// 	for(int i(0); i != mPlatformAmount; ++i)
-// 	{
-// 		mPlatforms.push_back(new Platform1());
-// 		mPlatforms[i]->Initialize(i, XMFLOAT3((float)i*200, (float)-i*200, (float)i*200));
-// 	}
 
 	int platformId = 0;
 	int offset = 400;
@@ -17,7 +12,7 @@ World::World(int platformAmount)
 		{
 			for (unsigned int k = 0; k < mPlatformAmount; ++k)
 			{
-				mPlatforms.push_back(new Platform1());
+				mPlatforms.push_back(new Duck());
 				mPlatforms[platformId]->Initialize(platformId, XMFLOAT3((float)i*offset, (float)j*offset, (float)k*offset));
 				platformId++;
 			}

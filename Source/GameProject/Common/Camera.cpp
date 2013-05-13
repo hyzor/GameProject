@@ -8,6 +8,9 @@ Camera::Camera(void)
 	mLook(0.0f, 0.0f, 1.0f)
 {
 	SetLens(0.25f*MathHelper::pi, 1.0f, 1.0f, 1000.0f);
+	Yaw = 0;
+	Pitch = 0;
+	Roll = 0;
 }
 
 
@@ -143,112 +146,46 @@ float Camera::GetFarWindowHeight() const
 	return mFarWindowHeight;
 }
 
-void Camera::UpdateViewMatrix()
+void Camera::UpdateViewMatrix(XMVECTOR Up, XMVECTOR Look, XMVECTOR Right)
 {
-	XMVECTOR right = XMLoadFloat3(&mRight);
-	XMVECTOR up = XMLoadFloat3(&mUp);
-	XMVECTOR look = XMLoadFloat3(&mLook);
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
 
-	// Orthonormalize right, up and look vectors
-	look = XMVector3Normalize(look); // Unit length
-	up = XMVector3Normalize(XMVector3Cross(look, right)); // Compute new corrected vector & normalize
+	/*XMVECTOR Up = XMLoadFloat3(&XMFLOAT3(0, 1, 0));
+	XMVECTOR Look = XMLoadFloat3(&XMFLOAT3(0, 0, 1));
+	XMVECTOR Right = XMLoadFloat3(&XMFLOAT3(1, 0, 0));*/
 
-	// Compute new corrected right vector (up & look already orthonormalized)
-	right = XMVector3Cross(up, look);
 
-	// Fill in the view matrix entries
-	float x = -XMVectorGetX(XMVector3Dot(pos, right));
-	float y = -XMVectorGetX(XMVector3Dot(pos, up));
-	float z = -XMVectorGetX(XMVector3Dot(pos, look));
+	XMMATRIX yawMatrix = XMMatrixRotationAxis(Up, Yaw);
+	Look = XMVector3TransformCoord(Look, yawMatrix);
+	Right = XMVector3TransformCoord(Right, yawMatrix);
 
-	XMStoreFloat3(&mRight, right);
-	XMStoreFloat3(&mUp, up);
-	XMStoreFloat3(&mLook, look);
+	XMMATRIX pitchMatrix = XMMatrixRotationAxis(Right, Pitch);
+	Look = XMVector3TransformCoord(Look, pitchMatrix);
+	Up = XMVector3TransformCoord(Up, pitchMatrix);
 
-	mView(0,0) = mRight.x; 
-	mView(1,0) = mRight.y; 
-	mView(2,0) = mRight.z; 
-	mView(3,0) = x;   
+	XMMATRIX rollMatrix = XMMatrixRotationAxis(Look, Roll);
+	Right = XMVector3TransformCoord(Right, rollMatrix);
+	Up = XMVector3TransformCoord(Up, rollMatrix);
 
-	mView(0,1) = mUp.x;
-	mView(1,1) = mUp.y;
-	mView(2,1) = mUp.z;
-	mView(3,1) = y;  
 
-	mView(0,2) = mLook.x; 
-	mView(1,2) = mLook.y; 
-	mView(2,2) = mLook.z; 
-	mView(3,2) = z;   
+	mView(0,0) = XMVectorGetX(Right); mView(0,1) = XMVectorGetX(Up); mView(0,2) = XMVectorGetX(Look);
+	mView(1,0) = XMVectorGetY(Right); mView(1,1) = XMVectorGetY(Up); mView(1,2) = XMVectorGetY(Look);
+	mView(2,0) = XMVectorGetZ(Right); mView(2,1) = XMVectorGetZ(Up); mView(2,2) = XMVectorGetZ(Look);
 
-	mView(0,3) = 0.0f;
-	mView(1,3) = 0.0f;
-	mView(2,3) = 0.0f;
-	mView(3,3) = 1.0f;
+	mView(3,0) = -XMVectorGetX(XMVector3Dot(pos, Right));
+	mView(3,1) = -XMVectorGetX(XMVector3Dot(pos, Up));
+	mView(3,2) = -XMVectorGetX(XMVector3Dot(pos, Look));
+	
+	mView(0,3) = 0;
+	mView(1,3) = 0;
+	mView(2,3) = 0;
+	mView(3,3) = 1;
+
+	XMStoreFloat3(&mRight, Right);
+	XMStoreFloat3(&mUp, Up);
+	XMStoreFloat3(&mLook, Look);
 }
 
-void Camera::Walk(float dist)
-{
-	XMVECTOR s = XMVectorReplicate(dist);
-	XMVECTOR l = XMLoadFloat3(&mLook);
-	XMVECTOR p = XMLoadFloat3(&mPosition);
-	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
-}
-
-void Camera::Strafe(float dist)
-{
-	XMVECTOR s = XMVectorReplicate(dist);
-	XMVECTOR r = XMLoadFloat3(&mRight);
-	XMVECTOR p = XMLoadFloat3(&mPosition);
-	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
-}
-
-void Camera::Pitch(float angle)
-{
-	// Get angle between normalized horizontal vector 
-	// and normalized look vector (z-axis)
-	// This will be used to limit camera pitch,
-	// eventually you wont be able to pitch more than 90
-	// degrees
-
-	XMVECTOR look = XMLoadFloat3(&mLook);
-	XMVECTOR horzDir = look;
-	horzDir.m128_f32[1] = 0.0f; // Set horzDir y-component to 0
-
-	XMVECTOR angleVec = XMVector3AngleBetweenNormals(XMVector3Normalize(horzDir), XMVector3Normalize(look));
-
-	// Final angle in radians, converted to degrees
-	/*if (MathHelper::RadiansToDegrees(XMVectorGetY(angleVec)) > 89.0f)
-	{
-		// Limit angle when looking "too steeply up"
-		if (XMVectorGetY(look) > 0.50)
-		{
-			if (angle < 0)
-				return;
-		}
-
-		// Limit angle when looking "too steeply down"
-		else if (XMVectorGetY(look) < 0.50)
-		{
-			if (angle > 0)
-				return;
-		}
-	}*/
-
-	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
-
-	 XMStoreFloat3(&mUp,   XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
-	 XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
-}
-
-void Camera::Yaw(float angle)
-{
-	XMMATRIX R = XMMatrixRotationY(angle);
-
-	XMStoreFloat3(&mRight,   XMVector3TransformNormal(XMLoadFloat3(&mRight), R));
-	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
-	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
-}
 
 XNA::Frustum Camera::GetFrustum() const
 {

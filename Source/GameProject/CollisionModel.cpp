@@ -89,28 +89,9 @@ CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, flo
 	h.hit = false;
 	h.t = 100000;
 	float t;
-
-	/*if(XNA::IntersectRayAxisAlignedBox(origin, dir, &boundingBox, &t) && t < length)
-		for(int i = 0; i < Size(); i+=3)
-		{
-			XMVECTOR v0 = XMLoadFloat3(GetPosition(i+0));
-			XMVECTOR v1 = XMLoadFloat3(GetPosition(i+1));
-			XMVECTOR v2 = XMLoadFloat3(GetPosition(i+2));
-			if (XNA::IntersectRayTriangle(origin, dir, v0, v1, v2, &t) && t < length)
-				if(t < h.t)
-				{
-					h.hit = true;
-					h.t = t;
-				}
-		}*/
 	XMVECTOR npos = XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1));
 	if(XNA::IntersectRayAxisAlignedBox(origin, dir, &boundingBox, &t) && t < length)
-	{
-		//h.t = 0;
-		//h.hit = true;
-		//return h;
 		h = SplitTree->Intersects(&(origin-npos), &dir, length);
-	}
 
 	return h;
 }

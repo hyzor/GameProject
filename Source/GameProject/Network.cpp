@@ -23,14 +23,13 @@ Network::~Network()
 
 void Network::Initialize()
 {
-	//this->Run = false;
 }
 
 
 void Network::Start()
 {
 	this->Run = true;
-	
+
 	resolver = new tcp::resolver(io_service);
 
 	tcp::resolver::query query("localhost", "13");
@@ -66,7 +65,7 @@ Package* Network::GetPackage()
 		else
 			return new Package(buf, len);
 	}
-	return new Package();
+	return NULL;
 }
 
 void Network::SendPackage(char* data, int size)
@@ -80,10 +79,7 @@ void Network::SendPackage(char* data, int size)
 void Network::Close()
 {
 	if(this->Run)
-	{
 		close();
-	}
-
 	delete instance;
 }
 

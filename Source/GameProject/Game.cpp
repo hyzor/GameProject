@@ -2,66 +2,74 @@
 
 Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
-	mWorld = new World(5);
-	mPlayer = new Player(GenericHandler::GetInstance()->GetGenericModel("Player"), 0, "Hyzor", XMFLOAT3(0,200,50));
+	world = new World(1);
 
- 	mAnimatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
+	player = new PlayerLocal("Hyzor", XMFLOAT3(0,200,50));
+	multiplayers = new std::vector<Player*>();
+
+ 	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
 	
 	this->soundModule = new SoundModule();
-
-	t = 0;
 }
 
 Game::~Game()
 {
-	SafeDelete(mPlayer);
- 	SafeDelete(mAnimatedEntity);
-	SafeDelete(mWorld);
+	SafeDelete(player);
+ 	SafeDelete(animatedEntity);
+	SafeDelete(world);
+	for(int i = 0; i < multiplayers->size(); i++)
+		SafeDelete(multiplayers->at(i));
+	SafeDelete(multiplayers);
 	SafeDelete(soundModule);
 }
 
 void Game::Update(float deltaTime, DirectInput* di)
 {
-	mPlayer->Update(deltaTime, di, mWorld);
+	player->Update(deltaTime, di, world);
+	for(int i = 0; i < multiplayers->size(); i++)
+		multiplayers->at(i)->Update(deltaTime, di, world);
 
-	mAnimatedEntity->Update(deltaTime);
-	mWorld->Update(deltaTime);
+	animatedEntity->Update(deltaTime);
 
-	t+=deltaTime;
-	if(t > 1)
-	{
-		t = 0;
-		Network::GetInstance()->Push(new Package(Package::Header(1, 1, sizeof(XMFLOAT3)), Package::Body((char*)(new XMFLOAT3(mPlayer->GetPosition())))));
-	}
+	world->Update(deltaTime);
 }
 
 void Game::HandlePackage(Package* p)
 {
-	if (p->GetHeader().operation == 1)
-		mAnimatedEntity->SetPosition(*(XMFLOAT3*)p->GetBody().data);
+	if(p->GetHeader().operation == 2)
+		multiplayers->push_back(new PlayerMulti(p->GetHeader().id, std::string(p->GetBody().Read(50)), XMFLOAT3(0,0,0)));
+	else
+	{
+		if(p->GetHeader().id == 0)
+			player->HandelPackage(p);
+		else
+			for(int i = 0; i < multiplayers->size(); i++)
+				if(multiplayers->at(i)->GetID() == p->GetHeader().id)
+					multiplayers->at(i)->HandelPackage(p);
+	}
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 {
-	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
-	mWorld->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
+	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
+	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
- 	mAnimatedEntity->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
+ 	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+	
+	for(int i = 0; i < multiplayers->size(); i++)
+		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
-	Camera* cam = this->mPlayer->GetCamera();
-	XMFLOAT3 playerPos = this->mPlayer->GetPosition();
-	this->soundModule->updateAndPlay(cam, playerPos);
+
+	this->soundModule->updateAndPlay(this->player->GetCamera(), this->player->GetPosition());
 }
 
 Camera* Game::GetCamera()
 {
-	return mPlayer->GetCamera();
+	return player->GetCamera();
 }
 
 void Game::initSoundModule(HWND hwnd, DirectInput* di)
 {
 	this->soundModule->initialize(hwnd, di);
-	//this->soundModule->loadMusic();
-	//this->soundModule->playMusic();
 }

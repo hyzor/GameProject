@@ -1,10 +1,8 @@
 #include "Player.h"
 
 
-Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3 Position)
+Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 {
-	mInCameraFrustum = true;
-
 	mHealth = 1;
 	mNickname = Nickname;
 	mSpeed = 100;
@@ -12,13 +10,14 @@ Player::Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3
 	mPosition = Position;
 	mPlayerID = PlayerID;
 	mIsAlive = true;
+	OnGround = false;
 	rot = 0;
+	move = XMFLOAT3(0,0,0);
 
 	this->Joint = new XMMATRIX(XMMatrixIdentity());
 
 	mCamera = new Camera();
 
-	mModel = model;
 
 	SetPosition(mPosition);
 
@@ -74,30 +73,13 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 	if (mHealth < 0.0f)
 		mIsAlive = false;
 
-	for (UINT i = 0; i < mWeapons.size(); i++)
-		mWeapons[i]->Update(dt);
+	mWeapons[mCurWeaponIndex]->Update(dt);
 
 	// Move
-	XMVECTOR look = XMVector3Normalize(mCamera->GetLookXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
-	if (dInput->GetKeyboardState()[DIK_W] & 0x80)
-		pos += look*mSpeed*dt;
-	if (dInput->GetKeyboardState()[DIK_S] & 0x80)
-		pos -= look*mSpeed*dt;
-	XMVECTOR right = XMVector3Normalize(mCamera->GetRightXM()*XMLoadFloat3(&XMFLOAT3(1,0,1)));
-	if (dInput->GetKeyboardState()[DIK_D] & 0x80)
-		pos += right*mSpeed*dt;
-	if (dInput->GetKeyboardState()[DIK_A] & 0x80)
-		pos -= right*mSpeed*dt;
+	pos += XMLoadFloat3(&move);
+	
 
-	// Rotate camera
-	if (dInput->MouseHasMoved())
-	{
-		float dx = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lX));
-		float dy = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lY));
-
-		mCamera->Yaw(dx);
-		mCamera->Pitch(dy);
-	}
+	
 
 	if (dInput->GetMouseState().rgbButtons[0])
 		Shoot();
@@ -114,7 +96,7 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 
 
 	//Collision
-	bool OnGround = false;
+	this->OnGround = false;
 	XMVECTOR dir;
 	CollisionModel::Hit hit;
 
@@ -164,22 +146,25 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 
 
 
-	//jump
-	if (OnGround && dInput->GetKeyboardState()[DIK_SPACE] & 0x80)
-		ySpeed = -200;
+	
 
 
 	
 	XMStoreFloat3(&mPosition, pos);
+
 	XMFLOAT3 camPos;
 	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
 	mCamera->SetPosition(camPos);
-	mCamera->UpdateViewMatrix();
+	mCamera->UpdateViewMatrix(XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 1, 0)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 0, 1)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(1, 0, 0)), cJoint));
 
 	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);
 }
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
+{
+}
+
+void Player::HandelPackage(Package *p)
 {
 }

@@ -46,17 +46,16 @@ public:
 	float GetFarWindowWidth() const;
 	float GetFarWindowHeight() const;
 
-	void UpdateViewMatrix();
+	void UpdateViewMatrix(XMVECTOR Up, XMVECTOR Look, XMVECTOR Right);
 
-	void Walk(float dist);
-	void Strafe(float dist);
-
-	void Pitch(float angle);
-	void Yaw(float angle);
 
 	XNA::Frustum GetFrustum() const;
 
 	void ComputeFrustum();
+	
+	float Yaw;
+	float Pitch;
+	float Roll;
 
 private:
 	// Coordinate system relative to world space
@@ -78,6 +77,7 @@ private:
 	float mFarWindowHeight;
 
 	XNA::Frustum mFrustum;
+
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #define PI 3.1415926535897932384626433832795
 
+#include "Network.h"
 #include <d3dUtilities.h>
 #include "Weapon.h"
 #include "GenericSkinnedModel.h"
@@ -16,47 +17,50 @@
 
 class Player
 {
-public:
-	Player(GenericModel* model, int PlayerID, std::string Nickname, XMFLOAT3 Position);
-	~Player();
+	public:
+		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position);
+		virtual ~Player();
 
-	void Update(float dt, DirectInput* dInput, World* world);
-	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
+		virtual void Update(float dt, DirectInput* dInput, World* world);
+		virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
-	void SetPosition(XMFLOAT3 position) { mPosition=position; }
-	int GetID() const { return mPlayerID; }
-	XMFLOAT3 GetPosition() const { return mPosition; }
-	Camera* GetCamera() { return mCamera; }
-	bool IsAlive() const { return mIsAlive; }
+		virtual void HandelPackage(Package *p);
 
-	void TakeDamage(float damage);
+		int GetID() const { return mPlayerID; }
+		XMFLOAT3 GetPosition() const { return mPosition; }
+		void SetPosition(XMFLOAT3 position) { mPosition=position; }
+		Camera* GetCamera() { return mCamera; }
+		bool IsAlive() const { return mIsAlive; }
 
-private:
-	int mPlayerID;
-	float mHealth;
+		void TakeDamage(float damage);
 
-	float mSpeed;
-	float ySpeed;
+	protected:
+		int mPlayerID;
+		float mHealth;
+		std::string mNickname;
+		float mSpeed;
+		bool mIsAlive;
+		XMFLOAT3 move;
+		bool OnGround;
 
-	bool mIsAlive;
-	bool mInCameraFrustum;
+		float ySpeed;
+		XMFLOAT3 mPosition;
+		
+		Camera* mCamera;
+		XMMATRIX* Joint;
+		float rot;
+		bool eDown;
 
-	XMFLOAT3 mPosition;
+		int mCurWeaponIndex;
+		std::vector<Weapon*> mWeapons;
 
-	std::string mNickname;
+		void Shoot();
 
-	UINT mCurWeaponIndex;
-	std::vector<Weapon*> mWeapons;
+	private:
 
-	Camera* mCamera;
 
-	GenericModel* mModel;
 
-	XMMATRIX* Joint;
-	float rot;
-	bool eDown;
 
 	
-	void Shoot();
 };
 #endif

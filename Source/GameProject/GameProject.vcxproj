@@ -95,6 +95,8 @@
     <ClCompile Include="Platform3.cpp" />
     <ClCompile Include="Platform4.cpp" />
     <ClCompile Include="PlatformSwitch.cpp" />
+    <ClCompile Include="PlayerLocal.cpp" />
+    <ClCompile Include="PlayerMulti.cpp" />
     <ClCompile Include="PyEngine.cpp" />
     <ClCompile Include="SoundModule.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -145,6 +147,8 @@
     <ClInclude Include="Platform3.h" />
     <ClInclude Include="Platform4.h" />
     <ClInclude Include="PlatformSwitch.h" />
+    <ClInclude Include="PlayerLocal.h" />
+    <ClInclude Include="PlayerMulti.h" />
     <ClInclude Include="PyEngine.h" />
     <ClInclude Include="SoundHelp.h" />
     <ClInclude Include="SoundModule.h" />

@@ -10,7 +10,9 @@
 #include <typeinfo>
 
 #include "Entity.h"
-#include "Player.h"
+
+#include "PlayerLocal.h"
+#include "PlayerMulti.h"
 
 #include "AnimatedEntity.h"
 #include "GenericHandler.h"
@@ -34,13 +36,13 @@ class Game
 
 		Camera* GetCamera();
 	private:
-		World* mWorld;
-		Player* mPlayer;
+		World* world;
+		Player* player;
+		std::vector<Player*>* multiplayers;
+
+		AnimatedEntity* animatedEntity;
 
 		SoundModule* soundModule;
-		AnimatedEntity* mAnimatedEntity;
-		GenericSkinnedModel* mSkinnedModel;
 
-		float t;
 };
 #endif

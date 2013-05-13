@@ -10,7 +10,12 @@ class Package
 				Body();
 				Body(char* data);
 
+				void From(int at);
+				char* Read(int size);
+
 				char* data;
+			private:
+				int readAt;
 		};
 		class Header
 		{
@@ -29,7 +34,8 @@ class Package
 		~Package();
 
 		char* GetData();
-		int Size();		
+		int Size();
+		void SetId(int id);
 
 		Body GetBody();
 		Header GetHeader();
@@ -42,6 +48,19 @@ class Package
 
 		void setHeader();
 		void setBody();
+};
+
+class PackageTo
+{
+	public:
+		PackageTo(Package* p, char* to)
+		{
+			this->p = p;
+			this->to = to;
+		};
+
+		Package* p;
+		char* to;
 };
 
 
