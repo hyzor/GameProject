@@ -23,9 +23,9 @@ protected:
 	std::string mModelName;
 	std::vector<PlatformSwitch> mSwitches;
 	int mID;
+	std::string mFilePath;
 
 private:
-	std::string mFilePath;
 	CollisionModel* mCollision;
 	Entity* mEntity;
 };

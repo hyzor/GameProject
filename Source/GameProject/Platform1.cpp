@@ -3,6 +3,7 @@
 Platform1::Platform1()
 	: Platform()
 {
+	//this->mFilePath = "Data\\Models\\Collada\\Platform1\\";
 	this->mModelName = "Platform1";
 }
 
