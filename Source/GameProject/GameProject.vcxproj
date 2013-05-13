@@ -90,6 +90,11 @@
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="OggVorbisPlayer.cpp" />
     <ClCompile Include="Package.cpp" />
+    <ClCompile Include="Platform1.cpp" />
+    <ClCompile Include="Platform2.cpp" />
+    <ClCompile Include="Platform3.cpp" />
+    <ClCompile Include="Platform4.cpp" />
+    <ClCompile Include="PlatformSwitch.cpp" />
     <ClCompile Include="PyEngine.cpp" />
     <ClCompile Include="SoundModule.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -135,6 +140,11 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="OggVorbisPlayer.h" />
     <ClInclude Include="Package.h" />
+    <ClInclude Include="Platform1.h" />
+    <ClInclude Include="Platform2.h" />
+    <ClInclude Include="Platform3.h" />
+    <ClInclude Include="Platform4.h" />
+    <ClInclude Include="PlatformSwitch.h" />
     <ClInclude Include="PyEngine.h" />
     <ClInclude Include="SoundHelp.h" />
     <ClInclude Include="SoundModule.h" />

@@ -988,6 +988,9 @@ bool SoundModule::playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool loop
 						return false;
 					}
 				}
+			}
 		}
 	}
+
+	return true;
 }

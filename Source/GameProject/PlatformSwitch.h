@@ -9,7 +9,7 @@ class PlatformSwitch
 public:
 	PlatformSwitch();
 	~PlatformSwitch();
-	void Initialize(XMFLOAT3 pos, XMMATRIX rotation);
+	void Initialize(XMFLOAT3 pos);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
 
 private:

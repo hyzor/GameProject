@@ -11,7 +11,7 @@ PlatformSwitch::~PlatformSwitch(void)
 	SafeDelete(mEntity);
 }
 
-void PlatformSwitch::Initialize(XMFLOAT3 pos, XMMATRIX rotation)
+void PlatformSwitch::Initialize(XMFLOAT3 pos)
 {
 	mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("Switch"), pos);
 	mCollision = new CollisionModel(pos);
