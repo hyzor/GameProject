@@ -43,7 +43,7 @@ void Game::HandlePackage(Package* p)
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 {
-	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
+	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
 	mWorld->Draw(dc, activeTech, mPlayer->GetCamera(), shadowMap);
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;

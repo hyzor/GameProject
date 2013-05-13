@@ -314,6 +314,16 @@ technique11 DirLights3Tex
 	}
 }
 
+technique11 DirLights3TexAlphaClip
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_DirLight(3, true, true, false, false)));
+	}
+}
+
 technique11 DirLights3Fog
 {
 	pass P0

@@ -27,9 +27,9 @@ Entity::~Entity(void)
 void Entity::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	dc->IASetInputLayout(InputLayouts::Basic32);
+	dc->IASetInputLayout(InputLayouts::PosNormalTexTan);
 
-	UINT stride = sizeof(Vertex::Basic32);
+	UINT stride = sizeof(Vertex::PosNormalTexTan);
 	UINT offset = 0;
 
 	XMMATRIX world;
@@ -54,25 +54,27 @@ void Entity::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, C
 	worldInvTranspose = MathHelper::InverseTranspose(world);
 	worldViewProj = world*view*proj;
 
-	Effects::BasicFX->SetWorld(world);
-	Effects::BasicFX->SetWorldInvTranspose(worldInvTranspose);
-	Effects::BasicFX->SetWorldViewProj(worldViewProj);
-	Effects::BasicFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
-	Effects::BasicFX->SetShadowTransform(world*XMLoadFloat4x4(&shadowMap->GetShadowTransform()));
-	Effects::BasicFX->SetShadowMap(shadowMap->getDepthMapSRV());
-	Effects::BasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	Effects::NormalMapFX->SetWorld(world);
+	Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
+	Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
+	Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj*toTexSpace);
+	Effects::NormalMapFX->SetShadowTransform(world*XMLoadFloat4x4(&shadowMap->GetShadowTransform()));
+	Effects::NormalMapFX->SetShadowMap(shadowMap->getDepthMapSRV());
+	Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		Effects::BasicTessFX->SetFogColor(Colors::Silver);
+		//Effects::BasicTessFX->SetFogColor(Colors::Silver);
 
 		for (UINT i = 0; i < mInstance.model->meshCount; ++i)
 		{
 			UINT matIndex = mInstance.model->meshes[i].MaterialIndex;
 
-			Effects::BasicFX->SetMaterial(mInstance.model->mat[matIndex]);
+			Effects::NormalMapFX->SetMaterial(mInstance.model->mat[matIndex]);
 
-			Effects::BasicFX->SetDiffuseMap(mInstance.model->diffuseMapSRV[matIndex]);
+			Effects::NormalMapFX->SetDiffuseMap(mInstance.model->diffuseMapSRV[matIndex]);
+
+			Effects::NormalMapFX->setNormalMap(mInstance.model->normalMapSRV[matIndex]);
 
 			activeTech->GetPassByIndex(p)->Apply(0, dc);
 			mInstance.model->meshes[i].draw(dc);

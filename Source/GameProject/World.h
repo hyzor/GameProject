@@ -3,6 +3,7 @@
 #include <vector>
 #include "Duck.h"
 #include "PyEngine.h"
+#include "Platform1.h"
 
 class World
 {

@@ -77,7 +77,7 @@ void InputLayouts::InitAll(ID3D11Device* device)
 		passDesc.IAInputSignatureSize, &PosNormalTexTanSkinned));
 
 	// PosNormalTexTan
-	Effects::BasicTessFX->TessDirLights3Tech->GetPassByIndex(0)->GetDesc(&passDesc);
+	Effects::NormalMapFX->DirLights3TexTech->GetPassByIndex(0)->GetDesc(&passDesc);
 	HR(device->CreateInputLayout(InputLayoutDesc::PosNormalTexTan, 4, passDesc.pIAInputSignature,
 		passDesc.IAInputSignatureSize, &PosNormalTexTan));
 }

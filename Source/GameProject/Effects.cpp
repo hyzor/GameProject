@@ -45,6 +45,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	PointLight1TexTech = mFX->GetTechniqueByName("PointLight1Tex");
 	DirLights3TexTech = mFX->GetTechniqueByName("DirLights3Tex");
 
+	DirLights3TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3TexAlphaClip");
+
 	DirLights3FogTech = mFX->GetTechniqueByName("DirLights3Fog");
 
 	DirLights3FogTexTech = mFX->GetTechniqueByName("DirLights3FogTex");
@@ -213,6 +215,7 @@ NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filen
 	// Techniques
 	//---------------------------------------------------------------
 	DirLights3TexTech = mFX->GetTechniqueByName("DirLights3Tex");
+	DirLights3TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3TexAlphaClip");
 	DirLights3TexSkinnedTech = mFX->GetTechniqueByName("DirLights3TexSkinned");
 
 	//-------------

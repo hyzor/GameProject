@@ -61,6 +61,7 @@ public:
 	ID3DX11EffectTechnique* DirLights3Tech;
 	ID3DX11EffectTechnique* PointLight1TexTech;
 	ID3DX11EffectTechnique* DirLights3TexTech;
+	ID3DX11EffectTechnique* DirLights3TexAlphaClipTech;
 	ID3DX11EffectTechnique* DirLights3FogTech;
 	ID3DX11EffectTechnique* DirLights3FogTexTech;
 	ID3DX11EffectTechnique* DirLights3FogReflectionTech;
@@ -315,6 +316,7 @@ public:
 
 	// Techniques
 	ID3DX11EffectTechnique* DirLights3TexTech;
+	ID3DX11EffectTechnique* DirLights3TexAlphaClipTech;
 	ID3DX11EffectTechnique* DirLights3TexSkinnedTech;
 
 	// Matrices

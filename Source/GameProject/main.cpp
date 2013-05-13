@@ -208,7 +208,7 @@ void Projekt::OnResize()
 {
 	D3D11App::OnResize();
 
-	mGame->GetCamera()->SetLens(0.25f*MathHelper::pi, D3D11App::AspectRatio(), 1.0f, 1000.0f);
+	mGame->GetCamera()->SetLens(0.25f*MathHelper::pi, D3D11App::AspectRatio(), 1.0f, 100000.0f);
 	mGame->GetCamera()->ComputeFrustum();
 }
 

@@ -3,11 +3,27 @@
 World::World(int platformAmount)
 	: mPlatformAmount(platformAmount), mPlatforms(std::vector<Platform*>())
 {
-	for(int i(0); i != mPlatformAmount; ++i)
+// 	for(int i(0); i != mPlatformAmount; ++i)
+// 	{
+// 		mPlatforms.push_back(new Platform1());
+// 		mPlatforms[i]->Initialize(i, XMFLOAT3((float)i*200, (float)-i*200, (float)i*200));
+// 	}
+
+	int platformId = 0;
+	int offset = 400;
+	for (unsigned int i = 0; i < mPlatformAmount; ++i)
 	{
-		mPlatforms.push_back(new Duck());
-		mPlatforms[i]->Initialize(i, XMFLOAT3((float)i*200, (float)-i*200, (float)i*200));
+		for (unsigned int j = 0; j < mPlatformAmount; ++j)
+		{
+			for (unsigned int k = 0; k < mPlatformAmount; ++k)
+			{
+				mPlatforms.push_back(new Platform1());
+				mPlatforms[platformId]->Initialize(platformId, XMFLOAT3((float)i*offset, (float)j*offset, (float)k*offset));
+				platformId++;
+			}
+		}
 	}
+
 	//Python->LoadModule("platform_script");
 	//Python->CallFunction(
 	//	Python->GetFunction("CreatePlatforms"),
@@ -30,7 +46,7 @@ World::World(int platformAmount)
 
 World::~World()
 {
-	for(int i(0); i != mPlatformAmount; ++i)
+	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
 		SafeDelete(mPlatforms.at(i));
 }
 
@@ -50,13 +66,13 @@ void World::Update(float dt)
 	//	}
 	//	mdReturns.clear();
 	//}
-	for(int i(0); i != mPlatformAmount; ++i)
+	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
 		mPlatforms.at(i)->Update(dt);
 }
 
 void World::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)
 {
-	for(int i(0); i != mPlatformAmount; ++i)
+	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
 		mPlatforms.at(i)->Draw(dc, at, camera, shadowMap);
 }
 
@@ -66,7 +82,7 @@ CollisionModel::Hit World::Intersect(XMVECTOR origin, XMVECTOR dir, float length
 	hit.hit = false;
 	hit.t = MathHelper::infinity;
 
-	for(int i(0); i != mPlatformAmount; ++i)
+	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
 	{
 		CollisionModel::Hit hit2 = mPlatforms.at(i)->getCollision()->Intersect(origin, dir, length);
 		if(hit2.hit)
