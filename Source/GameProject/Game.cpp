@@ -2,7 +2,7 @@
 
 Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
-	world = new World(1);
+	world = new World(3);
 
 	player = new PlayerLocal("Hyzor", XMFLOAT3(0,200,50));
 	multiplayers = new std::vector<Player*>();
@@ -51,7 +51,7 @@ void Game::HandlePackage(Package* p)
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 {
-	ID3DX11EffectTechnique* activeTech = Effects::BasicFX->DirLights3TexTech;
+	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3TexTech;
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;

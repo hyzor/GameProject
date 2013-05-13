@@ -12,7 +12,7 @@ World::World(int platformAmount)
 		{
 			for (unsigned int k = 0; k < mPlatformAmount; ++k)
 			{
-				mPlatforms.push_back(new Duck());
+				mPlatforms.push_back(new Platform1());
 				mPlatforms[platformId]->Initialize(platformId, XMFLOAT3((float)i*offset, (float)j*offset, (float)k*offset));
 				platformId++;
 			}
