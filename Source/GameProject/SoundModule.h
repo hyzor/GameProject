@@ -51,15 +51,17 @@ class SoundModule
 		std::vector<SoundSource> sounds;
 		std::vector<IDirectSoundBuffer8*> sBuffers; //buffers to play sounds that the player generates
 		std::vector<IDirectSound3DBuffer*> s3DBuffers;
-		std::vector<IDirectSoundBuffer8*> sEnemyBuffers; //buffers to play sounds that the enemies generates
-		std::vector<IDirectSound3DBuffer*> s3DEnemyBuffers;
+		std::vector<IDirectSoundBuffer*> sEnemyBuffers; //buffers to play sounds that the enemies generates
+		std::vector<IDirectSound3DBuffer8*> s3DEnemyBuffers;
 		std::vector<int> IDIndices;
+		std::vector<int> enemyID; // The indices in this vector are "parallell" with the indices for enemyBuffers/3DenemyBuffers
 
 		bool SFXMuted;
 		bool musicMuted;
 		bool musicLoaded;
 		int currSong;
 		int nrOfEnemies;
+		int nrOfSoundFXLoaded;
 		OggVorbisPlayer ovp;
 		clock_t muteTimer, musicSwapTimer;
 
@@ -94,6 +96,8 @@ class SoundModule
 		void inputGeneration(XMFLOAT3 playerPos);
 		void loadMusic(int sID = 0);
 		bool updateAndPlay(Camera* pCamera, XMFLOAT3 playerPos);
+		bool addEnemy(int ID);
+		bool playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool looping);
 };
 
 

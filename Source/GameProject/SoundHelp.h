@@ -14,6 +14,7 @@
 #include <Windows.h>
 #include <MMReg.h>
 
+const int NUM_SOUNDS = 6;
 
 enum Sound3D
 {

@@ -12,6 +12,7 @@ SoundModule::SoundModule()
 	this->muteTimer = clock();
 	this->musicSwapTimer = clock();
 	this->nrOfEnemies = 0;
+	this->nrOfSoundFXLoaded = 0;
 }
 
 SoundModule::SoundModule(const SoundModule& SM)
@@ -385,6 +386,7 @@ bool SoundModule::loadWaveFiles()
 		result = loadWaveFile(this->sounds3D.at(i).path, &this->sBuffers.at(i), &this->s3DBuffers.at(i), this->sounds3D.at(i).soundID);
 		if(!result)
 			MessageBox(0, L"Failure managing secondary buffers.", 0, 0);
+		this->nrOfSoundFXLoaded++;
 	}
 
 	return result;
@@ -907,4 +909,85 @@ bool SoundModule::updateAndPlay(Camera* pCamera, XMFLOAT3 pPos)
 		this->ovp.update();
 
 	return true;
+}
+
+bool SoundModule::addEnemy(int ID)
+{
+	HRESULT result;
+
+	for(unsigned int i = 0; i < this->sBuffers.size(); i++)
+	{
+		IDirectSoundBuffer* enemyBuffer;
+		IDirectSound3DBuffer8* enemy3DBuffer;
+
+		this->ds->DuplicateSoundBuffer(this->sBuffers.at(i), &enemyBuffer);
+		result = (enemyBuffer)->QueryInterface(IID_IDirectSound3DBuffer, (void**)&enemy3DBuffer);
+		if(FAILED(result))
+		{
+			return false;
+		}
+
+		this->sEnemyBuffers.push_back(enemyBuffer);
+		this->s3DEnemyBuffers.push_back(enemy3DBuffer);
+
+	}
+
+	this->enemyID.push_back(ID);
+
+	return true;
+}
+
+bool SoundModule::playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool looping)
+{
+	HRESULT result;
+	DWORD status;
+	int index = enemyID - 1;
+
+	for(unsigned int i = 0; i < this->sEnemyBuffers.size(); i++)
+	{
+		if(soundID == this->IDIndices.at(i))
+		{
+			sEnemyBuffers.at(i * index)->GetStatus(&status);
+
+			if(!(status == DSBSTATUS_PLAYING))
+			{
+
+				result = sEnemyBuffers.at(i * index)->SetCurrentPosition(0);
+				if(FAILED(result))
+				{
+					return false;
+				}
+
+				result = s3DEnemyBuffers.at(i * index)->SetMinDistance(20.0f, DS3D_DEFERRED);
+				if(FAILED(result))
+				{
+					return false;
+				}
+				
+				result = s3DEnemyBuffers.at(i * index)->SetPosition(pos.x, pos.y, pos.z, DS3D_DEFERRED);
+				if(FAILED(result))
+				{
+					return false;
+				}
+
+				this->listener->CommitDeferredSettings();
+
+				if(!looping)
+				{
+					result = sEnemyBuffers.at(i * index)->Play(0, 0, 0);
+					if(FAILED(result))
+					{
+						return false;
+					}
+				}
+				else if(looping)
+				{
+					result = sEnemyBuffers.at(i * index)->Play(0, 0, DSBPLAY_LOOPING);
+					if(FAILED(result))
+					{
+						return false;
+					}
+				}
+		}
+	}
 }
