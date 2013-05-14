@@ -40,3 +40,24 @@ void Platform::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera*
 {
 	mEntity->Draw(dc, at, camera, shadowMap);
 }
+
+PlatformSwitch* Platform::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length)
+{
+	CollisionModel::Hit hit;
+	hit.hit = false;
+	hit.t = MathHelper::infinity;
+
+	for(unsigned int i = 0; i < mSwitches.size(); ++i)
+	{
+		CollisionModel::Hit hit2 = mSwitches.at(i)->getCollision()->Intersect(origin, dir, length);
+		if(hit2.hit)
+		{
+			if(hit2.t < hit.t)
+			{
+				hit = hit2;
+				return mSwitches.at(i);
+			}
+		}
+	}
+	return NULL;
+}

@@ -4,7 +4,7 @@ Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
 	world = new World(1);
 
-	player = new PlayerLocal("Hyzor", XMFLOAT3(0,300,50));
+	player = new PlayerLocal("Hyzor", XMFLOAT3(1,300,50));
 	multiplayers = new std::vector<Player*>();
 
  	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));

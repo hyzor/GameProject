@@ -5,8 +5,6 @@
 #include "Entity.h"
 #include "PlatformSwitch.h"
 
-/* Abstract base class for different platforms */
-
 class Platform
 {
 public:
@@ -17,6 +15,7 @@ public:
 	virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
 	virtual void HandleScript() = 0;
 	CollisionModel* getCollision() { return this->mCollision; }
+	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
 	void Move(XMFLOAT3 pos);
 
 protected:

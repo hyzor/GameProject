@@ -5,7 +5,7 @@ World::World(int platformAmount)
 	: mPlatformAmount(platformAmount), mPlatforms(std::vector<Platform*>())
 {
 	srand(unsigned int(time(nullptr)));
-	mPlatformAmount = 1;
+	mPlatformAmount = 2;
 	int platformId = 0;
 	int offset = 400;
 	int random = 0;
@@ -15,7 +15,7 @@ World::World(int platformAmount)
 		{
 			for (int k = 0; k < mPlatformAmount; ++k)
 			{
-				random = 1;//rand()%4 + 1;
+				random = rand()%4 + 1;
 				switch(random)
 				{
 				case 1:
@@ -75,4 +75,15 @@ CollisionModel::Hit World::Intersect(XMVECTOR origin, XMVECTOR dir, float length
 		}
 	}
 	return hit;
+}
+
+PlatformSwitch* World::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length)
+{
+	for(int i = 0; i < mPlatforms.size(); i++)
+	{
+		PlatformSwitch* s = mPlatforms[i]->IntersectSwitch(origin, dir, length);
+		if(s != NULL)
+			return s;
+	}
+	return NULL;
 }

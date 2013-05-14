@@ -27,3 +27,27 @@ Entity* PlatformSwitch::getEntity() const
 {
 	return this->mEntity;
 }
+
+XMVECTOR PlatformSwitch::GetMoveTo(XMVECTOR up)
+{
+	if(XMVectorGetY(up) > 0.5f)
+		return XMLoadFloat3(&mEntity->Position) + XMLoadFloat3(&XMFLOAT3(0,-7,-7));
+	else if(XMVectorGetZ(up) < 0.5f)
+		return XMLoadFloat3(&mEntity->Position) + XMLoadFloat3(&XMFLOAT3(0, 7, 7));
+
+	return XMLoadFloat3(&XMFLOAT3(0,0,0));
+}
+
+float PlatformSwitch::GetRotationX(XMVECTOR up)
+{
+	if(XMVectorGetY(up) > 0.5f)
+		return -(float)XM_PI/2;
+	else if(XMVectorGetZ(up) < 0.5f)
+		return +(float)XM_PI/2;
+
+	return 0;
+}
+float PlatformSwitch::GetRotationZ(XMVECTOR up)
+{
+	return 0;
+}

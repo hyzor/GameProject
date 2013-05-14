@@ -22,6 +22,9 @@ PlayerLocal::~PlayerLocal()
 
 void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world)
 {
+	
+	XMVECTOR pos = XMLoadFloat3(&mPosition);
+
 	//send package
 	t += dt;
 	if(t > 1)
@@ -35,14 +38,33 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 
 	if(!rotating)
 	{
+		//gravity switch
+		XMVECTOR dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), cJoint);
+		PlatformSwitch* psCol = world->IntersectSwitch(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint), dir, 10);
+		if(psCol != NULL)
+		{
+			XMVECTOR up = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), cJoint);
+			float rX = psCol->GetRotationX(up);
+			float rZ = psCol->GetRotationZ(up);
+
+			if(!(rX == 0 && rZ == 0))
+			{
+				rotateToX += rX;
+				rotateToZ += rZ;
+				ySpeed = 0;
+				rotating = true;
+				pos = psCol->GetMoveTo(up);
+			}
+		}
+
 		//switch garvity
 		if(dInput->GetKeyboardState()[DIK_E] & 0x80)
 		{
 			if(!eDown)
 			{
 				rotateToX += (float)PI/2;
-				if(rotateToX > 2*(float)PI-0.1f)
-					rotateToX = 0;
+				//if(rotateToX > 2*(float)PI-0.1f)
+					//rotateToX = 0;
 				ySpeed = 0;
 				rotating = true;
 			}
@@ -54,7 +76,7 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 		{
 			if(!rDown)
 			{
-				rotateToZ += (float)PI/2;
+				rotateToZ += (float)PI/2*3;
 				if(rotateToZ > 2*(float)PI-0.1f)
 					rotateToZ = 0;
 				ySpeed = 0;
@@ -115,17 +137,16 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 			float rt = rotateToX;
 			float r = rotX;
 
-			if(std::abs(rt-rotX) > (float)PI)
-			{
-				if(rt < rotX) rt += (float)PI*2;
-				else rt -= (float)PI*2;
-			}
+			if(rt > (float)PI)
+				rt = -((float)PI*2-rt);
+			if(r > (float)PI)
+				r = -((float)PI*2-r);
 
-			if(rt < r)
+			if(rotateToX > rotX)
 			{
-				rotX -= 0.0005f*dt;
-				r -= 0.0005f*dt;
-				if(rt > r)
+				rotX += 5*dt;
+				r += 5*dt;
+				if(rt < r)
 				{
 					rotX = rotateToX;
 					rotating = false;
@@ -133,9 +154,9 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 			}
 			else
 			{
-				rotX += 5*dt;
-				r += 5*dt;
-				if(rt < r)
+				rotX -= 5*dt;
+				r -= 5*dt;
+				if(rt > r)
 				{
 					rotX = rotateToX;
 					rotating = false;
@@ -152,17 +173,16 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 			float rt = rotateToZ;
 			float r = rotZ;
 
-			if(std::abs(rt-rotZ) > (float)PI)
-			{
-				if(rt < rotZ) rt += (float)PI*2;
-				else rt -= (float)PI*2;
-			}
+			if(rt > (float)PI)
+				rt = -((float)PI*2-rt);
+			if(r > (float)PI)
+				r = -((float)PI*2-r);
 
-			if(rt < r)
+			if(rotateToZ > rotZ)
 			{
-				rotZ -= 0.0005f*dt;
-				r -= 0.0005f*dt;
-				if(rt > r)
+				rotZ += 5*dt;
+				r += 5*dt;
+				if(rt < r)
 				{
 					rotZ = rotateToZ;
 					rotating = false;
@@ -170,9 +190,9 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 			}
 			else
 			{
-				rotZ += 5*dt;
-				r += 5*dt;
-				if(rt < r)
+				rotZ -= 5*dt;
+				r -= 5*dt;
+				if(rt > r)
 				{
 					rotZ = rotateToZ;
 					rotating = false;
@@ -191,6 +211,7 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);
 	XMStoreFloat3(&move, m);
+	XMStoreFloat3(&mPosition, pos);
 
 	this->Player::Update(dt, dInput, sm, world);
 }
