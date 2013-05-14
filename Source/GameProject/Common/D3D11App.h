@@ -25,7 +25,7 @@ public:
 	void SetFullscreen(bool toFullscreen);
 	void SwitchFullscreen();
 
-	bool isFullscreen() const;
+	bool isFullscreen();
 
 	// Game loop
 	int Run();

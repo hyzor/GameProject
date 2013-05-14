@@ -17,8 +17,6 @@
 #include "SoundModule.h"
 #include "SoundHelp.h"
 
-
-
 class Projekt : public D3D11App
 {
 public:
@@ -65,6 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	//_CrtSetBreakAlloc(6068);
 
 	// Also create a debug console window
 	// 	if(AllocConsole()) 
@@ -352,7 +351,7 @@ void Projekt::UpdateNetwork()
 			mGame->HandlePackage(p);
 		delete p;
 
-		for(int i = 0; i < Network::GetInstance()->Queue().size(); i++)
+		for(UINT i = 0; i < Network::GetInstance()->Queue().size(); i++)
 		{
 			p = Network::GetInstance()->Pop();
 			Network::GetInstance()->SendPackage(p->GetData(), p->Size());

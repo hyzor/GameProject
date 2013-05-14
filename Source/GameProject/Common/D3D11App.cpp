@@ -398,7 +398,7 @@ void D3D11App::SwitchFullscreen()
 	SetFullscreen(mIsFullscreen != FALSE);
 }
 
-bool D3D11App::isFullscreen() const
+bool D3D11App::isFullscreen()
 {
 	return mIsFullscreen;
 }

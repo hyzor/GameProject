@@ -19,7 +19,7 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 	/*switchPos.y += 100.0;
 	switchPos.x += 50.0f;
 	switchPos.z += 72.5f;*/
-	switchPos.y += 16.8;
+	switchPos.y += 16.8f;
 	switchPos.x += 0.0f;
 	switchPos.z += -78.8f;
 

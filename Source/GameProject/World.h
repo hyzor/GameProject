@@ -11,7 +11,7 @@
 class World
 {
 public:
-	World(int platformAmount);
+	World();
 	~World(void);
 	void Update(float dt);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);

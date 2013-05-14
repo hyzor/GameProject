@@ -2,13 +2,12 @@
 
 Game::Game(ID3D11Device* device, TextureManager* mTextureMgr)
 {
-	world = new World(1);
+	world = new World();
 
 	player = new PlayerLocal("Hyzor", XMFLOAT3(1,300,50));
 	multiplayers = new std::vector<Player*>();
 
  	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
-	
 }
 
 Game::~Game()
@@ -16,7 +15,7 @@ Game::~Game()
 	SafeDelete(player);
  	SafeDelete(animatedEntity);
 	SafeDelete(world);
-	for(int i = 0; i < multiplayers->size(); i++)
+	for(UINT i = 0; i < multiplayers->size(); i++)
 		SafeDelete(multiplayers->at(i));
 	SafeDelete(multiplayers);
 }
@@ -24,7 +23,7 @@ Game::~Game()
 void Game::Update(float deltaTime, DirectInput* di, SoundModule* sm)
 {
 	player->Update(deltaTime, di, sm, world);
-	for(int i = 0; i < multiplayers->size(); i++)
+	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Update(deltaTime, di, sm, world);
 
 	animatedEntity->Update(deltaTime);
@@ -41,7 +40,7 @@ void Game::HandlePackage(Package* p)
 		if(p->GetHeader().id == 0)
 			player->HandelPackage(p);
 		else
-			for(int i = 0; i < multiplayers->size(); i++)
+			for(UINT i = 0; i < multiplayers->size(); i++)
 				if(multiplayers->at(i)->GetID() == p->GetHeader().id)
 					multiplayers->at(i)->HandelPackage(p);
 	}
@@ -55,7 +54,7 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
  	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 	
-	for(int i = 0; i < multiplayers->size(); i++)
+	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 }
 

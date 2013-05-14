@@ -42,7 +42,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Utilities\bin\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Utilities\bin\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>..\External\FW1FontWrapper_1_1;..\External\Python\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\include;$(SolutionDir)\External\boost_1_51;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\External\FW1FontWrapper_1_1\x86;..\External\Python\libs;D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\lib\x86;$(SolutionDir)\External\boost_1_51\lib;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>

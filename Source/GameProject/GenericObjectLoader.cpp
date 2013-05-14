@@ -943,7 +943,6 @@ SkinData::Bone* GenericObjectLoader::CreateBoneTree(aiNode* node,
 	{
 		internalNode->Children.push_back(CreateBoneTree(node->mChildren[i], internalNode, skinnedData));
 	}
-
 	return internalNode;
 }
 

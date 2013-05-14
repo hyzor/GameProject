@@ -1,11 +1,10 @@
 #include "World.h"
 #include <ctime>
 
-World::World(int platformAmount)
-	: mPlatformAmount(platformAmount), mPlatforms(std::vector<Platform*>())
+World::World()
+	: mPlatformAmount(2), mPlatforms(std::vector<Platform*>())
 {
 	srand(unsigned int(time(nullptr)));
-	mPlatformAmount = 2;
 	int platformId = 0;
 	int offset = 400;
 	int random = 0;
@@ -79,7 +78,7 @@ CollisionModel::Hit World::Intersect(XMVECTOR origin, XMVECTOR dir, float length
 
 PlatformSwitch* World::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length)
 {
-	for(int i = 0; i < mPlatforms.size(); i++)
+	for(UINT i = 0; i < mPlatforms.size(); i++)
 	{
 		PlatformSwitch* s = mPlatforms[i]->IntersectSwitch(origin, dir, length);
 		if(s != NULL)
