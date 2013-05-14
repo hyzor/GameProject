@@ -18,7 +18,7 @@ public:
 
 	ID3D11ShaderResourceView* cubeMapSRV();
 
-	void draw(ID3D11DeviceContext* dc, const Camera& camera);
+	void draw(ID3D11DeviceContext* dc, const Camera& camera, bool inMenu);
 
 private:
 	// Buffers

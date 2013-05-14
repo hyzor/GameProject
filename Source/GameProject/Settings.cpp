@@ -49,3 +49,8 @@ SettingsData Settings::GetData() const
 {
 	return GetInstance()->mData;
 }
+
+void Settings::SetFullscreen(bool fullscreen)
+{
+	GetInstance()->mData.IsFullscreen = fullscreen;
+}

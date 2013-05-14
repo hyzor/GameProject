@@ -7,7 +7,7 @@
 #include "FrustumCulling.h"
 #include "RenderStates.h"
 #include "PyEngine.h"
-
+#include "GUI.h"
 #include "Entity.h"
 
 #include "Settings.h"
@@ -16,6 +16,8 @@
 
 #include "SoundModule.h"
 #include "SoundHelp.h"
+
+
 
 class Projekt : public D3D11App
 {
@@ -49,6 +51,9 @@ private:
 
 	// Frustum culling
 	FrustumCulling* mFrustumCulling;
+
+	//GUI
+	GUI* mGUI;
 
 	Game* mGame;
 
@@ -112,6 +117,7 @@ Projekt::~Projekt()
 	SafeDelete(mShadowMap);
 	SafeDelete(mFrustumCulling);
 	SafeDelete(mGame);
+	SafeDelete(mGUI);
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
@@ -147,6 +153,9 @@ bool Projekt::Init()
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
 
+	//Create and initialize the GUI
+	mGUI = new GUI();
+	mGUI->Init(mDirect3D->GetDevice());
 
 	Network::GetInstance()->Initialize();
 	Network::GetInstance()->Start();
@@ -265,7 +274,10 @@ void Projekt::DrawScene()
 	this->soundModule->updateAndPlay(mGame->GetCamera(), mGame->GetCamera()->GetPosition());
 
 	// Draw sky
-	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera());
+	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera(), mGUI->InMenu());
+
+	// Draw the GUI
+	mGUI->Render(mDirect3D->GetImmediateContext());
 
 	// Unbind shadow map and AmbientMap as a shader input because we are going to render
 	// to it next frame.  These textures can be at any slot, so clear all slots.
@@ -287,7 +299,7 @@ void Projekt::UpdateScene(float dt)
 	// TO DO:
 	// Replace with menu instead of quit
 	//-----------------------------------
-	if (mDirectInput->GetKeyboardState()[DIK_ESCAPE] && 0x80)
+	if (mGUI->Update(mDirectInput))
 		SendMessage(mhMainWnd, WM_DESTROY, 0, 0);
 
 	//-------------------------------------------------------------
@@ -314,8 +326,6 @@ void Projekt::UpdateScene(float dt)
 
 	// Update objects
 	mGame->Update(dt, mDirectInput, soundModule);
-
-	
 
 	// Update shadow map
 	mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);

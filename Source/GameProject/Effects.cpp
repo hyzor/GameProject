@@ -198,6 +198,7 @@ SkyEffect::SkyEffect(ID3D11Device* device, const std::wstring& filename)
 
 	worldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	cubeMap = mFX->GetVariableByName("gCubeMap")->AsShaderResource();
+	inMenu = mFX->GetVariableByName("inMenu")->AsScalar();
 }
 
 SkyEffect::~SkyEffect()

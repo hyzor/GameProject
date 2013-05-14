@@ -23,6 +23,8 @@ public:
 
 	SettingsData GetData() const;
 
+	void SetFullscreen(bool fullscreen);
+
 	void Shutdown();
 
 private:

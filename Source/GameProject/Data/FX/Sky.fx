@@ -5,6 +5,7 @@
 cbuffer cbPerFrame
 {
 	float4x4 gWorldViewProj;
+	bool inMenu;
 };
 
 // Cube map
@@ -49,7 +50,17 @@ VertexOut VS(VertexIn vin)
 //=======================================================================
 float4 PS(VertexOut pin) : SV_Target
 {
-	return gCubeMap.Sample(samTriLinearSam, pin.PosL);
+	float4 Color = gCubeMap.Sample(samTriLinearSam, pin.PosL);
+	if(inMenu)
+	{
+		Color.rgb = dot(Color.rgb, float3(0.3, 0.59, 0.11));
+		Color.rgb *= 0.5;
+		Color.a = 1;
+	}
+
+
+
+	return Color;
 }
 
 RasterizerState NoCull
