@@ -19,6 +19,9 @@ public:
 	~Entity(void);
 
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
+	void RotateEntityX(float rot);
+	void RotateEntityY(float rot);
+	void RotateEntityZ(float rot);
 
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;

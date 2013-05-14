@@ -5,7 +5,7 @@ World::World(int platformAmount)
 	: mPlatformAmount(platformAmount), mPlatforms(std::vector<Platform*>())
 {
 	srand(unsigned int(time(nullptr)));
-	mPlatformAmount = 3;
+	mPlatformAmount = 1;
 	int platformId = 0;
 	int offset = 400;
 	int random = 0;
@@ -15,7 +15,7 @@ World::World(int platformAmount)
 		{
 			for (int k = 0; k < mPlatformAmount; ++k)
 			{
-				random = rand()%4 + 1;
+				random = 1;//rand()%4 + 1;
 				switch(random)
 				{
 				case 1:

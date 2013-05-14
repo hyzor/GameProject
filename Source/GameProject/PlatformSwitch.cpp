@@ -22,3 +22,8 @@ void PlatformSwitch::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, C
 {
 	mEntity->Draw(dc, at, camera, shadowMap);
 }
+
+Entity* PlatformSwitch::getEntity() const
+{
+	return this->mEntity;
+}

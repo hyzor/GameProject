@@ -21,7 +21,7 @@ public:
 
 protected:
 	std::string mModelName;
-	std::vector<PlatformSwitch> mSwitches;
+	std::vector<PlatformSwitch*> mSwitches;
 	int mID;
 	std::string mFilePath;
 

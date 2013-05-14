@@ -81,3 +81,29 @@ void Entity::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, C
 		}
 	}
 }
+
+void Entity::RotateEntityX(float rot)
+{
+	this->Rotation = rot;
+	XMMATRIX modelRot = XMMatrixRotationX(rot);
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+}
+
+void Entity::RotateEntityY(float rot)
+{
+	this->Rotation = rot;
+	XMMATRIX modelRot = XMMatrixRotationY(rot);
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+}
+void Entity::RotateEntityZ(float rot)
+{
+	this->Rotation = rot;
+	XMMATRIX modelRot = XMMatrixRotationZ(rot);
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+}

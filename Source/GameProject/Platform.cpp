@@ -7,6 +7,10 @@ Platform::Platform()
 
 Platform::~Platform()
 {
+	for(unsigned int i = 0; i < this->mSwitches.size(); i++)
+	{
+		SafeDelete(this->mSwitches.at(i));
+	}
 	SafeDelete(mCollision);
 	SafeDelete(mEntity);
 }
