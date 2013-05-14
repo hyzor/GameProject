@@ -31,6 +31,9 @@
     <Filter Include="Common\Logging">
       <UniqueIdentifier>{bc53626e-cef9-469f-b023-a6646a1523bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Level">
+      <UniqueIdentifier>{55166227-017c-437a-80dc-f5014ce637cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\Camera.cpp">
@@ -132,15 +135,6 @@
     <ClCompile Include="GenericHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Platform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Duck.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Railgun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -162,26 +156,35 @@
     <ClCompile Include="PyEngine.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="PlatformSwitch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerLocal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PlayerMulti.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformSwitch.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform1.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform2.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform3.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform4.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Duck.cpp">
+      <Filter>Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -290,15 +293,6 @@
     <ClInclude Include="GenericHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Platform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Duck.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Railgun.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -323,26 +317,35 @@
     <ClInclude Include="PyEngine.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="PlatformSwitch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerLocal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayerMulti.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformSwitch.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform1.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform2.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform3.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform4.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck.h">
+      <Filter>Level</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
