@@ -10,8 +10,10 @@ PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal:
 	Network::GetInstance()->Push(new Package(Package::Header(2, 0, 50), Package::Body(name)));
 
 	t = 0;
-	rotateTo = 0;
-	rot = 0;
+	rotateToX = 0;
+	rotX = 0;
+	rotateToZ = 0;
+	rotZ = 0;
 }
 
 PlayerLocal::~PlayerLocal()
@@ -38,9 +40,9 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 		{
 			if(!eDown)
 			{
-				rotateTo += (float)PI/2;
-				if(rotateTo > 2*(float)PI-0.1f)
-					rotateTo = 0;
+				rotateToX += (float)PI/2;
+				if(rotateToX > 2*(float)PI-0.1f)
+					rotateToX = 0;
 				ySpeed = 0;
 				rotating = true;
 			}
@@ -48,19 +50,33 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 		}
 		else
 			eDown = false;
+		if(dInput->GetKeyboardState()[DIK_R] & 0x80)
+		{
+			if(!rDown)
+			{
+				rotateToZ += (float)PI/2;
+				if(rotateToZ > 2*(float)PI-0.1f)
+					rotateToZ = 0;
+				ySpeed = 0;
+				rotating = true;
+			}
+			rDown = true;
+		}
+		else
+			rDown = false;
 
 		//Remove down movement
 		XMVECTOR removeDown = XMLoadFloat3(&XMFLOAT3(0,1,0));
 		removeDown = XMVector3Transform(removeDown, cJoint);
-		if(XMVectorGetX(removeDown) < 0.5f)
+		if(std::abs(XMVectorGetX(removeDown)) < 0.5f)
 			removeDown = XMVectorSetX(removeDown, 1);
 		else
 			removeDown = XMVectorSetX(removeDown, 0);
-		if(XMVectorGetY(removeDown) < 0.5f)
+		if(std::abs(XMVectorGetY(removeDown)) < 0.5f)
 			removeDown = XMVectorSetY(removeDown, 1);
 		else
 			removeDown = XMVectorSetY(removeDown, 0);
-		if(XMVectorGetZ(removeDown) < 0.5f)
+		if(std::abs(XMVectorGetZ(removeDown)) < 0.5f)
 			removeDown = XMVectorSetZ(removeDown, 1);
 		else
 			removeDown = XMVectorSetZ(removeDown, 0);
@@ -93,43 +109,89 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 	}
 	else
 	{
-		float rt = rotateTo;
-		float r = rot;
-
-		if(std::abs(rt-rot) > (float)PI)
+		//rotating animation
+		if(rotateToX != rotX)
 		{
-			if(rt < rot) rt += (float)PI*2;
-			else rt -= (float)PI*2;
-		}
+			float rt = rotateToX;
+			float r = rotX;
 
-		if(rt < r)
-		{
-			rot -= 0.0005f*dt;
-			r -= 0.0005f*dt;
-			if(rt > r)
+			if(std::abs(rt-rotX) > (float)PI)
 			{
-				rot = rotateTo;
-				rotating = false;
+				if(rt < rotX) rt += (float)PI*2;
+				else rt -= (float)PI*2;
 			}
-		}
-		else
-		{
-			rot += 5*dt;
-			r += 5*dt;
+
 			if(rt < r)
 			{
-				rot = rotateTo;
-				rotating = false;
+				rotX -= 0.0005f*dt;
+				r -= 0.0005f*dt;
+				if(rt > r)
+				{
+					rotX = rotateToX;
+					rotating = false;
+				}
 			}
-		}
+			else
+			{
+				rotX += 5*dt;
+				r += 5*dt;
+				if(rt < r)
+				{
+					rotX = rotateToX;
+					rotating = false;
+				}
+			}
 
-		cJoint = XMMatrixRotationX(rot);
+			cJoint = XMMatrixRotationX(rotX);
+			XMVECTOR look = XMLoadFloat3(&XMFLOAT3(0,0,1));
+			look = XMVector3Transform(look, cJoint);
+			cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(look, rotZ));
+		}
+		else if(rotateToZ != rotZ)
+		{
+			float rt = rotateToZ;
+			float r = rotZ;
+
+			if(std::abs(rt-rotZ) > (float)PI)
+			{
+				if(rt < rotZ) rt += (float)PI*2;
+				else rt -= (float)PI*2;
+			}
+
+			if(rt < r)
+			{
+				rotZ -= 0.0005f*dt;
+				r -= 0.0005f*dt;
+				if(rt > r)
+				{
+					rotZ = rotateToZ;
+					rotating = false;
+				}
+			}
+			else
+			{
+				rotZ += 5*dt;
+				r += 5*dt;
+				if(rt < r)
+				{
+					rotZ = rotateToZ;
+					rotating = false;
+				}
+			}
+
+			cJoint = XMMatrixRotationX(rotX);
+			XMVECTOR look = XMLoadFloat3(&XMFLOAT3(0,0,1));
+			look = XMVector3Transform(look, cJoint);
+			cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(look, rotZ));
+		}
+		else
+			rotating = false;
 	}
 
 	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);
-
 	XMStoreFloat3(&move, m);
+
 	this->Player::Update(dt, dInput, sm, world);
 }
 
