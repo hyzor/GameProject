@@ -10,13 +10,13 @@ PlayerMulti::~PlayerMulti()
 	delete mModel;
 }
 
-void PlayerMulti::Update(float dt, DirectInput* dInput, World* world)
+void PlayerMulti::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	mModel->Update(dt);
 
 	
 
-	this->Player::Update(dt, dInput, world);
+	this->Player::Update(dt, dInput, sm, world);
 	mModel->SetPosition(this->mPosition);
 }
 

@@ -29,10 +29,9 @@ class Game
 		Game(ID3D11Device* device, TextureManager* mTextureMgr);
 		~Game();
 
-		void Update(float deltaTime, DirectInput* di);
+		void Update(float deltaTime, DirectInput* di, SoundModule* sm);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
 		void HandlePackage(Package* p);
-		void initSoundModule(HWND hwnd, DirectInput* di);
 
 		Camera* GetCamera();
 	private:
@@ -42,7 +41,7 @@ class Game
 
 		AnimatedEntity* animatedEntity;
 
-		SoundModule* soundModule;
+		
 
 };
 #endif

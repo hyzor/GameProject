@@ -14,6 +14,9 @@
 
 #include "GenericHandler.h"
 
+#include "SoundModule.h"
+#include "SoundHelp.h"
+
 class Projekt : public D3D11App
 {
 public:
@@ -48,6 +51,8 @@ private:
 	FrustumCulling* mFrustumCulling;
 
 	Game* mGame;
+
+	SoundModule* soundModule;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
@@ -117,6 +122,7 @@ Projekt::~Projekt()
 	//Python->ShutDown();
 
 	Network::GetInstance()->Close();
+	SafeDelete(soundModule);
 }
 
 bool Projekt::Init()
@@ -141,11 +147,14 @@ bool Projekt::Init()
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
 
-	//init soundmodule
-	mGame->initSoundModule(this->mhMainWnd, this->mDirectInput);
 
 	Network::GetInstance()->Initialize();
 	Network::GetInstance()->Start();
+
+	//init soundmodule
+	this->soundModule = new SoundModule();
+	this->soundModule->initialize(this->mhMainWnd, this->mDirectInput);
+
 
 	// Set if window is fullscreen or not
 	D3D11App::SetFullscreen(Settings::GetInstance()->GetData().IsFullscreen);
@@ -252,6 +261,9 @@ void Projekt::DrawScene()
 	// Draw game
 	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
 
+	
+	this->soundModule->updateAndPlay(mGame->GetCamera(), mGame->GetCamera()->GetPosition());
+
 	// Draw sky
 	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera());
 
@@ -301,7 +313,7 @@ void Projekt::UpdateScene(float dt)
 	//-------------------------------------------------------------
 
 	// Update objects
-	mGame->Update(dt, mDirectInput);
+	mGame->Update(dt, mDirectInput, soundModule);
 
 	
 

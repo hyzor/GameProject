@@ -758,15 +758,6 @@ void SoundModule::inputGeneration(XMFLOAT3 playerPos)
 		}
 	}
 
-	if( (this->dInput->GetKeyboardState()[DIK_W] || this->dInput->GetKeyboardState()[DIK_A] ||
-		this->dInput->GetKeyboardState()[DIK_S] || this->dInput->GetKeyboardState()[DIK_D]) && 0x80)
-	{
-		this->playSFX(playerPos, Running, false);
-	}
-	else
-	{
-		this->stopSound(Running);
-	}
 }
 
 bool SoundModule::stopSound(int sID)

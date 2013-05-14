@@ -11,8 +11,8 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 	mPlayerID = PlayerID;
 	mIsAlive = true;
 	OnGround = false;
-	rot = 0;
-	move = XMFLOAT3(0,0,0);
+	rotating = false;
+	move = XMFLOAT3(0, 0, 0);
 
 	this->Joint = new XMMATRIX(XMMatrixIdentity());
 
@@ -47,27 +47,12 @@ void Player::TakeDamage(float damage)
 	mHealth -= damage;
 }
 
-void Player::Update(float dt, DirectInput* dInput, World* world)
+void Player::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	XMMATRIX cJoint = *Joint;
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
 
-	//switch garvity
-	if(dInput->GetKeyboardState()[DIK_E] & 0x80)
-	{
-		if(!eDown)
-		{
-			rot += (float)PI/2;
-			if(rot > 2*(float)PI-0.1f)
-				rot = 0;
-			cJoint = XMMatrixRotationX(rot);
-			//mCamera->Roll(PI/2);
-			ySpeed = 0;
-		}
-		eDown = true;
-	}
-	else
-		eDown = false;
+	
 
 	// Health lower than 0, die
 	if (mHealth < 0.0f)
@@ -77,7 +62,6 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 
 	// Move
 	pos += XMLoadFloat3(&move);
-	
 
 	
 
@@ -88,8 +72,11 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 
 
 	//gravity
-	ySpeed += 300*dt;
-	pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, cJoint);
+	if(!rotating)
+	{
+		ySpeed += 300*dt;
+		pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, cJoint);
+	}
 
 
 
@@ -144,7 +131,11 @@ void Player::Update(float dt, DirectInput* dInput, World* world)
 			pos += dir*hit.t;
 	}
 
-
+	
+	if(OnGround && XMVectorGetX(XMVector3Dot(XMLoadFloat3(&move), XMLoadFloat3(&XMFLOAT3(1,1,1)))) != 0)
+		sm->playSFX(mPosition, Running, false);
+	else
+		sm->stopSound(Running);
 
 	
 

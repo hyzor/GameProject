@@ -14,6 +14,7 @@
 #include "Entity.h"
 #include "Railgun.h"
 #include "World.h"
+#include "SoundModule.h"
 
 class Player
 {
@@ -21,7 +22,7 @@ class Player
 		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position);
 		virtual ~Player();
 
-		virtual void Update(float dt, DirectInput* dInput, World* world);
+		virtual void Update(float dt, DirectInput* dInput, SoundModule* sm, World* world);
 		virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
 		virtual void HandelPackage(Package *p);
@@ -42,14 +43,13 @@ class Player
 		bool mIsAlive;
 		XMFLOAT3 move;
 		bool OnGround;
+		bool rotating;
 
 		float ySpeed;
 		XMFLOAT3 mPosition;
 		
 		Camera* mCamera;
 		XMMATRIX* Joint;
-		float rot;
-		bool eDown;
 
 		int mCurWeaponIndex;
 		std::vector<Weapon*> mWeapons;
