@@ -5,7 +5,7 @@ PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal:
 {
 	//send connect package
 	char* name = new char[50];
-	for(int i = 0; i < Nickname.length(); i++)
+	for(UINT i = 0; i < Nickname.length(); i++)
 		name[i] = Nickname[i];
 	Network::GetInstance()->Push(new Package(Package::Header(2, 0, 50), Package::Body(name)));
 

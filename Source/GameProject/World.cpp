@@ -1,42 +1,41 @@
 #include "World.h"
+#include <ctime>
 
 World::World(int platformAmount)
 	: mPlatformAmount(platformAmount), mPlatforms(std::vector<Platform*>())
 {
-
+	srand(unsigned int(time(nullptr)));
+	mPlatformAmount = 3;
 	int platformId = 0;
 	int offset = 400;
-	for (unsigned int i = 0; i < mPlatformAmount; ++i)
+	int random = 0;
+	for (int i = 0; i < mPlatformAmount; ++i)
 	{
-		for (unsigned int j = 0; j < mPlatformAmount; ++j)
+		for (int j = 0; j < mPlatformAmount; ++j)
 		{
-			for (unsigned int k = 0; k < mPlatformAmount; ++k)
+			for (int k = 0; k < mPlatformAmount; ++k)
 			{
-				mPlatforms.push_back(new Platform1());
+				random = rand()%4 + 1;
+				switch(random)
+				{
+				case 1:
+					mPlatforms.push_back(new Platform1());
+					break;
+				case 2:
+					mPlatforms.push_back(new Platform2());
+					break;
+				case 3:
+					mPlatforms.push_back(new Platform3());
+					break;
+				case 4:
+					mPlatforms.push_back(new Platform4());
+					break;
+				}
 				mPlatforms[platformId]->Initialize(platformId, XMFLOAT3((float)i*offset, (float)j*offset, (float)k*offset));
 				platformId++;
 			}
 		}
 	}
-
-	//Python->LoadModule("platform_script");
-	//Python->CallFunction(
-	//	Python->GetFunction("CreatePlatforms"),
-	//	Python->CreateArg(this->mPlatformAmount));
-	//Python->Update(0.0f);
-	//if(Python->CheckReturns())
-	//{
-	//	Python->ConvertDoubles(this->mdReturns);
-	//	Python->ClearReturns();
-	//	int index = 0;
-	//	for(int i(0); i != mPlatformAmount; ++i)
-	//	{
-	//		mPlatforms.push_back(new Duck());
-	//		mPlatforms.at(i)->Initialize(i, XMFLOAT3((float)mdReturns[index], (float)mdReturns[index+1], (float)mdReturns[index+2]));
-	//		index += 3;
-	//	}
-	//	mdReturns.clear();
-	//}
 }
 
 World::~World()
@@ -47,20 +46,6 @@ World::~World()
 
 void World::Update(float dt)
 {
-	//Python->LoadModule("platform_script");
-	//Python->Update(dt);
-	//if(Python->CheckReturns())
-	//{
-	//	Python->ConvertDoubles(this->mdReturns);
-	//	Python->ClearReturns();
-	//	int index = 0;
-	//	for(int i(0); i != mPlatformAmount; ++i)
-	//	{
-	//		mPlatforms.at(i)->Move(XMFLOAT3((float)mdReturns[index], (float)mdReturns[index+1], (float)mdReturns[index+2]));
-	//		index += 3;
-	//	}
-	//	mdReturns.clear();
-	//}
 	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
 		mPlatforms.at(i)->Update(dt);
 }

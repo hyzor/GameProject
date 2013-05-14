@@ -4,6 +4,9 @@
 #include "Duck.h"
 #include "PyEngine.h"
 #include "Platform1.h"
+#include "Platform2.h"
+#include "Platform3.h"
+#include "Platform4.h"
 
 class World
 {

@@ -13,6 +13,7 @@ Platform::~Platform()
 
 void Platform::Initialize(int id, XMFLOAT3 pos)
 {
+	mFilePath += mModelName + "\\";
 	this->mID = id;
 	this->mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel(mModelName), pos);
 	this->mCollision = new CollisionModel(pos);
