@@ -126,10 +126,10 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 		cJoint = XMMatrixRotationX(rot);
 	}
 
-
+	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);
-	XMStoreFloat3(&move, m);
 
+	XMStoreFloat3(&move, m);
 	this->Player::Update(dt, dInput, sm, world);
 }
 
