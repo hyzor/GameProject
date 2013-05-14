@@ -97,11 +97,17 @@ bool GUI::Update(DirectInput* di)
 			if(_wcsicmp(menuItems[menuIndex], L"Resume") == 0)
 				menuActive = false;
 
-			/*if(_wcsicmp(menuItems[menuIndex], L"Fullscreen") == 0)
-			{		
-				bool setFullscreen = !Settings::GetInstance()->GetData().IsFullscreen;
-					Settings::GetInstance()->SetFullscreen(setFullscreen);
-			}*/
+			if(_wcsicmp(menuItems[menuIndex], L"FullScreen") == 0)
+			{	
+				bool fullscreen;
+				if(Settings::GetInstance()->GetData().IsFullscreen)
+					fullscreen = false;
+				
+				else
+					fullscreen = true;
+
+				Settings::GetInstance()->SetFullscreen(fullscreen);
+			}
 		}
 		enterDown = false;
 	}
@@ -127,7 +133,7 @@ void GUI::drawCrossHair(ID3D11DeviceContext *context)
 	int width = Settings::GetInstance()->GetData().Width;
 	int heigth = Settings::GetInstance()->GetData().Height;
 
-	drawText(context, L"-o-", XMFLOAT2(width/2, heigth/2), 25.0f, 0xff0000ff); 
+	drawText(context, L"-o-", XMFLOAT2(width/2, heigth/2), 25, 0xff0000ff); 
 }
 void GUI::drawText(ID3D11DeviceContext *context, wchar_t* text, XMFLOAT2 pos, float fontSize, int color) const
 {

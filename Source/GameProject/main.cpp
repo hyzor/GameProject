@@ -295,10 +295,6 @@ void Projekt::DrawScene()
 
 void Projekt::UpdateScene(float dt)
 {
-	//-----------------------------------
-	// TO DO:
-	// Replace with menu instead of quit
-	//-----------------------------------
 	if (mGUI->Update(mDirectInput))
 		SendMessage(mhMainWnd, WM_DESTROY, 0, 0);
 
@@ -338,6 +334,13 @@ void Projekt::UpdateScene(float dt)
 	outs << L"    " << mFrustumCulling->GetNumVisible() << 
 		L" objects visible out of " << mGenericInstances.size();
 	mMainWndCaption = outs.str();
+
+	//Check if fullscreen settings has been changed. If it has then update.
+	bool fullscreen = Settings::GetInstance()->GetData().IsFullscreen;
+	if(fullscreen != D3D11App::isFullscreen())
+	{
+		D3D11App::SetFullscreen(fullscreen);
+	}
 }
 
 void Projekt::UpdateNetwork()
