@@ -21,9 +21,16 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 
 	SetPosition(mPosition);
 
-	// Weapons
-	mWeapons = std::vector<Weapon*>();
-	mWeapons.push_back(new Railgun());
+	// --- Weapons -------------------------
+	// Create railgun
+	Railgun* railgun = new Railgun();
+	Railgun::Properties prop;
+	prop.cooldown = 2.5f;
+	prop.damage = 1.0f;
+	prop.maxProjectiles = 1;
+	railgun->Init(prop, new ParticleSystem());
+
+	mWeapons.push_back(railgun);
 	this->mCurWeaponIndex = 0;
 }
 
@@ -37,9 +44,12 @@ Player::~Player()
 		delete mWeapons[i];
 }
 
-void Player::Shoot()
+bool Player::Shoot()
 {
-	mWeapons.at(mCurWeaponIndex)->FireProjectile();
+	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(mPosition, mCamera->GetLook()))
+		return true;
+
+	return false;
 }
 
 void Player::TakeDamage(float damage)
@@ -50,37 +60,32 @@ void Player::TakeDamage(float damage)
 void Player::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	XMMATRIX cJoint = *Joint;
-	XMVECTOR pos = XMLoadFloat3(&mPosition);
-
-	
+	XMVECTOR pos = XMLoadFloat3(&mPosition);	
 
 	// Health lower than 0, die
 	if (mHealth < 0.0f)
 		mIsAlive = false;
 
+	// Update player weapons
 	mWeapons[mCurWeaponIndex]->Update(dt);
 
 	// Move
-	pos += XMLoadFloat3(&move);
+	pos += XMLoadFloat3(&move);	
 
-	
-
+	// Shoot
 	if (dInput->GetMouseState().rgbButtons[0])
-		Shoot();
+	{
+		if (Shoot())
+			//int temp = 1;
+			sm->playSFX(mPosition, FireWeapon, false);
+	}
 
-
-
-
-	//gravity
+	// Gravity
 	if(!rotating)
 	{
 		ySpeed += 300*dt;
 		pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, cJoint);
 	}
-
-
-
-
 
 	//Collision
 	this->OnGround = false;
@@ -130,16 +135,12 @@ void Player::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world
 		if(hit.t < 3)
 			pos += dir*hit.t;
 	}
-
 	
+	// Step sound
 	if(OnGround && XMVectorGetX(XMVector3Dot(XMLoadFloat3(&move), XMLoadFloat3(&XMFLOAT3(1,1,1)))) != 0)
 		sm->playSFX(mPosition, Running, false);
 	else
 		sm->stopSound(Running);
-
-	
-
-
 	
 	XMStoreFloat3(&mPosition, pos);
 

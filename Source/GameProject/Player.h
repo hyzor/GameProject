@@ -54,13 +54,6 @@ class Player
 		int mCurWeaponIndex;
 		std::vector<Weapon*> mWeapons;
 
-		void Shoot();
-
-	private:
-
-
-
-
-	
+		bool Shoot();	
 };
 #endif

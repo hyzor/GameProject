@@ -164,7 +164,7 @@ bool Projekt::Init()
 		Settings::GetInstance()->GetData().Height);
 
 	// Create sky
-	mSky = new Sky(mDirect3D->GetDevice(), L"Data/Textures/snowcube1024.dds", 5000.0f);
+	mSky = new Sky(mDirect3D->GetDevice(), L"Data/Textures/SkyBox_Space.dds", 5000.0f);
 
 	// Create shadow map
 	mShadowMap = new ShadowMap(mDirect3D->GetDevice(), 2048, 2048);

@@ -1,17 +1,13 @@
 #include "Railgun.h"
 
-Railgun::Railgun(/* Variabler för att initiera particlesystem */)
+Railgun::Railgun()
 	: Weapon()
 {
-	mProperties.damage = MathHelper::infinity; // Huehue
-	mProperties.cooldown = 5.0f;
-	mProperties.currColdown = 0.0f;
-	mProperties.maxProjectiles = 1;
-	mProperties.currProjectiles = mProperties.maxProjectiles;
 }
 
-Railgun::~Railgun(void)
+Railgun::~Railgun()
 {
+	delete mParticleSys;
 }
 
 void Railgun::Update(float dt)
@@ -19,8 +15,26 @@ void Railgun::Update(float dt)
 	Weapon::Update(dt);
 }
 
-void Railgun::FireProjectile()
+void Railgun::Init(Properties properties, ParticleSystem* particleSystem)
 {
-	// Pew pew
-	Weapon::ResetCooldown();
+	Weapon::Init(properties);
+	mParticleSys = particleSystem;
+}
+
+void Railgun::Draw(ID3D11DeviceContext* dc, const Camera& cam)
+{
+	Weapon::Draw();
+	mParticleSys->draw(dc, cam);
+}
+
+bool Railgun::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
+{
+	if (Weapon::FireProjectile(pos, dir))
+	{
+		// Shoot ray and emit particle system
+
+		return true;
+	}
+
+	return false;
 }

@@ -712,10 +712,12 @@ void SoundModule::inputGeneration(XMFLOAT3 playerPos)
 		}
 	}
 
+	/*
 	if((this->dInput->GetMouseState().rgbButtons[0] && 0x80 ))
 	{
 		this->playSFX(playerPos, FireWeapon);
 	}
+	*/
 
 	if(this->dInput->GetKeyboardState()[DIK_ADD] && 0x80 )
 	{
