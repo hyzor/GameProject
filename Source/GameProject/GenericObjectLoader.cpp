@@ -563,9 +563,9 @@ void GenericObjectLoader::ReadMaterials(const aiScene* scene,
 
 			// Get normal map
 			aiString normalMapPath;
-			if (scene->mMaterials[curMat]->GetTexture(aiTextureType_NORMALS, 0, &normalMapPath) == aiReturn_SUCCESS)
+			if (scene->mMaterials[curMat]->GetTexture(aiTextureType_HEIGHT, 0, &normalMapPath) == aiReturn_SUCCESS)
 			{
-				std::string normalMapPathStr = texPath.C_Str();
+				std::string normalMapPathStr = normalMapPath.C_Str();
 				std::wstring tmp(normalMapPathStr.begin(), normalMapPathStr.end());
 
 
