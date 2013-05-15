@@ -368,6 +368,7 @@ public:
 	static SkyEffect* SkyFX;
 	static BasicTessEffect* BasicTessFX;
 	static NormalMapEffect* NormalMapFX;
+	static ParticleEffect* LaserFX;
 };
 
 #endif

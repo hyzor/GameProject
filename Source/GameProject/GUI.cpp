@@ -133,9 +133,8 @@ void GUI::drawCrossHair(ID3D11DeviceContext *context)
 	int width = Settings::GetInstance()->GetData().Width;
 	int heigth = Settings::GetInstance()->GetData().Height;
 
-	drawText(context, L"-o-", XMFLOAT2(width/2.0f, heigth/2.0f), 25.0f, 0xff0000ff); 
+	drawText(context, L"-o-", XMFLOAT2(width/2.0f, heigth/2.0f), 25.0f, 0xff0000ff);
 }
-
 void GUI::drawText(ID3D11DeviceContext *context, wchar_t* text, XMFLOAT2 pos, float fontSize, int color) const
 {
 	mFontWrapper->DrawString(

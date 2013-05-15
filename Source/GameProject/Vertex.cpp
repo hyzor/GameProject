@@ -66,6 +66,10 @@ void InputLayouts::InitAll(ID3D11Device* device)
 	HR(device->CreateInputLayout(InputLayoutDesc::Basic32, 3, passDesc.pIAInputSignature,
 		passDesc.IAInputSignatureSize, &Basic32));
 
+	Effects::LaserFX->StreamOutTech->GetPassByIndex(0)->GetDesc(&passDesc);
+	HR(device->CreateInputLayout(InputLayoutDesc::Particle, 5, passDesc.pIAInputSignature,
+		passDesc.IAInputSignatureSize, &Particle));
+
 	// PosNormalTexTanSkinned
 // 	Effects::BasicTessFX->TessDirLights3Tech->GetPassByIndex(0)->GetDesc(&passDesc);
 // 	HR(device->CreateInputLayout(InputLayoutDesc::PosNormalTexTanSkinned, 6, passDesc.pIAInputSignature,

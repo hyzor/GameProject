@@ -1,6 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 #include "d3dUtilities.h"
+#include "Camera.h"
 
 class Weapon
 {
@@ -23,8 +24,8 @@ private:
 public:
 	Weapon();
 	virtual ~Weapon();
-	virtual void Update(float dt);
-	virtual void Draw();
+	virtual void Update(float dt, float gameTime);
+	virtual void Draw(ID3D11DeviceContext* dc, Camera* cam);
 
 	virtual bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir);
 

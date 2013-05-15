@@ -11,7 +11,7 @@ class PlayerMulti : public Player
 		PlayerMulti(int PlayerID, std::string Nickname, XMFLOAT3 Position);
 		~PlayerMulti();
 		
-		void Update(float dt, DirectInput* dInput,SoundModule* sm, World* world);
+		void Update(float dt, float gameTime, DirectInput* dInput,SoundModule* sm, World* world);
 		void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 		
 		void HandelPackage(Package *p);

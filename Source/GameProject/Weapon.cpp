@@ -23,13 +23,13 @@ void Weapon::Init(Properties properties)
 	mProperties.currProjectiles = 0;
 }
 
-void Weapon::Update(float dt)
+void Weapon::Update(float dt, float gameTime)
 {
 	if (mProperties.currCooldown > 0.0f)
 		mProperties.currCooldown -= dt;
 }
 
-void Weapon::Draw()
+void Weapon::Draw(ID3D11DeviceContext* dc, Camera* cam)
 {
 	// Draw weapon model
 }

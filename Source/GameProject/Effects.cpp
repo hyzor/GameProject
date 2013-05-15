@@ -260,6 +260,7 @@ BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
 SkyEffect* Effects::SkyFX = 0;
 BasicTessEffect* Effects::BasicTessFX = 0;
 NormalMapEffect* Effects::NormalMapFX = 0;
+ParticleEffect* Effects::LaserFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
@@ -268,6 +269,7 @@ void Effects::InitAll(ID3D11Device* device)
 	SkyFX = new SkyEffect(device, L"Data/FX/Sky.fxo");
 	BasicTessFX = new BasicTessEffect(device, L"Data/FX/BasicTess.fxo");
 	NormalMapFX = new NormalMapEffect(device, L"Data/FX/NormalMap.fxo");
+	LaserFX = new ParticleEffect(device, L"Data/FX/Laser.fxo");
 }
 
 void Effects::DestroyAll()
@@ -277,4 +279,5 @@ void Effects::DestroyAll()
 	SafeDelete(SkyFX);
 	SafeDelete(BasicTessFX);
 	SafeDelete(NormalMapFX);
+	SafeDelete(LaserFX);
 }

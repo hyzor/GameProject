@@ -375,5 +375,8 @@
     <CustomBuild Include="Data\FX\Sky.fx">
       <Filter>FX</Filter>
     </CustomBuild>
+    <CustomBuild Include="Data\FX\Laser.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

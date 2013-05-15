@@ -20,7 +20,7 @@ PlayerLocal::~PlayerLocal()
 {
 }
 
-void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world)
+void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
@@ -213,7 +213,7 @@ void PlayerLocal::Update(float dt, DirectInput* dInput, SoundModule* sm, World* 
 	XMStoreFloat3(&move, m);
 	XMStoreFloat3(&mPosition, pos);
 
-	this->Player::Update(dt, dInput, sm, world);
+	this->Player::Update(dt, gameTime, dInput, sm, world);
 }
 
 void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)

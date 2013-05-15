@@ -32,7 +32,7 @@ public:
 
 	void reset();
 	void update(float dt, float gameTime);
-	void draw(ID3D11DeviceContext* dc, const Camera& cam);
+	void draw(ID3D11DeviceContext* dc, Camera* cam);
 private:
 	void BuildVB(ID3D11Device* device);
 

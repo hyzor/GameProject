@@ -20,18 +20,6 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 
 
 	SetPosition(mPosition);
-
-	// --- Weapons -------------------------
-	// Create railgun
-	Railgun* railgun = new Railgun();
-	Railgun::Properties prop;
-	prop.cooldown = 2.5f;
-	prop.damage = 1.0f;
-	prop.maxProjectiles = 1;
-	railgun->Init(prop, new ParticleSystem());
-
-	mWeapons.push_back(railgun);
-	this->mCurWeaponIndex = 0;
 }
 
 
@@ -57,7 +45,7 @@ void Player::TakeDamage(float damage)
 	mHealth -= damage;
 }
 
-void Player::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world)
+void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	XMMATRIX cJoint = *Joint;
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
@@ -67,7 +55,7 @@ void Player::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world
 		mIsAlive = false;
 
 	// Update player weapons
-	mWeapons[mCurWeaponIndex]->Update(dt);
+	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
 
 	// Move
 	pos += XMLoadFloat3(&move);	
@@ -155,8 +143,24 @@ void Player::Update(float dt, DirectInput* dInput, SoundModule* sm, World* world
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
+	mWeapons[mCurWeaponIndex]->Draw(dc, mCamera);
 }
 
 void Player::HandelPackage(Package *p)
 {
+}
+
+void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
+{
+	// --- Weapons -------------------------
+	// Create railgun
+	Railgun* railgun = new Railgun();
+	Railgun::Properties prop;
+	prop.cooldown = 2.0f;
+	prop.damage = 1.0f;
+	prop.maxProjectiles = 1;
+	railgun->Init(prop, device, dc);
+
+	mWeapons.push_back(railgun);
+	this->mCurWeaponIndex = 0;
 }

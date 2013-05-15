@@ -22,10 +22,12 @@ class Player
 		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position);
 		virtual ~Player();
 
-		virtual void Update(float dt, DirectInput* dInput, SoundModule* sm, World* world);
+		virtual void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world);
 		virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
 		virtual void HandelPackage(Package *p);
+
+		void InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc);
 
 		int GetID() const { return mPlayerID; }
 		XMFLOAT3 GetPosition() const { return mPosition; }

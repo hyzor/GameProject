@@ -26,10 +26,10 @@
 class Game
 {
 	public:
-		Game(ID3D11Device* device, TextureManager* mTextureMgr);
+		Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextureMgr);
 		~Game();
 
-		void Update(float deltaTime, DirectInput* di, SoundModule* sm);
+		void Update(float deltaTime, float gameTime, DirectInput* di, SoundModule* sm);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
 		void HandlePackage(Package* p);
 
@@ -41,7 +41,7 @@ class Game
 
 		AnimatedEntity* animatedEntity;
 
-		
-
+		// Should contain all the weapons in the game
+		std::vector<Weapon*> mWeapons;
 };
 #endif

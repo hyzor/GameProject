@@ -17,6 +17,8 @@
 #include "SoundModule.h"
 #include "SoundHelp.h"
 
+
+
 class Projekt : public D3D11App
 {
 public:
@@ -63,7 +65,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-	//_CrtSetBreakAlloc(6068);
 
 	// Also create a debug console window
 	// 	if(AllocConsole()) 
@@ -150,7 +151,7 @@ bool Projekt::Init()
 	//Python->Initialize();
 
 	// Create game
-	mGame = new Game(mDirect3D->GetDevice(), &mTextureMgr);
+	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
 
 	//Create and initialize the GUI
 	mGUI = new GUI();
@@ -266,14 +267,13 @@ void Projekt::DrawScene()
 	Effects::NormalMapFX->SetShadowMap(mShadowMap->getDepthMapSRV());
 	Effects::NormalMapFX->SetCubeMap(mSky->cubeMapSRV());
 
-	// Draw game
-	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
-
-	
-	this->soundModule->updateAndPlay(mGame->GetCamera(), mGame->GetCamera()->GetPosition());
-
 	// Draw sky
 	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera(), mGUI->InMenu());
+
+	// Draw game
+	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
+	
+	this->soundModule->updateAndPlay(mGame->GetCamera(), mGame->GetCamera()->GetPosition());
 
 	// Draw the GUI
 	mGUI->Render(mDirect3D->GetImmediateContext());
@@ -320,7 +320,7 @@ void Projekt::UpdateScene(float dt)
 	//-------------------------------------------------------------
 
 	// Update objects
-	mGame->Update(dt, mDirectInput, soundModule);
+	mGame->Update(dt, mTimer.getTimeElapsedS(), mDirectInput, soundModule);
 
 	// Update shadow map
 	mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);
