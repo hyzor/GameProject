@@ -125,7 +125,7 @@ Projekt::~Projekt()
 
 	Settings::GetInstance()->Shutdown();
 	GenericHandler::GetInstance()->Shutdown();
-	//Python->ShutDown();
+	Python->ShutDown();
 
 	Network::GetInstance()->Close();
 	SafeDelete(soundModule);
@@ -148,7 +148,7 @@ bool Projekt::Init()
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
-	//Python->Initialize();
+	Python->Initialize();
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
@@ -348,6 +348,7 @@ void Projekt::UpdateScene(float dt)
 	{
 		D3D11App::SetFullscreen(fullscreen);
 	}
+	Settings::GetInstance()->SetResolution(D3D11App::GetWindowWidth(), D3D11App::GetWindowHeight());
 }
 
 void Projekt::UpdateNetwork()

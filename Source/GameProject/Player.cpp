@@ -1,8 +1,13 @@
 #include "Player.h"
 
-
 Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
+	: mPlayerID(PlayerID), mNickname(Nickname), mPosition(Position)
 {
+	Python->LoadModule("scoreboard_script");
+	Python->CallFunction(
+		Python->GetFunction("CreatePlayerStats"),
+		Python->CreateArg(PlayerID, Nickname.c_str()));
+
 	mHealth = 1;
 	mNickname = Nickname;
 	mSpeed = 100;

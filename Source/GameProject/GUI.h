@@ -31,6 +31,7 @@ private:
 	void drawText(ID3D11DeviceContext *context, WCHAR* text, XMFLOAT2 pos, float fontSize, int color) const;
 	void DrawMenu(ID3D11DeviceContext *context);
 	void drawCrossHair(ID3D11DeviceContext *context);
+	void drawScoreBoard(ID3D11DeviceContext *context);
 
 private:
 	IFW1Factory* mFW1Factory;
@@ -45,6 +46,7 @@ private:
 	bool upArrowDown;
 	bool downArrowDown;
 	bool enterDown;
+	bool tabDown;
 };
 
 #endif
