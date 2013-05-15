@@ -15,6 +15,8 @@ cbuffer cbPerFrame
 	float gFogStart;
 	float gFogRange;
 	float4 gFogColor;
+
+	bool inMenu;
 };
 
 cbuffer cbPerObject
@@ -212,7 +214,12 @@ float4 PS_DirLight(VertexOut pIn,
 	{
 		// Sample texture
 		texColor = gDiffuseMap.Sample(samLinear, pIn.Tex);
-
+		if(inMenu)
+		{
+			texColor.rgb = dot(texColor.rgb, float3(0.3, 0.59, 0.11));
+			texColor.rgb *= 0.5;
+			texColor.a = 1;
+		}
 		if (gAlphaClip)
 		{
 			// Discard pixel if alpha < 0.1

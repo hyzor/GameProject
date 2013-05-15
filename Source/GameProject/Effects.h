@@ -293,6 +293,7 @@ public:
 	void SetWorld(CXMMATRIX M)                          { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTranspose(CXMMATRIX M)              { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetTexTransform(CXMMATRIX M)                   { TexTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetInMenu(bool menu)							{ inMenu->SetBool(menu); }
 
 	void SetEyePosW(const XMFLOAT3& v)                  { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 
@@ -351,6 +352,9 @@ public:
 	ID3DX11EffectScalarVariable* fogRange;
 	ID3DX11EffectScalarVariable* fogStart;
 	ID3DX11EffectVectorVariable* fogColor;
+
+	// Menu
+	ID3DX11EffectScalarVariable* inMenu;
 
 };
 

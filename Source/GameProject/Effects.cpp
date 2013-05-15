@@ -227,6 +227,8 @@ NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filen
 	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 	TexTransform      = mFX->GetVariableByName("gTexTransform")->AsMatrix();
 
+	inMenu			  = mFX->GetVariableByName("inMenu")->AsScalar();
+
 	EyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
 
 	dirLights = mFX->GetVariableByName("gDirLights");

@@ -54,7 +54,7 @@ float4 PS(VertexOut pin) : SV_Target
 	if(inMenu)
 	{
 		Color.rgb = dot(Color.rgb, float3(0.3, 0.59, 0.11));
-		Color.rgb *= 0.5;
+		Color.rgb *= 0.7;
 		Color.a = 1;
 	}
 
