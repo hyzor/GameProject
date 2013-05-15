@@ -26,7 +26,6 @@ void GUI::Init(ID3D11Device *device)
 {
 	FW1CreateFactory(FW1_VERSION, &mFW1Factory);
 	mFW1Factory->CreateFontWrapper(device, L"Lucida Console", &mFontWrapper);
-	string lol = "lol";
 	
 	menuItems = new wchar_t *[MENUSIZE];
 
@@ -136,26 +135,13 @@ void GUI::drawCrossHair(ID3D11DeviceContext *context)
 {
 	int width = 0;
 	int heigth = 0;
-	int offset = 35;
 
+	int offset = 26;
 	// SHITLOAD OF CODE INC
-	if(Settings::GetInstance()->GetData().IsFullscreen)
-	{
-		RECT desktop;
-		const HWND hDesktop = GetDesktopWindow();
-
-		GetWindowRect(hDesktop, &desktop);
-		width = desktop.right;
-		heigth = desktop.bottom;
-		int offset = 30;
-	}
-	else
-	{
-		width = Settings::GetInstance()->GetData().Width;
-		heigth = Settings::GetInstance()->GetData().Height;
-	}
-
-
+	
+	width = Settings::GetInstance()->GetData().Width;
+	heigth = Settings::GetInstance()->GetData().Height;
+	
 	drawText(context, L"-o-", XMFLOAT2(width/2.0f-offset, heigth/2.0f), 25.0f, 0xff0000ff);
 }
 void GUI::drawText(ID3D11DeviceContext *context, wchar_t* text, XMFLOAT2 pos, float fontSize, int color) const
@@ -185,22 +171,9 @@ void GUI::DrawMenu(ID3D11DeviceContext *context)
 
 	int offset = 0;
 
-	if(Settings::GetInstance()->GetData().IsFullscreen)
-	{
-		RECT desktop;
-		const HWND hDesktop = GetDesktopWindow();
-
-		GetWindowRect(hDesktop, &desktop);
-		width = desktop.right;
-		heigth = desktop.bottom;
-		offset= 100;
-	}
-	else
-	{
-		width = Settings::GetInstance()->GetData().Width;
-		heigth = Settings::GetInstance()->GetData().Height;
-		offset=100;
-	}
+	width = Settings::GetInstance()->GetData().Width;
+	heigth = Settings::GetInstance()->GetData().Height;
+	offset=100;
 
 	for(int i = 0; i<MENUSIZE; i++)
 	{
@@ -209,7 +182,7 @@ void GUI::DrawMenu(ID3D11DeviceContext *context)
 		{
 			color = selected;
 		}
-		drawText(context, menuItems[i], XMFLOAT2(0.5f*width-offset, (0.4f*heigth) + 60.0f*i), fontSize, color);
+		drawText(context, menuItems[i], XMFLOAT2(0.4f*width, (0.4f*heigth) + 60.0f*i), fontSize, color);
 		//drawText(context, underline, XMFLOAT2(100, 101 + 40*i));
 	}
 }

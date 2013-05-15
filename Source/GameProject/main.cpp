@@ -302,7 +302,7 @@ void Projekt::UpdateScene(float dt)
 	//-------------------------------------------------------------
 	if (mDirectInput->GetKeyboardState()[DIK_1] && 0x80){
 		D3D11App::SetResolution(800, 600);
-		Settings::GetInstance()->SetResolution(1024, 768);
+		Settings::GetInstance()->SetResolution(800, 600);
 	}
 
 	if (mDirectInput->GetKeyboardState()[DIK_2] && 0x80){
@@ -312,12 +312,12 @@ void Projekt::UpdateScene(float dt)
 
 	if (mDirectInput->GetKeyboardState()[DIK_3] && 0x80){
 		D3D11App::SetResolution(1680, 1050);
-		Settings::GetInstance()->SetResolution(1024, 768);
+		Settings::GetInstance()->SetResolution(1680, 1050);
 	}
 
 	if (mDirectInput->GetKeyboardState()[DIK_4] && 0x80){
 		D3D11App::SetResolution(1920, 1080);
-		Settings::GetInstance()->SetResolution(1024, 768);
+		Settings::GetInstance()->SetResolution(1920, 1080);
 	}
 
 	if (mDirectInput->GetKeyboardState()[DIK_5] && 0x80)
