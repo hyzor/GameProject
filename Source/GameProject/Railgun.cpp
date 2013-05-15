@@ -17,9 +17,9 @@ void Railgun::Update(float dt, float gameTime)
 	mParticleSys->update(dt, gameTime);
 }
 
-void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceContext* dc)
+void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceContext* dc, std::string modelName, XMFLOAT3 pos)
 {
-	Weapon::Init(properties);
+	Weapon::Init(properties, modelName, pos);
 	//mParticleSys = particleSystem;
 
 	mParticleSys = new ParticleSystem();
@@ -34,16 +34,17 @@ void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceCont
 	//mParticleSys->setEmitPos(XMFLOAT3(1.0f, 300.0f, 50.0f));
 }
 
-void Railgun::Draw(ID3D11DeviceContext* dc, Camera* cam)
+void Railgun::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap)
 {
-	Weapon::Draw(dc, cam);
+	// Draws the weapon model
+	Weapon::Draw(dc, tech, camera, shadowMap);
 
 	// Draw particle system
-	mParticleSys->setEyePos(cam->GetPosition());
+	mParticleSys->setEyePos(camera->GetPosition());
 
 	// Dont draw particle system after specified time
 	if (mParticleSys->getAge() < 1.0f)
-		mParticleSys->draw(dc, cam);
+		mParticleSys->draw(dc, camera);
 
 	// Restore blend state
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};

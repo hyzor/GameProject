@@ -11,9 +11,9 @@ class Railgun : public Weapon
 public:
 	Railgun();
 	~Railgun();
-	void Init(Properties properties, ID3D11Device* device, ID3D11DeviceContext* dc);
+	void Init(Properties properties, ID3D11Device* device, ID3D11DeviceContext* dc, std::string modelName, XMFLOAT3 pos);
 	void Update(float dt, float gameTime);
-	void Draw(ID3D11DeviceContext* dc, Camera* cam);
+	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap);
 	bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir);
 
 private:
