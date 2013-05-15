@@ -36,6 +36,8 @@ class Player
 		bool IsAlive() const { return mIsAlive; }
 
 		void TakeDamage(float damage);
+		void Kill();
+		void Die();
 
 	protected:
 		int mPlayerID;

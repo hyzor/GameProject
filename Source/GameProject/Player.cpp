@@ -50,6 +50,22 @@ void Player::TakeDamage(float damage)
 	mHealth -= damage;
 }
 
+void Player::Kill()
+{
+	Python->LoadModule("scoreboard_script");
+		Python->CallFunction(
+		Python->GetFunction("AddKill"),
+		Python->CreateArg(this->mPlayerID));
+}
+
+void Player::Die()
+{
+	Python->LoadModule("scoreboard_script");
+		Python->CallFunction(
+		Python->GetFunction("AddDeath"),
+		Python->CreateArg(this->mPlayerID));
+}
+
 void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	XMMATRIX cJoint = *Joint;

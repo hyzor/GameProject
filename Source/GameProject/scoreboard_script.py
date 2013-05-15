@@ -31,9 +31,15 @@ def GetDesc():
 def GetStats(id):
         return sb.ps[id].GetString();
 
+def AddKill(id):
+        global sb
+        sb.ps[id].kills += 1
+
+def AddDeath(id):
+        global sb
+        sb.ps[id].deaths += 1
+
 def TabDown():
         PyEngine.NotifyWhen("Description", GetDesc, None)
         for i in range(len(sb.ps)):
                 PyEngine.NotifyWhen("Stats", GetStats, i)
-
-
