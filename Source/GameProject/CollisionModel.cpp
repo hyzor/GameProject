@@ -13,6 +13,11 @@ CollisionModel::~CollisionModel()
 
 void CollisionModel::LoadObj(std::string fileName)
 {
+	this->LoadObj(fileName, XMMatrixIdentity());
+}
+
+void CollisionModel::LoadObj(std::string fileName, const XMMATRIX &matrix)
+{
 	std::vector<XMFLOAT3> positions;
 
 	std::ifstream infile(fileName);
@@ -26,9 +31,13 @@ void CollisionModel::LoadObj(std::string fileName)
 				positions.push_back(XMFLOAT3((float)atof(elements.at(1).c_str()), (float)atof(elements.at(2).c_str()), (float)atof(elements.at(3).c_str())));
 			else if(elements.at(0)=="f" && elements.size() > 6)
 			{
-				vertices.push_back(positions.at(atoi(elements.at(1).c_str())-1));
-				vertices.push_back(positions.at(atoi(elements.at(4).c_str())-1));
-				vertices.push_back(positions.at(atoi(elements.at(7).c_str())-1));
+				XMFLOAT3 p;
+				XMStoreFloat3(&p, XMVector3Transform(XMLoadFloat3(&positions.at(atoi(elements.at(1).c_str())-1)), matrix));
+				vertices.push_back(p);
+				XMStoreFloat3(&p, XMVector3Transform(XMLoadFloat3(&positions.at(atoi(elements.at(4).c_str())-1)), matrix));
+				vertices.push_back(p);
+				XMStoreFloat3(&p, XMVector3Transform(XMLoadFloat3(&positions.at(atoi(elements.at(7).c_str())-1)), matrix));
+				vertices.push_back(p);
 			}
 		}
 	}

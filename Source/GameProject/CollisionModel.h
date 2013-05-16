@@ -31,6 +31,8 @@ class CollisionModel
 		~CollisionModel();
 
 		void LoadObj(std::string fileName);
+		void LoadObj(std::string fileName, const XMMATRIX &matrix);
+
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
 		void SetPosition(XMFLOAT3 position);
