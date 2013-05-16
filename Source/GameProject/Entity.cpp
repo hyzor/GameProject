@@ -62,6 +62,10 @@ void Entity::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, C
 	Effects::NormalMapFX->SetShadowMap(shadowMap->getDepthMapSRV());
 	Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
+	//placeholder code
+	bool inMenu = false;
+	Effects::NormalMapFX->SetInMenu(inMenu);
+
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		//Effects::BasicTessFX->SetFogColor(Colors::Silver);
@@ -103,6 +107,15 @@ void Entity::RotateEntityZ(float rot)
 {
 	this->Rotation = rot;
 	XMMATRIX modelRot = XMMatrixRotationZ(rot);
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+}
+
+void Entity::SetPosition(XMFLOAT3 pos)
+{
+	this->Position = pos;
+	XMMATRIX modelRot = XMMatrixRotationX(0.0f);
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);

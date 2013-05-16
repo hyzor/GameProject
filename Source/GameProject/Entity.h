@@ -23,6 +23,8 @@ public:
 	void RotateEntityY(float rot);
 	void RotateEntityZ(float rot);
 
+	void SetPosition(XMFLOAT3 pos);
+
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;
 	float Rotation;

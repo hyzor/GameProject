@@ -14,7 +14,7 @@ World::World()
 		{
 			for (int k = 0; k < mPlatformAmount; ++k)
 			{
-				random = rand()%4 + 1;
+				random = 1 ; //rand()%4 + 1;
 				switch(random)
 				{
 				case 1:

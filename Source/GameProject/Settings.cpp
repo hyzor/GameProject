@@ -54,3 +54,9 @@ void Settings::SetFullscreen(bool fullscreen)
 {
 	GetInstance()->mData.IsFullscreen = fullscreen;
 }
+
+void Settings::SetResolution(int width, int height)
+{
+	GetInstance()->mData.Width = width;
+	GetInstance()->mData.Height = height;
+}

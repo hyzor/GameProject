@@ -125,7 +125,7 @@ Projekt::~Projekt()
 
 	Settings::GetInstance()->Shutdown();
 	GenericHandler::GetInstance()->Shutdown();
-	//Python->ShutDown();
+	Python->ShutDown();
 
 	Network::GetInstance()->Close();
 	SafeDelete(soundModule);
@@ -148,7 +148,7 @@ bool Projekt::Init()
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
-	//Python->Initialize();
+	Python->Initialize();
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
@@ -300,17 +300,25 @@ void Projekt::UpdateScene(float dt)
 	//-------------------------------------------------------------
 	// TEST --- REMOVE ME
 	//-------------------------------------------------------------
-	if (mDirectInput->GetKeyboardState()[DIK_1] && 0x80)
+	if (mDirectInput->GetKeyboardState()[DIK_1] && 0x80){
 		D3D11App::SetResolution(800, 600);
+		Settings::GetInstance()->SetResolution(800, 600);
+	}
 
-	if (mDirectInput->GetKeyboardState()[DIK_2] && 0x80)
+	if (mDirectInput->GetKeyboardState()[DIK_2] && 0x80){
 		D3D11App::SetResolution(1024, 768);
+		Settings::GetInstance()->SetResolution(1024, 768);
+	}
 
-	if (mDirectInput->GetKeyboardState()[DIK_3] && 0x80)
+	if (mDirectInput->GetKeyboardState()[DIK_3] && 0x80){
 		D3D11App::SetResolution(1680, 1050);
+		Settings::GetInstance()->SetResolution(1680, 1050);
+	}
 
-	if (mDirectInput->GetKeyboardState()[DIK_4] && 0x80)
+	if (mDirectInput->GetKeyboardState()[DIK_4] && 0x80){
 		D3D11App::SetResolution(1920, 1080);
+		Settings::GetInstance()->SetResolution(1920, 1080);
+	}
 
 	if (mDirectInput->GetKeyboardState()[DIK_5] && 0x80)
 		D3D11App::SetFullscreen(true);
@@ -340,6 +348,7 @@ void Projekt::UpdateScene(float dt)
 	{
 		D3D11App::SetFullscreen(fullscreen);
 	}
+	Settings::GetInstance()->SetResolution(D3D11App::GetWindowWidth(), D3D11App::GetWindowHeight());
 }
 
 void Projekt::UpdateNetwork()

@@ -23,14 +23,15 @@ public:
 	~GUI();
 	void Init(ID3D11Device *device);
 	void Render(ID3D11DeviceContext *context);
-	bool InMenu();
+	bool InMenu() const;
 	bool Update(DirectInput* di);
 	void Release();
-	void drawCrossHair(ID3D11DeviceContext *context);
 
 private:
 	void drawText(ID3D11DeviceContext *context, WCHAR* text, XMFLOAT2 pos, float fontSize, int color) const;
 	void DrawMenu(ID3D11DeviceContext *context);
+	void drawCrossHair(ID3D11DeviceContext *context);
+	void drawScoreBoard(ID3D11DeviceContext *context);
 
 private:
 	IFW1Factory* mFW1Factory;
@@ -39,11 +40,13 @@ private:
 	int menuIndex;
 	bool menuActive;
 	wchar_t **menuItems;
+	float fontSize;
 
 	bool escapeDown;
 	bool upArrowDown;
 	bool downArrowDown;
 	bool enterDown;
+	bool tabDown;
 };
 
 #endif

@@ -24,6 +24,7 @@ public:
 	SettingsData GetData() const;
 
 	void SetFullscreen(bool fullscreen);
+	void SetResolution(int width, int heigth);
 
 	void Shutdown();
 

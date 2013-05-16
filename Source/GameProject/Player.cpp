@@ -1,8 +1,13 @@
 #include "Player.h"
 
-
 Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
+	: mPlayerID(PlayerID), mNickname(Nickname), mPosition(Position)
 {
+	Python->LoadModule("scoreboard_script");
+	Python->CallFunction(
+		Python->GetFunction("CreatePlayerStats"),
+		Python->CreateArg(PlayerID, Nickname.c_str()));
+
 	mHealth = 1;
 	mNickname = Nickname;
 	mSpeed = 100;
@@ -45,6 +50,22 @@ void Player::TakeDamage(float damage)
 	mHealth -= damage;
 }
 
+void Player::Kill()
+{
+	Python->LoadModule("scoreboard_script");
+		Python->CallFunction(
+		Python->GetFunction("AddKill"),
+		Python->CreateArg(this->mPlayerID));
+}
+
+void Player::Die()
+{
+	Python->LoadModule("scoreboard_script");
+		Python->CallFunction(
+		Python->GetFunction("AddDeath"),
+		Python->CreateArg(this->mPlayerID));
+}
+
 void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
 {
 	XMMATRIX cJoint = *Joint;
@@ -56,6 +77,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 	// Update player weapons
 	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
+	//mWeapons[mCurWeaponIndex]->SetPosition(XMFLOAT3(mPosition.x, mPosition.y+7.0f, mPosition.z+5.0f));
 
 	// Move
 	pos += XMLoadFloat3(&move);	
@@ -143,7 +165,8 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
-	mWeapons[mCurWeaponIndex]->Draw(dc, mCamera);
+	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
+	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap);
 }
 
 void Player::HandelPackage(Package *p)
@@ -159,7 +182,7 @@ void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
 	prop.cooldown = 2.0f;
 	prop.damage = 1.0f;
 	prop.maxProjectiles = 1;
-	railgun->Init(prop, device, dc);
+	railgun->Init(prop, device, dc, "Gun", mPosition);
 
 	mWeapons.push_back(railgun);
 	this->mCurWeaponIndex = 0;
