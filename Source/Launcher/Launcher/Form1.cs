@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Media;
 
 namespace Launcher
 {
@@ -38,7 +39,10 @@ namespace Launcher
             else
             {
                 fh.Save(textBox_Tag.Text, textBox_IP.Text, comboBox_resolution.Text);
-                //Process.Start(@"C:\Users\Mathias\Documents\GitHub\GameProject\GameProject\Debug\GameProject.exe");
+                Process.Start(@"..\..\..\..\..\Game\Win32Debug\GameProjectWin32Debug.exe");
+                SoundPlayer launchSound = new SoundPlayer(@"..\..\..\..\GameProject\Data\Sounds\launcher_start.wav");
+                launchSound.Play();
+                this.Close();
             }
         }
 
