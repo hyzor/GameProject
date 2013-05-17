@@ -189,6 +189,9 @@
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Common\SplashWnd.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\TextureManager.h">
@@ -352,6 +355,9 @@
     </ClInclude>
     <ClInclude Include="GUI.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\SplashWnd.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

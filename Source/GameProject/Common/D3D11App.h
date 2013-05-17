@@ -15,7 +15,7 @@ public:
 	~D3D11App(void);
 
 	HINSTANCE AppInst() const;
-	HWND MainWnd() const;
+	HWND MainWnd() {return mhMainWnd; }
 	float AspectRatio() const;
 
 	UINT GetWindowWidth() const;
@@ -26,6 +26,9 @@ public:
 	void SwitchFullscreen();
 
 	bool isFullscreen();
+
+	//To make the splash screen work we must wait to show the window
+	void ShowWindow();
 
 	// Game loop
 	int Run();

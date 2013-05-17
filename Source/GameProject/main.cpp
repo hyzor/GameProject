@@ -9,7 +9,6 @@
 #include "PyEngine.h"
 #include "GUI.h"
 #include "Entity.h"
-
 #include "Settings.h"
 
 #include "GenericHandler.h"
@@ -17,7 +16,12 @@
 #include "SoundModule.h"
 #include "SoundHelp.h"
 
-
+//----------splash screen-------//
+#include <GdiPlus.h>
+#pragma comment (lib, "gdiplus.lib")
+#pragma comment (lib, "comctl32.lib")
+#include "Common\SplashWnd.h"
+//-----------------------------//
 
 class Projekt : public D3D11App
 {
@@ -65,7 +69,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-
 	// Also create a debug console window
 	// 	if(AllocConsole()) 
 	// 	{
@@ -74,11 +77,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);  
 	// 	}
 #endif
+	//------Splash Screen-------//
+	Gdiplus::GdiplusStartupInput gdiSI;
+	Gdiplus::GdiplusStartupOutput gdiSO;
+	ULONG_PTR gdiToken;
+	ULONG_PTR gdiHookToken;
+	gdiSI.SuppressBackgroundThread = TRUE;
+	Gdiplus::GdiplusStartup(&gdiToken,&gdiSI,&gdiSO);
+	gdiSO.NotificationHook(&gdiHookToken);
+	//--------------------------//
 
 	Projekt theApp(hInstance);
 
 	if (!theApp.Init())
 		return 0;
+
+	gdiSO.NotificationUnhook(gdiHookToken);
+	Gdiplus::GdiplusShutdown(gdiToken);
 
 	return theApp.Run();
 }
@@ -87,6 +102,7 @@ Projekt::Projekt(HINSTANCE hInstance)
 	: D3D11App(hInstance), mShadowMap(0)
 {
 	mMainWndCaption = L"GameProject";
+	
 
 	//--------------------------------------------------------
 	// Create lights
@@ -133,9 +149,23 @@ Projekt::~Projekt()
 
 bool Projekt::Init()
 {
+	CSplashWnd splash;
+	Gdiplus::Image* pImage = Gdiplus::Image::FromFile(L"Data\\Textures\\test.jpg");
+	splash.SetImage(pImage);
+	splash.SetWindowName(L"Wait while application load its data...");
+
+	delete pImage; 
+
 	if (!D3D11App::Init())
 		return false;
 
+	HWND hWnd = D3D11App::MainWnd();
+
+	RECT window = {0,0,0,0};
+	GetWindowRect(hWnd, &window);
+	SetWindowPos(D3D11App::MainWnd(), D3D11App::MainWnd(), 10000, 10 , D3D11App::GetWindowWidth(), D3D11App::GetWindowHeight(), SWP_NOOWNERZORDER);
+	splash.Show();
+    splash.SetProgress( 0, 0, 0);
 	// Read game settings
 	if (!Settings::GetInstance()->ReadFile("Data\\Settings.txt"))
 		return false;
@@ -145,25 +175,30 @@ bool Projekt::Init()
 	InputLayouts::InitAll(mDirect3D->GetDevice());
 	mTextureMgr.Init(mDirect3D->GetDevice());
 	RenderStates::InitAll(mDirect3D->GetDevice());
+	splash.SetProgress(0,0,0);
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
 	Python->Initialize();
+	splash.SetProgress( 10, 0, 0);
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
+	splash.SetProgress( 60, 0, 0);
 
 	//Create and initialize the GUI
 	mGUI = new GUI();
 	mGUI->Init(mDirect3D->GetDevice());
+	splash.SetProgress( 65, 0, 0);
 
 	Network::GetInstance()->Initialize();
 	Network::GetInstance()->Start();
+	splash.SetProgress( 80, 0, 0);
 
 	//init soundmodule
 	this->soundModule = new SoundModule();
 	this->soundModule->initialize(this->mhMainWnd, this->mDirectInput);
-
+	splash.SetProgress( 85, 0, 0);
 
 	// Set if window is fullscreen or not
 	D3D11App::SetFullscreen(Settings::GetInstance()->GetData().IsFullscreen);
@@ -173,13 +208,16 @@ bool Projekt::Init()
 		Settings::GetInstance()->GetData().Height);
 
 	// Create sky
-	mSky = new Sky(mDirect3D->GetDevice(), L"Data/Textures/SkyBox_Space.dds", 5000.0f);
+	mSky = new Sky(mDirect3D->GetDevice(), L"Data\\Textures\\SkyBox_Space.dds", 5000.0f);
+	splash.SetProgress( 90, 0, 0);
 
 	// Create shadow map
 	mShadowMap = new ShadowMap(mDirect3D->GetDevice(), 2048, 2048);
+	splash.SetProgress( 95, 0, 0);
 
 	// Create frustum culling
 	mFrustumCulling = new FrustumCulling();
+	splash.SetProgress( 100, 0, 0 );
 
 	//--------------------------------------------------------
 	// Compute scene bounding box
@@ -216,6 +254,7 @@ bool Projekt::Init()
 // 
 // 	mSceneBounds.Radius = sqrtf(extent.x*extent.x + extent.y*extent.y + extent.z*extent.z);
 
+	D3D11App::ShowWindow();
 	OnResize();
 
 

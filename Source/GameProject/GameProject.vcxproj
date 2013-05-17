@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Common\SplashWnd.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="OggVorbisPlayer.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\SplashWnd.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="OggVorbisPlayer.h" />

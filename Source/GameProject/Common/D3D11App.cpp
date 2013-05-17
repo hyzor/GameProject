@@ -324,9 +324,6 @@ bool D3D11App::InitMainWindow()
 		return false;
 	}
 
-	::ShowWindow(mhMainWnd, SW_SHOW);
-	::UpdateWindow(mhMainWnd);
-
 	return true;
 }
 
@@ -400,5 +397,11 @@ void D3D11App::SwitchFullscreen()
 
 bool D3D11App::isFullscreen()
 {
-	return mIsFullscreen;
+	return mIsFullscreen==1;
+}
+
+void D3D11App::ShowWindow()
+{
+	::ShowWindow(mhMainWnd, SW_SHOW);
+	::UpdateWindow(mhMainWnd);
 }
