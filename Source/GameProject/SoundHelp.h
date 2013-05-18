@@ -26,12 +26,13 @@ enum Sound3D
 	Jump = 5
 };
 
-const int NUM_SONGS = 2;
+const int NUM_SONGS = 3;
 
 enum Sound
 {
-	Song1 = 0,
-	Song2 = 1
+	Background = 0,
+	Song1 = 1,
+	Song2 = 2
 };
 
 

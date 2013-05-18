@@ -26,6 +26,8 @@ void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMg
 	//mGModels["Player"] = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
 
 	mGModels["Switch"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Switch.obj", L"Data\\Models\\Collada\\");
+	mGModels["SwitchY"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Switch_rotY.obj", L"Data\\Models\\Collada\\");
+	mGModels["SwitchZ"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Switch_rotZ.obj", L"Data\\Models\\Collada\\");
 
 	mGModels["Platform1"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform1\\Platform1.obj", L"Data\\Models\\Collada\\Platform1\\");
 	mGModels["Platform2"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform2\\Platform2.obj", L"Data\\Models\\Collada\\Platform2\\");
