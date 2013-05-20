@@ -24,6 +24,28 @@ Game::Game(std::queue<PackageTo*>* send)
 		}
 		iReturns.clear();
 	}
+
+	for(unsigned int i(0); i < platforms.size(); ++i)
+	{
+		Python->LoadModule("platform_script");
+		Python->CallFunction(
+			Python->GetFunction("Solution"),
+			Python->CreateArg((int)i));
+		Python->Update(0.0f);
+		if(Python->CheckReturns())
+		{
+			std::vector<double> dReturns;
+			Python->ConvertDoubles(dReturns);
+			Python->ClearReturns();
+			int index = 0;
+			Python->LoadModule("player_script");
+			Python->CallFunction(
+				Python->GetFunction("CreateSpawnPoint"),
+				Python->CreateArg(dReturns[index], dReturns[index+1], dReturns[index+2]));
+			//std::cout << "( " << dReturns[index] << ", " << dReturns[index+1] << ", " << dReturns[index+2] << " )" << std::endl;
+			dReturns.clear();
+		}
+	}
 }
 
 Game::~Game()

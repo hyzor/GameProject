@@ -69,4 +69,7 @@ def MovePlatform(index):
         platforms[index].Move()
         PyEngine.NotifyWhen("Moved", GetPos, index)
         PyEngine.NotifyAfter(0.1, MovePlatform, index)
+
+def Solution(index):
+        PyEngine.NotifyWhen("ToTheProblem", GetPos, index)
                 

@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include "Package.h"
+#include "PyEngine.h"
 
 class Player
 {

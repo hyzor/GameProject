@@ -1,5 +1,4 @@
 #include "Platform.h"
-#include <iostream>
 
 
 Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, float posY, float posZ)
@@ -11,7 +10,7 @@ Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, f
 	this->posZ = posZ;
 
 	update = false;
-
+	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
 	this->send = send;
 }
 
