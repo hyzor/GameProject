@@ -4,6 +4,7 @@
 #include <queue>
 #include "Package.h"
 #include "Player.h"
+#include "Platform.h"
 
 class Game
 {
@@ -18,6 +19,8 @@ class Game
 
 	private:
 		std::vector<Player*> players;
+		std::vector<Platform*> platforms;
+
 		std::queue<PackageTo*>* send;
 
 		Player* findPlayer(int id);

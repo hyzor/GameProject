@@ -1,7 +1,7 @@
 #include "Player.h"
 
 
-Player::Player(int id, std::string name)
+Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 {
 	this->id = id;
 	this->name = name;
@@ -12,6 +12,8 @@ Player::Player(int id, std::string name)
 	posZ = 0;
 
 	updated = false;
+
+	this->send = send;
 }
 
 void Player::HandelPackage(Package* p)
@@ -23,6 +25,16 @@ void Player::HandelPackage(Package* p)
 		this->posY = *(float*)b.Read(4);
 		this->posZ = *(float*)b.Read(4);
 	}
+}
+
+void Player::Update()
+{
+	////respawn player if dead
+	//posX = 0;
+	//posY = 0;
+	//posZ = 0;
+	//alive = true;
+	//send->push(new PackageTo(this->GetSpawn(), (char*)id));
 }
 
 Package* Player::GetConnect()
@@ -46,6 +58,7 @@ Package* Player::GetUpdate()
 		float posX;
 		float posY;
 		float posZ;
+		//fill   alive, rot, aim
 	};
 
 	PlayerUpdate* pu = new PlayerUpdate();
