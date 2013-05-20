@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include "Package.h"
+#include "PyEngine.h"
 
 class Platform
 {
@@ -14,7 +15,7 @@ class Platform
 		Package* GetConnect();
 		Package* GetUpdate();
 
-		void Update();
+		void Update(float dt);
 
 
 		bool update;
@@ -26,11 +27,7 @@ class Platform
 		float posX;
 		float posY;
 		float posZ;
-
+		std::vector<double> mdReturns;
 		std::queue<PackageTo*>* send;
 };
-
-
-
-
 #endif

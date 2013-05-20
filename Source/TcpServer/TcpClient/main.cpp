@@ -24,6 +24,8 @@ std::queue<PackageTo*>* send2;
 
 int main()
 {
+	Python->Initialize();
+
 	std::cout << "Port: ";
 	int port;
 	std::cin >> port;
@@ -37,10 +39,9 @@ int main()
 	boost::thread SendPackage(sendPackage);
 	f.join();
 
-
 	delete acceptor;
 	delete game;
-
+	Python->ShutDown();
 	return 0;
 }
 
@@ -70,7 +71,7 @@ void getPackade(tcp::socket *s)
 		{
 			delete [] buf;
 			int at = 0;
-			for(int i = 1; i < sockets.size(); i++)
+			for(unsigned int i = 1; i < sockets.size(); i++)
 				if(sockets[i] == s)
 				{
 					at = i;
@@ -111,7 +112,7 @@ void sendPackage()
 
 			if(to == 0)
 			{
-				for(int i = 0; i < sockets.size(); i++)
+				for(unsigned int i = 0; i < sockets.size(); i++)
 				{
 					if(p->GetHeader().id != (int)sockets[i])
 					{
@@ -122,7 +123,7 @@ void sendPackage()
 			}
 			else
 			{
-				for(int i = 0; i < sockets.size(); i++)
+				for(unsigned int i = 0; i < sockets.size(); i++)
 				{
 					if(to == (char*)sockets[i])
 					{

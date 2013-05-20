@@ -75,6 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Package.cpp" />
     <ClCompile Include="Platform.cpp" />
@@ -83,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Package.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />

@@ -27,7 +27,7 @@ void Player::HandelPackage(Package* p)
 	}
 }
 
-void Player::Update()
+void Player::Update(float dt)
 {
 	////respawn player if dead
 	//posX = 0;

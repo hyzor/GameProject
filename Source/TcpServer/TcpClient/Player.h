@@ -12,7 +12,7 @@ class Player
 		Player(std::queue<PackageTo*>* send, int id, std::string name);
 		
 		void HandelPackage(Package* p);
-		void Update();
+		void Update(float dt);
 
 		Package* GetConnect();
 		Package* GetUpdate();

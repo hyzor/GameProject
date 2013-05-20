@@ -3,24 +3,42 @@
 Game::Game(std::queue<PackageTo*>* send)
 {
 	this->send = send;
+	this->mTimer.start();
+	this->mTimer.reset();
 
-	//load world
-	platforms.push_back(new Platform(send, 0, 0, 0, 0, 0));
+	Python->LoadModule("platform_script");
+	Python->CallFunction(
+		Python->GetFunction("CreatePlatforms"),
+		nullptr);
+	Python->Update(0.0f);
+	if(Python->CheckReturns())
+	{
+		std::vector<int> iReturns;
+		Python->ConvertInts(iReturns);
+		Python->ClearReturns();
+		int index = 0;
+		for(unsigned int i(0); i < iReturns.size()/5; ++i)
+		{
+			platforms.push_back(new Platform(send, iReturns[index], iReturns[index+1], (float)iReturns[index+2], (float)iReturns[index+3], (float)iReturns[index+4]));
+			index += 5;
+		}
+		iReturns.clear();
+	}
 }
 
 Game::~Game()
 {
-	for(int i = 0; i < players.size(); i++)
+	for(unsigned int i = 0; i < players.size(); i++)
 		delete players[i];
-	for(int i = 0; i < platforms.size(); i++)
+	for(unsigned int i = 0; i < platforms.size(); i++)
 		delete platforms[i];
 }
 
 void Game::Update()
 {
-	for(int i = 0; i < platforms.size(); i++)
+	for(unsigned int i = 0; i < platforms.size(); i++)
 	{
-		platforms[i]->Update();
+		platforms[i]->Update(this->mTimer.getDeltaTime());
 		Package* p = platforms[i]->GetUpdate();
 		if(!p == NULL)
 			send->push(new PackageTo(p, 0));
@@ -34,10 +52,10 @@ void Game::HandelPackage(Package* p, char* socket)
 		players.push_back(new Player(send, (int)socket, std::string(p->GetBody().Read(50))));
 		send->push(new PackageTo(players[players.size()-1]->GetConnect(), 0));
 
-		for(int i = 0; i < players.size() - 1; i++)
+		for(unsigned int i = 0; i < players.size() - 1; i++)
 			send->push(new PackageTo(players[i]->GetConnect(), socket));
 
-		for(int i = 0; i < platforms.size(); i++)
+		for(unsigned int i = 0; i < platforms.size(); i++)
 			send->push(new PackageTo(platforms[i]->GetConnect(), socket));
 	}
 	else if(p->GetHeader().operation == 1 || p->GetHeader().operation == 3)
@@ -54,19 +72,21 @@ void Game::HandelPackage(Package* p, char* socket)
 
 void Game::Disconnect(char* socket)
 {
-	for(int i = 0; i < players.size(); i++)
+	for(unsigned int i = 0; i < players.size(); i++)
+	{
 		if(players[i]->GetId() == (int)socket)
 		{
 			send->push(new PackageTo(new Package(Package::Header(4, (int)socket, 0), Package::Body(new char())), 0));
 			players.erase(players.begin() + i);
 			return;
 		}
+	}
 }
 
 Player* Game::findPlayer(int id)
 {
-	for(int i = 0; i < players.size(); i++)
+	for(unsigned int i = 0; i < players.size(); i++)
 		if(players[i]->GetId() == id)
 			return players[i];
-	return NULL;
+	return nullptr;
 }
