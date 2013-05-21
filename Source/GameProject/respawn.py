@@ -14,7 +14,7 @@ class SpawnPoint():
         self.rotation = rotationIndex
 
     def GetSelf(self):
-        return self.x, self.y, self.z, self.rotation
+        return float(self.x), float(self.y), float(self.z), self.rotation
 
 spawnpoints = []
 spawnpoints.append(SpawnPoint(1,206,50,1))
@@ -33,6 +33,10 @@ def TimeToSpawn():
 def CheckSpawnTimer():
     PyEngine.NotifyWhen("Timer", TimeToSpawn, None)
 
-def getSpawnPos():
+def RandomSpawn():
     index = random.randint(0,len(spawnpoints)-1)
     return spawnpoints[index].GetSelf()
+
+def getSpawnPos():
+    PyEngine.NotifyWhen("Timer", RandomSpawn, None)
+    
