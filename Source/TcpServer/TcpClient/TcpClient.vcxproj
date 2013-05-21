@@ -38,10 +38,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\External\Python\include;$(IncludePath);$(SolutionDir)..\External\boost_1_51</IncludePath>
+    <IncludePath>$(IncludePath);$(SolutionDir)..\External\boost_1_51;$(SolutionDir)..\External\Python\include;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>..\..\External\Python\libs;$(LibraryPath);$(SolutionDir)..\External\boost_1_51\lib</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)..\External\boost_1_51\lib;$(SolutionDir)..\External\Python\libs;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(IncludePath);C:\Program Files (x86)\boost\boost_1_51\boost</IncludePath>
