@@ -81,7 +81,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 	// Health lower than 0, die
 	if (mHealth < 0.0f)
-		mIsAlive = false;
+		Die();
 
 	// Update player weapons
 	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
