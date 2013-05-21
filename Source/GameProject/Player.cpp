@@ -41,7 +41,7 @@ bool Player::Shoot()
 {
 	XMMATRIX cJoint = *Joint;
 
-	XMVECTOR p = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,7,0)), cJoint);
+	XMVECTOR p = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0.0f, 8.0f, 0.0f)), cJoint);
 	XMFLOAT3 p2;
 	XMStoreFloat3(&p2, p);
 
@@ -171,8 +171,6 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 	// Update player weapons
 	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
-	mWeapons[mCurWeaponIndex]->SetPosition(camPos.x, camPos.y, camPos.z+5.0f);
-	//mWeapons[mCurWeaponIndex]->RotateRollPitchYaw(mCamera->Yaw, mCamera->Pitch, mCamera->Roll);
 	mWeapons[mCurWeaponIndex]->ViewMatrixRotation(mCamera->GetViewMatrix());
 
 	delete Joint;

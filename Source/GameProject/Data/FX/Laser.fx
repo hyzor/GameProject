@@ -115,7 +115,7 @@ void StreamOutGS(point Particle gIn[1], inout PointStream<Particle> ptStream)
 	if (gIn[0].Type == PT_EMITTER)
 	{
 		// If over certain age, emit new particle
-		if (gIn[0].Age > 0.002f)
+		if (gIn[0].Age > 0.001f)
 		{
 			//float3 vRandom = RandUnitVec3(0.0f);
 			//vRandom.x *= 0.5f;
@@ -183,9 +183,9 @@ VertexOut DrawVS(Particle vIn)
 
 	// fade color with time
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t/1.0f);
-	vOut.Color = float4(1.0f, 1.0f, 1.0f, opacity);
-	vOut.Color.y = 0.0f;
-	vOut.Color.z = 0.0f;
+	vOut.Color = float4(t*5.0f, t*0.5f, t*0.5f, opacity);
+	//vOut.Color.y = 0.0f;
+	//vOut.Color.z = 0.0f;
 
 	vOut.SizeW = vIn.SizeW;
 	vOut.Type  = vIn.Type;

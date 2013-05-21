@@ -42,7 +42,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>$(SolutionDir)\External\DirectX\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(SolutionDir)\External\FW1FontWrapper_1_1;$(SolutionDir)External\Python\include;$(SolutionDir)\External\DirectX\Include;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\include;$(SolutionDir)\External\boost_1_51;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\External\FW1FontWrapper_1_1\x86;$(SolutionDir)External\Python\libs;$(SolutionDir)\External\DirectX\Lib\x86;$(ProjectDir)\Common;$(SolutionDir)\External\assimp\lib\x86;$(SolutionDir)\External\boost_1_51\lib;$(SolutionDir)\External\oggvorbis-win32sdk-1.0\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>

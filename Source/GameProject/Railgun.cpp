@@ -27,7 +27,8 @@ void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceCont
 	mRandomTexSRV = d3dHelper::CreateRandomTexture1DSRV(device);
 
 	std::vector<std::wstring> flares;
-	flares.push_back(L"Data\\Textures\\flare0.dds");
+	//flares.push_back(L"Data\\Textures\\flare0.dds");
+	flares.push_back(L"Data\\Textures\\particle.dds");
 	mLaserTexSRV = d3dHelper::CreateTexture2DArraySRV(device, dc, flares);
 
 	mParticleSys->init(device, Effects::LaserFX, mLaserTexSRV, mRandomTexSRV, 1000);

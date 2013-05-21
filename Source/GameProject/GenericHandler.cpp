@@ -30,9 +30,9 @@ void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMg
 	mGModels["SwitchZ"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Switch_rotZ.obj", L"Data\\Models\\Collada\\");
 
 	mGModels["Platform1"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform1\\Platform1.obj", L"Data\\Models\\Collada\\Platform1\\");
-	mGModels["Platform2"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform2\\Platform2.obj", L"Data\\Models\\Collada\\Platform2\\");
-	mGModels["Platform3"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform3\\Platform3.obj", L"Data\\Models\\Collada\\Platform3\\");
-	mGModels["Platform4"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform4\\Platform4.obj", L"Data\\Models\\Collada\\Platform4\\");
+	//mGModels["Platform2"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform2\\Platform2.obj", L"Data\\Models\\Collada\\Platform2\\");
+	//mGModels["Platform3"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform3\\Platform3.obj", L"Data\\Models\\Collada\\Platform3\\");
+	//mGModels["Platform4"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Platform4\\Platform4.obj", L"Data\\Models\\Collada\\Platform4\\");
 
 	mGModels["Gun"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Gun\\Gun.obj", L"Data\\Models\\Collada\\Gun\\");
 
