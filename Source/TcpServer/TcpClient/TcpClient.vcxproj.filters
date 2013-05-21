@@ -24,9 +24,6 @@
     <ClCompile Include="Package.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PyEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -39,12 +36,12 @@
     <ClCompile Include="GameTimer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="PyEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Package.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PyEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -58,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="PyEngine.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
