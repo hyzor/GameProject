@@ -60,16 +60,16 @@ void Player::Kill()
 
 void Player::Die()
 {
-	Python->LoadModule("scoreboard_script");
-		Python->CallFunction(
-		Python->GetFunction("AddDeath"),
-		Python->CreateArg(this->mPlayerID));
-
 	Python->Update(0.0f);
 	Python->LoadModule("respawn");
 	Python->CallFunction(
 		Python->GetFunction("PlayerDied"),
-		nullptr);
+		NULL);
+
+	Python->LoadModule("scoreboard_script");
+		Python->CallFunction(
+		Python->GetFunction("AddDeath"),
+		Python->CreateArg(this->mPlayerID));
 
 	mIsAlive = false;
 }

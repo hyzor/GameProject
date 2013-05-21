@@ -28,7 +28,8 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 	{
 		if(OutOfMap())
 		{
-			Spawn(1,300,50, 0);
+			//Spawn(1,300,50, 0);
+			Die();
 		}
 		XMVECTOR pos = XMLoadFloat3(&mPosition);
 
@@ -227,7 +228,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		std::vector<int> iReturns(0);
 		Python->LoadModule("respawn");
 		Python->CallFunction(
-			Python->GetFunction("TimeToSpawn"),
+			Python->GetFunction("CheckSpawnTimer"),
 			nullptr);
 		Python->Update(0.0f);
 		if(Python->CheckReturns())
@@ -235,6 +236,10 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 			Python->ConvertInts(iReturns);
 			Python->ClearReturns();
 			TimeToSpawn = iReturns[0];
+		}
+		if(TimeToSpawn <= 0)
+		{
+			Spawn(1,300,50, 0);
 		}
 	}
 }

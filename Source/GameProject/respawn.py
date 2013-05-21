@@ -1,6 +1,7 @@
 import time
 import math
 import random
+import PyEngine
 
 random.seed(time.time())
 
@@ -21,10 +22,16 @@ TimeOfDeath = 0
 
 def PlayerDied():
     global TimeOfDeath
-    TimeOfDeath = 5
+    TimeOfDeath = time.time()
 
 def TimeToSpawn():
-    return int(10 - (time.time()-TimeOfDeath))
+    global TimeOfDeath
+    timeleft = time.time()-TimeOfDeath
+    timeleft = 10 - timeleft
+    return int(timeleft)
+
+def CheckSpawnTimer():
+    PyEngine.NotifyWhen("Timer", TimeToSpawn, None)
 
 def getSpawnPos():
     index = random.randint(0,len(spawnpoints)-1)
