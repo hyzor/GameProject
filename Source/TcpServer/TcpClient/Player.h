@@ -2,15 +2,18 @@
 #define PLAYER_H
 
 #include <string>
+#include <queue>
 #include "Package.h"
+#include "PyEngine.h"
 
 class Player
 {
 	public:
 		
-		Player(int id, std::string name);
+		Player(std::queue<PackageTo*>* send, int id, std::string name);
 		
 		void HandelPackage(Package* p);
+		void Update(float dt);
 
 		Package* GetConnect();
 		Package* GetUpdate();
@@ -29,6 +32,7 @@ class Player
 		int id;
 		std::string name;
 
+		std::queue<PackageTo*>* send;
 
 };
 

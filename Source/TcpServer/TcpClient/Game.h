@@ -4,6 +4,9 @@
 #include <queue>
 #include "Package.h"
 #include "Player.h"
+#include "Platform.h"
+#include "PyEngine.h"
+#include "GameTimer.h"
 
 class Game
 {
@@ -18,6 +21,9 @@ class Game
 
 	private:
 		std::vector<Player*> players;
+		std::vector<Platform*> platforms;
+		GameTimer mTimer;
+
 		std::queue<PackageTo*>* send;
 
 		Player* findPlayer(int id);

@@ -1,17 +1,34 @@
 #include "Player.h"
 
-
-Player::Player(int id, std::string name)
+Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 {
 	this->id = id;
 	this->name = name;
 
+	Python->LoadModule("player_script");
+	Python->CallFunction(
+		Python->GetFunction("CreatePlayer"),
+		Python->CreateArg(this->id, this->name.c_str()));
+	Python->Update(0.0f);
+	if(Python->CheckReturns())
+	{
+		std::vector<double> dReturns;
+		Python->ConvertDoubles(dReturns);
+		Python->ClearReturns();
+		int index = 0;
+		for(unsigned int i(0); i < dReturns.size()/3; ++i)
+		{
+			this->posX = (float)dReturns[index];
+			this->posY = (float)dReturns[index+1];
+			this->posZ = (float)dReturns[index+2];
+		}
+	}
+	//std::cout << this->name << " @( " << this->posX << ", " << this->posY << ", " << this->posZ << " )" << std::endl;
 	alive = false;
-	posX = 0;
-	posY = 0;
-	posZ = 0;
 
 	updated = false;
+
+	this->send = send;
 }
 
 void Player::HandelPackage(Package* p)
@@ -23,6 +40,16 @@ void Player::HandelPackage(Package* p)
 		this->posY = *(float*)b.Read(4);
 		this->posZ = *(float*)b.Read(4);
 	}
+}
+
+void Player::Update(float dt)
+{
+	////respawn player if dead
+	//posX = 0;
+	//posY = 0;
+	//posZ = 0;
+	//alive = true;
+	//send->push(new PackageTo(this->GetSpawn(), (char*)id));
 }
 
 Package* Player::GetConnect()
@@ -46,6 +73,7 @@ Package* Player::GetUpdate()
 		float posX;
 		float posY;
 		float posZ;
+		//fill   alive, rot, aim
 	};
 
 	PlayerUpdate* pu = new PlayerUpdate();

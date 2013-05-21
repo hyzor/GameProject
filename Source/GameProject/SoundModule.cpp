@@ -353,6 +353,7 @@ void SoundModule::createAllSounds()
 
 	createSound("Data/Sounds/14_Aerials.ogg", false, Song1);
 	createSound("Data/Sounds/Storaged.ogg", false, Song2);
+	createSound("Data/Sounds/SpaceBackground.ogg", false, Background);
 }
 
 void SoundModule::createSound(char* path,  bool is3DSound, int ID)
