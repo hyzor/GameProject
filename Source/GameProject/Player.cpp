@@ -39,7 +39,13 @@ Player::~Player()
 
 bool Player::Shoot()
 {
-	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(mPosition, mCamera->GetLook()))
+	XMMATRIX cJoint = *Joint;
+
+	XMVECTOR p = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,7,0)), cJoint);
+	XMFLOAT3 p2;
+	XMStoreFloat3(&p2, p);
+
+	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p2, mCamera->GetLook()))
 		return true;
 
 	return false;

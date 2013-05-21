@@ -56,7 +56,7 @@ bool Railgun::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
 	if (Weapon::FireProjectile(pos, dir))
 	{
 		// Shoot ray and emit particle system
-		mParticleSys->setEmitPos(XMFLOAT3(pos.x, pos.y+7.0f, pos.z));
+		mParticleSys->setEmitPos(XMFLOAT3(pos.x, pos.y, pos.z));
 		mParticleSys->setEmitDir(dir);
 		mParticleSys->reset();
 
