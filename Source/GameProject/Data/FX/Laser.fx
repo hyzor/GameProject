@@ -179,7 +179,7 @@ VertexOut DrawVS(Particle vIn)
 	float t = vIn.Age;
 
     // Constant acceleration equation
-	vOut.PosW = 0.5f*t*t*(vIn.InitialVelW*5000.0f) + t*vIn.InitialVelW + vIn.InitialPosW;
+	vOut.PosW = 0.5f*t*t*(vIn.InitialVelW*6000.0f) + t*vIn.InitialVelW + vIn.InitialPosW;
 
 	// fade color with time
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t/1.0f);

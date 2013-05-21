@@ -31,7 +31,7 @@ void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceCont
 	flares.push_back(L"Data\\Textures\\particle.dds");
 	mLaserTexSRV = d3dHelper::CreateTexture2DArraySRV(device, dc, flares);
 
-	mParticleSys->init(device, Effects::LaserFX, mLaserTexSRV, mRandomTexSRV, 1000);
+	mParticleSys->init(device, Effects::LaserFX, mLaserTexSRV, mRandomTexSRV, 200);
 	//mParticleSys->setEmitPos(XMFLOAT3(1.0f, 300.0f, 50.0f));
 }
 
