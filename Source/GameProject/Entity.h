@@ -23,13 +23,13 @@ public:
 	void RotateEntityY(float rot);
 	void RotateEntityZ(float rot);
 
+	void RotateRollPitchYaw(float yaw, float pitch, float roll);
 	void SetPosition(XMFLOAT3 pos);
 
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;
 	float Rotation;
 
-private:
 	GenericModelInstance mInstance;
 };
 

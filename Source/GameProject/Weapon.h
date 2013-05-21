@@ -32,6 +32,10 @@ public:
 	virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap);
 
 	void SetPosition(XMFLOAT3 pos);
+	void SetPosition(float x, float y, float z);
+
+	void RotateRollPitchYaw(float yaw, float pitch, float roll);
+	void ViewMatrixRotation( const XMMATRIX& view );
 
 	virtual bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir);
 

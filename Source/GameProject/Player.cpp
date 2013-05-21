@@ -85,13 +85,9 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	XMMATRIX cJoint = *Joint;
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
 
-	// Health lower than 0, die
-	if (mHealth < 0.0f)
+	// Health lower than or equal 0, die
+	if (mHealth <= 0.0f)
 		Die();
-
-	// Update player weapons
-	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
-	//mWeapons[mCurWeaponIndex]->SetPosition(XMFLOAT3(mPosition.x, mPosition.y+7.0f, mPosition.z+5.0f));
 
 	// Move
 	pos += XMLoadFloat3(&move);	
@@ -172,6 +168,12 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
 	mCamera->SetPosition(camPos);
 	mCamera->UpdateViewMatrix(XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 1, 0)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 0, 1)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(1, 0, 0)), cJoint));
+
+	// Update player weapons
+	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
+	mWeapons[mCurWeaponIndex]->SetPosition(camPos.x, camPos.y, camPos.z+5.0f);
+	//mWeapons[mCurWeaponIndex]->RotateRollPitchYaw(mCamera->Yaw, mCamera->Pitch, mCamera->Roll);
+	mWeapons[mCurWeaponIndex]->ViewMatrixRotation(mCamera->GetViewMatrix());
 
 	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);

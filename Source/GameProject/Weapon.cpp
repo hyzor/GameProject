@@ -36,7 +36,7 @@ void Weapon::Update(float dt, float gameTime)
 void Weapon::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap)
 {
 	// Draw weapon model
-	//mEntity->Draw(dc, tech, camera, shadowMap);
+	mEntity->Draw(dc, tech, camera, shadowMap);
 }
 
 void Weapon::ResetCooldown()
@@ -63,4 +63,35 @@ bool Weapon::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
 void Weapon::SetPosition(XMFLOAT3 pos)
 {
 	mEntity->SetPosition(pos);
+}
+
+void Weapon::SetPosition(float x, float y, float z)
+{
+	mEntity->SetPosition(XMFLOAT3(x, y, z));
+}
+
+void Weapon::RotateRollPitchYaw(float yaw, float pitch, float roll)
+{
+	mEntity->RotateRollPitchYaw(yaw, pitch, roll);
+}
+
+void Weapon::ViewMatrixRotation(const XMMATRIX& view )
+{
+	XMMATRIX modelRot = view;
+
+	XMMATRIX A = view;
+	A.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR det = XMMatrixDeterminant(A);
+	modelRot = XMMatrixInverse(&det, modelRot);
+
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+
+	XMMATRIX weaponOffset = XMMatrixTranslation(0.0f, -2.3f, 5.0f);
+
+	// Rotate weapon 180 degrees (to face it forwards)
+	XMVECTOR yawAxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX weaponRotOffset = XMMatrixRotationAxis(yawAxis, MathHelper::DegreesToRadians(180.0f));
+	
+	// Model is positioned and rotated according to the view-matrix with a position offset and rotation offset
+	XMStoreFloat4x4(&mEntity->mInstance.world, weaponRotOffset*weaponOffset*modelRot);
 }
