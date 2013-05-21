@@ -34,6 +34,7 @@ class Player
 		void SetPosition(XMFLOAT3 position) { mPosition=position; }
 		Camera* GetCamera() { return mCamera; }
 		bool IsAlive() const { return mIsAlive; }
+		bool OutOfMap();
 
 		void TakeDamage(float damage);
 		void Kill();

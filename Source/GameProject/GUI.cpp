@@ -1,9 +1,8 @@
 #include "GUI.h"
-#include "Vertex.h"
-#include "Settings.h"
 #include <sstream>
 
-const int MENUSIZE = 4;
+#define MENUSIZE 4
+GUI* GUI::mInstance = 0;
 
 GUI::GUI()
 {
@@ -36,9 +35,13 @@ void GUI::Init(ID3D11Device *device)
 	menuItems[3] = L"Exit";
 }
 
-bool GUI::Update(DirectInput* di)
+bool GUI::Update(DirectInput* di, float dt)
 {
-	
+	if(fontSize < 50.0f)
+	{
+		fontSize += 70.0f*dt;
+	}
+
 	if(di->GetKeyboardState()[DIK_ESCAPE] & 0x80 && !escapeDown)
 		escapeDown = true;
 
@@ -123,7 +126,7 @@ bool GUI::Update(DirectInput* di)
 	return false;
 }
 
-void GUI::Render(ID3D11DeviceContext *pContext)
+void GUI::Render(ID3D11DeviceContext *pContext, XMFLOAT3 playerPos)
 {
 	if(menuActive)
 	{
@@ -137,6 +140,10 @@ void GUI::Render(ID3D11DeviceContext *pContext)
 	{
 		drawCrossHair(pContext);
 	}
+	wstringstream wss;
+	wss<< "Player Pos: X: " << playerPos.x << " Y: " << playerPos.y << " Z: " << playerPos.z;
+
+	drawText(pContext, (wchar_t*)wss.str().c_str(), XMFLOAT2(100, 900), 25, 0xff0000ff);
 }
 
 void GUI::drawCrossHair(ID3D11DeviceContext *context)
@@ -145,7 +152,6 @@ void GUI::drawCrossHair(ID3D11DeviceContext *context)
 	int heigth = 0;
 
 	int offset = 26;
-	// SHITLOAD OF CODE INC
 	
 	width = Settings::GetInstance()->GetData().Width;
 	heigth = Settings::GetInstance()->GetData().Height;
@@ -207,10 +213,6 @@ void GUI::drawText(ID3D11DeviceContext *context, wchar_t* text, XMFLOAT2 pos, fl
 
 void GUI::DrawMenu(ID3D11DeviceContext *context)
 {
-	if(fontSize < 50.0f)
-	{
-		fontSize += 0.3f;
-	}
 	int unselected = 0xff990000;
 	int selected = 0xffff3333;
 
@@ -231,7 +233,6 @@ void GUI::DrawMenu(ID3D11DeviceContext *context)
 			color = selected;
 		}
 		drawText(context, menuItems[i], XMFLOAT2(0.4f*width, (0.4f*heigth) + 60.0f*i), fontSize, color);
-		//drawText(context, underline, XMFLOAT2(100, 101 + 40*i));
 	}
 }
 
@@ -244,4 +245,14 @@ void GUI::Release()
 {
 	mFW1Factory->Release();
 	mFontWrapper->Release();
+	delete mInstance;
+}
+
+GUI* GUI::GetInstance()
+{
+	if(!mInstance)
+	{
+		mInstance = new GUI();
+	}
+	return mInstance;
 }

@@ -2,6 +2,7 @@
 #include "GenericModel.h"
 #include "GenericSkinnedModel.h"
 #include "Player.h"
+#include "PlayerLocal.h"
 #include "ShadowMap.h"
 #include "Sky.h"
 #include "FrustumCulling.h"
@@ -55,9 +56,6 @@ private:
 
 	// Frustum culling
 	FrustumCulling* mFrustumCulling;
-
-	//GUI
-	GUI* mGUI;
 
 	Game* mGame;
 
@@ -133,7 +131,7 @@ Projekt::~Projekt()
 	SafeDelete(mShadowMap);
 	SafeDelete(mFrustumCulling);
 	SafeDelete(mGame);
-	SafeDelete(mGUI);
+	Gui->Release();
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
@@ -152,20 +150,13 @@ bool Projekt::Init()
 	CSplashWnd splash;
 	Gdiplus::Image* pImage = Gdiplus::Image::FromFile(L"Data\\Textures\\test.jpg");
 	splash.SetImage(pImage);
-	splash.SetWindowName(L"Wait while application load its data...");
-
-	delete pImage; 
+	delete pImage;
+	splash.Show();
+    splash.SetProgress( 0, 0, 0);
 
 	if (!D3D11App::Init())
 		return false;
 
-	HWND hWnd = D3D11App::MainWnd();
-
-	RECT window = {0,0,0,0};
-	GetWindowRect(hWnd, &window);
-	SetWindowPos(D3D11App::MainWnd(), D3D11App::MainWnd(), 10000, 10 , D3D11App::GetWindowWidth(), D3D11App::GetWindowHeight(), SWP_NOOWNERZORDER);
-	splash.Show();
-    splash.SetProgress( 0, 0, 0);
 	// Read game settings
 	if (!Settings::GetInstance()->ReadFile("Data\\Settings.txt"))
 		return false;
@@ -175,21 +166,20 @@ bool Projekt::Init()
 	InputLayouts::InitAll(mDirect3D->GetDevice());
 	mTextureMgr.Init(mDirect3D->GetDevice());
 	RenderStates::InitAll(mDirect3D->GetDevice());
-	splash.SetProgress(0,0,0);
+	splash.SetProgress( 10, 0, 0);
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
 	Python->Initialize();
-	splash.SetProgress( 10, 0, 0);
+	splash.SetProgress( 20, 0, 0);
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
-	splash.SetProgress( 60, 0, 0);
+	splash.SetProgress( 70, 0, 0);
 
 	//Create and initialize the GUI
-	mGUI = new GUI();
-	mGUI->Init(mDirect3D->GetDevice());
-	splash.SetProgress( 65, 0, 0);
+	Gui->Init(mDirect3D->GetDevice());
+	splash.SetProgress( 75, 0, 0);
 
 	Network::GetInstance()->Initialize();
 	Network::GetInstance()->Start();
@@ -307,7 +297,7 @@ void Projekt::DrawScene()
 	Effects::NormalMapFX->SetCubeMap(mSky->cubeMapSRV());
 
 	// Draw sky
-	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera(), mGUI->InMenu());
+	mSky->draw(mDirect3D->GetImmediateContext(), *mGame->GetCamera(), Gui->InMenu());
 
 	// Draw game
 	mGame->Draw(mDirect3D->GetImmediateContext(), mShadowMap);
@@ -315,7 +305,7 @@ void Projekt::DrawScene()
 	this->soundModule->updateAndPlay(mGame->GetCamera(), mGame->GetCamera()->GetPosition());
 
 	// Draw the GUI
-	mGUI->Render(mDirect3D->GetImmediateContext());
+	Gui->Render(mDirect3D->GetImmediateContext(), mGame->GetPlayer()->GetPosition());
 
 	// Unbind shadow map and AmbientMap as a shader input because we are going to render
 	// to it next frame.  These textures can be at any slot, so clear all slots.
@@ -333,7 +323,7 @@ void Projekt::DrawScene()
 
 void Projekt::UpdateScene(float dt)
 {
-	if (mGUI->Update(mDirectInput))
+	if (Gui->Update(mDirectInput, dt))
 		SendMessage(mhMainWnd, WM_DESTROY, 0, 0);
 
 	//-------------------------------------------------------------

@@ -64,6 +64,14 @@ void Player::Die()
 		Python->CallFunction(
 		Python->GetFunction("AddDeath"),
 		Python->CreateArg(this->mPlayerID));
+
+	Python->Update(0.0f);
+	Python->LoadModule("respawn");
+	Python->CallFunction(
+		Python->GetFunction("PlayerDied"),
+		nullptr);
+
+	mIsAlive = false;
 }
 
 void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
@@ -150,8 +158,8 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	if(OnGround && XMVectorGetX(XMVector3Dot(XMLoadFloat3(&move), XMLoadFloat3(&XMFLOAT3(1,1,1)))) != 0)
 		sm->playSFX(mPosition, Running, false);
 	else
-		sm->stopSound(Running);
-	
+		sm->stopSound(Running);		
+
 	XMStoreFloat3(&mPosition, pos);
 
 	XMFLOAT3 camPos;
@@ -186,4 +194,20 @@ void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
 
 	mWeapons.push_back(railgun);
 	this->mCurWeaponIndex = 0;
+}
+
+bool Player::OutOfMap()
+{
+	if( mPosition.x > 1000  ||
+		mPosition.x < -1000 ||
+		mPosition.y > 1000  ||
+		mPosition.y < -1000 ||
+		mPosition.z > 1000  ||
+		mPosition.z < -1000)
+	{
+			return true;
+	}
+
+	return false;
+
 }

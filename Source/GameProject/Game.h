@@ -33,6 +33,7 @@ class Game
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
 		void HandlePackage(Package* p);
 
+		Player* GetPlayer() const;
 		Camera* GetCamera();
 	private:
 		World* world;

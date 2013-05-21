@@ -67,3 +67,8 @@ Camera* Game::GetCamera()
 {
 	return player->GetCamera();
 }
+
+Player* Game::GetPlayer() const
+{
+	return player;
+}
