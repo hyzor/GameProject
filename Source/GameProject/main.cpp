@@ -67,13 +67,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-	// Also create a debug console window
-	// 	if(AllocConsole()) 
-	// 	{
-	// 		freopen("CONOUT$", "w", stdout);
-	// 		SetConsoleTitle(L"Debug Console");
-	// 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);  
-	// 	}
+	// Used to find memory leaks
+	//_CrtSetBreakAlloc(4953584);
+	
+	//Also create a debug console window
+	if(AllocConsole()) 
+	{
+		freopen("CONOUT$", "w", stdout);
+		SetConsoleTitle(L"Debug Console");
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);  
+	}
 #endif
 	//------Splash Screen-------//
 	Gdiplus::GdiplusStartupInput gdiSI;
@@ -148,11 +151,8 @@ Projekt::~Projekt()
 bool Projekt::Init()
 {
 	CSplashWnd splash;
-	Gdiplus::Image* pImage = Gdiplus::Image::FromFile(L"Data\\Textures\\test.jpg");
-	splash.SetImage(pImage);
-	delete pImage;
+	splash.SetImage(Gdiplus::Image::FromFile(L"Data\\Textures\\test.jpg"));
 	splash.Show();
-    splash.SetProgress( 0, 0, 0);
 
 	if (!D3D11App::Init())
 		return false;
@@ -166,29 +166,23 @@ bool Projekt::Init()
 	InputLayouts::InitAll(mDirect3D->GetDevice());
 	mTextureMgr.Init(mDirect3D->GetDevice());
 	RenderStates::InitAll(mDirect3D->GetDevice());
-	splash.SetProgress( 10, 0, 0);
 
 	// Initialize models
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
 	Python->Initialize();
-	splash.SetProgress( 20, 0, 0);
 
 	// Create game
 	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
-	splash.SetProgress( 70, 0, 0);
 
 	//Create and initialize the GUI
 	Gui->Init(mDirect3D->GetDevice());
-	splash.SetProgress( 75, 0, 0);
 
 	Network::GetInstance()->Initialize();
 	Network::GetInstance()->Start();
-	splash.SetProgress( 80, 0, 0);
 
 	//init soundmodule
 	this->soundModule = new SoundModule();
 	this->soundModule->initialize(this->mhMainWnd, this->mDirectInput);
-	splash.SetProgress( 85, 0, 0);
 
 	// Set if window is fullscreen or not
 	D3D11App::SetFullscreen(Settings::GetInstance()->GetData().IsFullscreen);
@@ -199,15 +193,12 @@ bool Projekt::Init()
 
 	// Create sky
 	mSky = new Sky(mDirect3D->GetDevice(), L"Data\\Textures\\SkyBox_Space.dds", 5000.0f);
-	splash.SetProgress( 90, 0, 0);
 
 	// Create shadow map
 	mShadowMap = new ShadowMap(mDirect3D->GetDevice(), 2048, 2048);
-	splash.SetProgress( 95, 0, 0);
 
 	// Create frustum culling
 	mFrustumCulling = new FrustumCulling();
-	splash.SetProgress( 100, 0, 0 );
 
 	//--------------------------------------------------------
 	// Compute scene bounding box
@@ -243,10 +234,9 @@ bool Projekt::Init()
 // 		0.5f*(maxPt.z - minPt.z));
 // 
 // 	mSceneBounds.Radius = sqrtf(extent.x*extent.x + extent.y*extent.y + extent.z*extent.z);
-
+	splash.Hide();
 	D3D11App::ShowWindow();
 	OnResize();
-
 
 	return true;
 }

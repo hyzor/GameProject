@@ -288,5 +288,6 @@ void PlayerLocal::Spawn(float x, float y, float z, int rotation)
 	
 	this->mPosition = pos;
 	this->mIsAlive = true;
+	delete Joint;
 	Joint = new XMMATRIX(XMMatrixIdentity());
 }
