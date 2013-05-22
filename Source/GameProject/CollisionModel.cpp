@@ -57,11 +57,6 @@ void CollisionModel::LoadObj(std::string fileName, const XMMATRIX &matrix)
 		vMax = XMVectorMax(vMax, pos);
 	}
 
-	XMFLOAT3 p;
-	XMFLOAT3 s;
-	XMStoreFloat3(&p, vMin);
-	XMStoreFloat3(&s, vMax-vMin);
-
 	XMStoreFloat3(&this->vMin, vMin);
 	XMStoreFloat3(&this->vMax, vMax);
 

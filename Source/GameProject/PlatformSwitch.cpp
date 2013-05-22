@@ -244,3 +244,231 @@ float PlatformSwitch::GetRotationY(XMVECTOR up)
 
 	return 0;
 }
+
+SwitchRotations PlatformSwitch::GetRotations(XMVECTOR up)
+{
+	SwitchRotations sr;
+	sr.rot.x = 0;
+	sr.rot.y = 0;
+	sr.rot.z = 0;
+
+	if(this->rotationType == 1)
+	{
+		if(XMVectorGetY(up) > 0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = -(float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+		else if(XMVectorGetZ(up) < -0.5f)
+		{
+			sr.start.x = -(float)XM_PI/2;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = (float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+	}
+	else if(this->rotationType == 2)
+	{
+		if(XMVectorGetY(up) > 0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = (float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+		else if(XMVectorGetZ(up) > 0.5f)
+		{
+			sr.start.x = (float)XM_PI/2;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = -(float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+	}
+	else if(this->rotationType == 3)
+	{
+		if(XMVectorGetZ(up) > 0.5f)
+		{
+			sr.start.x = (float)XM_PI/2;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = (float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+		else if(XMVectorGetY(up) < -0.5f)
+		{
+			sr.start.x = (float)XM_PI;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = -(float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+	}
+	else if(this->rotationType == 4)
+	{
+		if(XMVectorGetZ(up) < -0.5f)
+		{
+			sr.start.x = -(float)XM_PI/2;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = -(float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+		else if(XMVectorGetY(up) < -0.5f)
+		{
+			sr.start.x = (float)XM_PI;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = +(float)XM_PI/2;
+			sr.rot.y = 0.0f;
+			sr.rot.z = 0.0f;
+		}
+	}
+	else if(this->rotationType == 5)
+	{
+		if(XMVectorGetY(up) > 0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = 0.0f;
+			sr.rot.y = 0.0f;
+			sr.rot.z = -(float)XM_PI/2;
+		}
+		else if(XMVectorGetX(up) > 0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = -(float)XM_PI/2;
+
+			sr.rot.x = 0.0f;
+			sr.rot.y = 0.0f;
+			sr.rot.z = (float)XM_PI/2;
+		}
+	}
+	else if(this->rotationType == 6)
+	{
+		if(XMVectorGetY(up) > 0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = 0;
+
+			sr.rot.x = 0.0f;
+			sr.rot.y = 0.0f;
+			sr.rot.z = +(float)XM_PI/2;
+		}
+		else if(XMVectorGetX(up) < -0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = +(float)XM_PI/2;
+
+			sr.rot.x = 0.0f;
+			sr.rot.y = 0.0f;
+			sr.rot.z = -(float)XM_PI/2;
+		}
+	}
+	else if(this->rotationType == 8)
+	{
+		/*if(XMVectorGetZ(up) < -0.5f)
+			return +(float)XM_PI/2;
+		else if(XMVectorGetX(up) < -0.5f)
+			return -(float)XM_PI/2;//y*/
+
+		if(XMVectorGetZ(up) < -0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = +(float)XM_PI/2;
+			sr.start.z = +(float)XM_PI/2;
+
+			sr.rot.x = 0;
+			sr.rot.y = -(float)XM_PI/2;
+			sr.rot.z = 0;
+		}
+		else if(XMVectorGetX(up) < -0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = +(float)XM_PI/2;
+
+			sr.rot.x = 0;
+			sr.rot.y = +(float)XM_PI/2;
+			sr.rot.z = 0;
+		}
+	}
+	else if(this->rotationType == 9)
+	{
+		if(XMVectorGetZ(up) > 0.5f)
+		{
+			sr.start.x = +(float)XM_PI/2;
+			sr.start.y = 0;
+			sr.start.z = -(float)XM_PI/2;
+
+			sr.rot.x = -(float)XM_PI/2;
+			sr.rot.y = 0;
+			sr.rot.z = 0;
+		}
+		else if(XMVectorGetX(up) > 0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = -(float)XM_PI/2;;
+
+			sr.rot.x = +(float)XM_PI/2;
+			sr.rot.y = 0;
+			sr.rot.z = 0;
+		}
+	}
+	else if(this->rotationType == 10)
+	{
+		/*if(XMVectorGetZ(up) > 0.5f)
+			return -(float)XM_PI/2;
+		else if(XMVectorGetX(up) < -0.5f)
+			return +(float)XM_PI/2;//y*/
+
+		if(XMVectorGetZ(up) > 0.5f)
+		{
+			sr.start.x = +(float)XM_PI/2;
+			sr.start.y = 0;
+			sr.start.z = +(float)XM_PI/2;
+
+			sr.rot.x = -(float)XM_PI/2;
+			sr.rot.y = 0;
+			sr.rot.z = 0;
+		}
+		else if(XMVectorGetX(up) < -0.5f)
+		{
+			sr.start.x = 0;
+			sr.start.y = 0;
+			sr.start.z = +(float)XM_PI/2;
+
+			sr.rot.x = +(float)XM_PI/2;
+			sr.rot.y = 0;
+			sr.rot.z = 0;
+		}
+	}
+
+	return sr;
+}

@@ -74,18 +74,21 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		if(psCol != NULL)
 		{
 			XMVECTOR up = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), cJoint);
-			float rX = psCol->GetRotationX(up);
-			float rZ = psCol->GetRotationZ(up);
-			float rY = psCol->GetRotationY(up);
+			SwitchRotations sr = psCol->GetRotations(up);
 
-			if(!(rX == 0 && rZ == 0 && rY == 0))
+			if(!(&sr.rot.x == 0 && sr.rot.y == 0 && sr.rot.z == 0))
 			{
-				rotateTo.x += rX;
-				rotateTo.y += rY;
-				rotateTo.z += rZ;
+				rotation = sr.start;
+				rotateTo = sr.start;
+				rotateTo.x += sr.rot.x;
+				rotateTo.y += sr.rot.y;
+				rotateTo.z += sr.rot.z;
+
 				ySpeed = 0;
 				rotating = true;
 				pos = psCol->GetMoveTo(up);
+
+				cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);
 			}
 		}
 

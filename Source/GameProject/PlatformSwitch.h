@@ -4,6 +4,12 @@
 #include "CollisionModel.h"
 #include "Entity.h"
 
+struct SwitchRotations
+{
+	XMFLOAT3 start;
+	XMFLOAT3 rot;
+};
+
 class PlatformSwitch
 {
 public:
@@ -17,6 +23,7 @@ public:
 	float GetRotationX(XMVECTOR up);
 	float GetRotationZ(XMVECTOR up);
 	float GetRotationY(XMVECTOR up);
+	SwitchRotations GetRotations(XMVECTOR up);
 
 private:
 	CollisionModel* mCollision;
