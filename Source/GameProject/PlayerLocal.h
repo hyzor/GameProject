@@ -20,9 +20,12 @@ class PlayerLocal : public Player
 		float rotX;
 		float rotateToZ;
 		float rotZ;
+		float rotateToY;
+		float rotY;
 
 		bool eDown;
 		bool rDown;
+		bool tDown;
 
 		int TimeToSpawn;
 };

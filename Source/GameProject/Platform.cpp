@@ -39,6 +39,10 @@ void Platform::Update(float dt)
 void Platform::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)
 {
 	mEntity->Draw(dc, at, camera, shadowMap);
+	for(unsigned int i = 0; i < this->mSwitches.size(); i++)
+	{
+		this->mSwitches.at(i)->Draw(dc, at, camera, shadowMap);
+	}
 }
 
 PlatformSwitch* Platform::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length)

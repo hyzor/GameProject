@@ -16,6 +16,7 @@ public:
 	XMVECTOR GetMoveTo(XMVECTOR up);
 	float GetRotationX(XMVECTOR up);
 	float GetRotationZ(XMVECTOR up);
+	float GetRotationY(XMVECTOR up);
 
 private:
 	CollisionModel* mCollision;

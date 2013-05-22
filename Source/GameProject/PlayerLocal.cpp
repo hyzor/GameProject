@@ -15,6 +15,8 @@ PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal:
 	rotX = 0;
 	rotateToZ = 0;
 	rotZ = 0;
+	rotateToY = 0;
+	rotY = 0;
 	TimeToSpawn = 0;
 }
 
@@ -54,11 +56,13 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 				XMVECTOR up = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), cJoint);
 				float rX = psCol->GetRotationX(up);
 				float rZ = psCol->GetRotationZ(up);
+				float rY = psCol->GetRotationY(up);
 
-				if(!(rX == 0 && rZ == 0))
+				if(!(rX == 0 && rZ == 0 && rY == 0))
 				{
 					rotateToX += rX;
 					rotateToZ += rZ;
+					rotateToY += rY;
 					ySpeed = 0;
 					rotating = true;
 					pos = psCol->GetMoveTo(up);
@@ -94,6 +98,18 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 			}
 			else
 				rDown = false;
+			if(dInput->GetKeyboardState()[DIK_T] & 0x80)
+		{
+			if(!tDown)
+			{
+				rotateToY += (float)PI/2;
+				ySpeed = 0;
+				rotating = true;
+			}
+			tDown = true;
+		}
+		else
+			tDown = false;
 
 			//Remove down movement
 			XMVECTOR removeDown = XMLoadFloat3(&XMFLOAT3(0,1,0));
@@ -173,8 +189,52 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 
 				cJoint = XMMatrixRotationX(rotX);
 				XMVECTOR look = XMLoadFloat3(&XMFLOAT3(0,0,1));
+				XMVECTOR up = XMLoadFloat3(&XMFLOAT3(0,1,0));
 				look = XMVector3Transform(look, cJoint);
+				up = XMVector3Transform(up, cJoint);
+				cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(up, rotY));
 				cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(look, rotZ));
+			}
+			else if(rotateToY != rotY)
+			{
+				float rt = rotateToY;
+				float r = rotY;
+
+				if(rt > (float)PI)
+					rt = -((float)PI*2-rt);
+				if(r > (float)PI)
+					r = -((float)PI*2-r);
+
+				if(rotateToY > rotY)
+				{
+					rotY += 5*dt;
+					r += 5*dt;
+					if(rt < r)
+					{
+						rotY = rotateToY;
+						rotating = false;
+					}
+				}
+				else
+				{
+					rotY -= 5*dt;
+					r -= 5*dt;
+					if(rt > r)
+					{
+						rotY = rotateToY;
+						rotating = false;
+					}
+				}
+
+				cJoint = XMMatrixRotationX(rotX);
+				XMVECTOR look = XMLoadFloat3(&XMFLOAT3(0,0,1));
+				XMVECTOR up = XMLoadFloat3(&XMFLOAT3(0,1,0));
+				look = XMVector3Transform(look, cJoint);
+				up = XMVector3Transform(up, cJoint);
+				cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(up, rotY));
+				cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(look, rotZ));
+
+				//cJoint = XMMatrixRotationX(rotX)*XMMatrixRotationY(rotY)*XMMatrixRotationZ(rotZ);
 			}
 			else if(rotateToZ != rotZ)
 			{
@@ -209,7 +269,10 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 
 				cJoint = XMMatrixRotationX(rotX);
 				XMVECTOR look = XMLoadFloat3(&XMFLOAT3(0,0,1));
+				XMVECTOR up = XMLoadFloat3(&XMFLOAT3(0,1,0));
 				look = XMVector3Transform(look, cJoint);
+				up = XMVector3Transform(up, cJoint);
+				cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(up, rotY));
 				cJoint = XMMatrixMultiply(cJoint, XMMatrixRotationAxis(look, rotZ));
 			}
 			else
