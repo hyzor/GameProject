@@ -18,6 +18,9 @@ public:
 	CollisionModel::Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
 
+	static const UINT numPointLights = 12;
+	PointLight mPointLights[numPointLights];
+
 private:
 	int mPlatformAmount;
 	std::vector<Platform*> mPlatforms;

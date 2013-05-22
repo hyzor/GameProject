@@ -179,7 +179,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
-	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
+	// activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
 	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap);
 }
 

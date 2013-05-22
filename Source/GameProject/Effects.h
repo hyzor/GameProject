@@ -298,6 +298,7 @@ public:
 	void SetEyePosW(const XMFLOAT3& v)                  { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 
 	void SetDirLights(const DirectionalLight* lights)   { dirLights->SetRawValue(lights, 0, 3*sizeof(DirectionalLight)); }
+	void SetPointLights(const PointLight* lights)		{ PointLights->SetRawValue(lights, 0, 12*sizeof(PointLight)); }
 
 	void SetMaterial(const Material& mat)               { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 
@@ -321,6 +322,8 @@ public:
 	ID3DX11EffectTechnique* DirLights3TexAlphaClipTech;
 	ID3DX11EffectTechnique* DirLights3TexSkinnedTech;
 
+	ID3DX11EffectTechnique* DirLights3PointLights12TexAlphaClipTech;
+
 	// Matrices
 	ID3DX11EffectMatrixVariable* WorldViewProj;
 	ID3DX11EffectMatrixVariable* WorldViewProjTex;
@@ -338,6 +341,7 @@ public:
 
 	// Lights
 	ID3DX11EffectVariable* dirLights;
+	ID3DX11EffectVariable* PointLights;
 
 	// Shadow mapping
 	ID3DX11EffectShaderResourceVariable* shadowMap;

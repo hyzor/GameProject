@@ -219,6 +219,8 @@ NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filen
 	DirLights3TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3TexAlphaClip");
 	DirLights3TexSkinnedTech = mFX->GetTechniqueByName("DirLights3TexSkinned");
 
+	DirLights3PointLights12TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3PointLight12TexAlphaClip");
+
 	//-------------
 
 	WorldViewProj     = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
@@ -232,6 +234,7 @@ NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filen
 	EyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
 
 	dirLights = mFX->GetVariableByName("gDirLights");
+	PointLights = mFX->GetVariableByName("gPointLights");
 
 	shadowTransform = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
 	shadowMap = mFX->GetVariableByName("gShadowMap")->AsShaderResource();

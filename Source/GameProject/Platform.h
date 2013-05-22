@@ -18,6 +18,8 @@ public:
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
 	void Move(XMFLOAT3 pos);
 
+	std::vector<PointLight> mPointLights;
+
 protected:
 	std::string mModelName;
 	std::vector<PlatformSwitch*> mSwitches;

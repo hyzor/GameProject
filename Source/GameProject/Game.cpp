@@ -51,13 +51,16 @@ void Game::HandlePackage(Package* p)
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 {
-	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
+	// Set point lights created in world
+	Effects::NormalMapFX->SetPointLights(world->mPointLights);
+
+	// Draw world and player with dir lights and point lights
+	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+	player->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
  	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
-
-	player->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 	
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);

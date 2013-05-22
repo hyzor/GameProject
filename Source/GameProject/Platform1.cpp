@@ -15,6 +15,33 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 {
 	Platform::Initialize(id, pos);
 
+	//------------------------------------
+	// Create lights
+	//------------------------------------
+	PointLight pLight1;
+	pLight1.Position = pos;
+	pLight1.Position.x += -163.302f;
+	pLight1.Position.y += -118.477f;
+	pLight1.Position.z += -36.601f;
+
+	PointLight pLight2;
+	pLight2.Position = pos;
+	pLight2.Position.x += 144.096f;
+	pLight2.Position.y += 102.614f;
+	pLight2.Position.z += -66.06f;
+
+	mPointLights.push_back(pLight1);
+	mPointLights.push_back(pLight2);
+
+	for (UINT i = 0; i < mPointLights.size(); ++i)
+	{
+		mPointLights[i].Ambient		= XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+		mPointLights[i].Diffuse		= XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		mPointLights[i].Specular	= XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		mPointLights[i].Attenuation = XMFLOAT3(0.0f, 0.1f, 0.0f);
+		mPointLights[i].Range		= 50.0f;
+	}
+
 	int index = 0;
 
 	XMFLOAT3 switchPos = pos;

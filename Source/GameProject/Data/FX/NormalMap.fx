@@ -11,6 +11,8 @@ cbuffer cbPerFrame
 {
 	DirectionalLight gDirLights[3];
 
+	PointLight gPointLights[12];
+
 	float3 gEyePosW;
 
 	// Fogging
@@ -152,7 +154,7 @@ VertexOut SkinnedVS(SkinnedVertexIn vIn)
 }
 
 //===========================================================================
-// Pixel shader with point lights and shadows
+// Pixel shader with directional lights and shadows
 //===========================================================================
 float4 PS_DirLight(VertexOut pIn, 
           uniform int gLightCount, 
@@ -251,6 +253,223 @@ float4 PS_DirLight(VertexOut pIn,
 	return litColor;
 }
 
+//===========================================================================
+// Pixel shader with point lights and shadows
+//===========================================================================
+float4 PS_PointLight(VertexOut pIn, 
+          uniform int gLightCount, 
+		  uniform bool gUseTexture, 
+		  uniform bool gAlphaClip, 
+		  uniform bool gReflectionEnabled,
+		  uniform bool gFogEnabled) : SV_Target
+{
+	// Normalize normal
+    pIn.NormalW = normalize(pIn.NormalW);
+
+	// The toEye vector is used in lighting
+	float3 toEye = gEyePosW - pIn.PosW;
+
+	// Cache the distance to the eye from this surface point.
+	float distToEye = length(toEye);
+
+	// Normalize
+	toEye /= distToEye;
+	
+	float4 texColor = float4(1, 1, 1, 1);
+	if (gUseTexture)
+	{
+		// Sample texture
+		texColor = gDiffuseMap.Sample(samLinear, pIn.Tex);
+		if(inMenu)
+		{
+			texColor.rgb = dot(texColor.rgb, float3(0.3, 0.59, 0.11));
+			texColor.rgb *= 0.5;
+			texColor.a = 1;
+		}
+
+		if (gAlphaClip)
+		{
+			// Discard pixel if alpha < 0.1
+			clip(texColor.a - 0.1f);
+		}
+	}
+
+	//--------------------------------------------------------
+	// Normal mapping
+	//--------------------------------------------------------
+	float3 normalMapSample = gNormalMap.Sample(samLinear, pIn.Tex).rgb;
+	float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pIn.NormalW, pIn.TangentW);
+
+	//--------------------------------------------------------
+	// Lighting
+	//--------------------------------------------------------
+	float4 litColor = texColor;
+	if (gLightCount > 0)
+	{
+	    // Initialize values
+		float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+		float3 shadow = float3(1.0f, 1.0f, 1.0f);
+		shadow[0] = CalcShadowFactor(samShadow, gShadowMap, pIn.ShadowPosH);
+
+		[unroll]
+		for (int i = 0; i < gLightCount; ++i)
+		{
+			float4 A, D, S;
+			ComputePointLight(gMaterial, gPointLights[i], pIn.PosW, bumpedNormalW, toEye, A, D, S);
+
+			ambient += A;
+			//diffuse += shadow[i]*D;
+			//specular += shadow[i]*S;
+			diffuse += D;
+			specular += S;
+		}
+
+		litColor = texColor * (ambient + diffuse) + specular;
+
+		if (gReflectionEnabled)
+		{
+			float3 incident = -toEye;
+			float3 reflectionVector = reflect(incident, bumpedNormalW);
+			float4 reflectionColor = gCubeMap.Sample(samLinear, reflectionVector);
+
+			litColor += gMaterial.Reflect * reflectionColor;
+		}
+	}
+
+	//--------------------------------------------------------
+	// Fogging
+	//--------------------------------------------------------
+	if (gFogEnabled)
+	{
+		float fogLerp = saturate((distToEye - gFogStart) / gFogRange);
+
+		// Blend fog color and lit color
+		litColor = lerp(litColor, gFogColor, fogLerp);
+	}
+
+	litColor.a = gMaterial.Diffuse.a * texColor.a;
+
+	return litColor;
+}
+
+//===========================================================================
+// Pixel shader with point lights, dir lights and shadows
+//===========================================================================
+float4 PS_DirLightPointLight(VertexOut pIn, 
+          uniform int gDirLightCount, 
+		  uniform int gPointLightCount,
+		  uniform bool gUseTexture, 
+		  uniform bool gAlphaClip, 
+		  uniform bool gReflectionEnabled,
+		  uniform bool gFogEnabled) : SV_Target
+{
+	// Normalize normal
+    pIn.NormalW = normalize(pIn.NormalW);
+
+	// The toEye vector is used in lighting
+	float3 toEye = gEyePosW - pIn.PosW;
+
+	// Cache the distance to the eye from this surface point.
+	float distToEye = length(toEye);
+
+	// Normalize
+	toEye /= distToEye;
+	
+	float4 texColor = float4(1, 1, 1, 1);
+	if (gUseTexture)
+	{
+		// Sample texture
+		texColor = gDiffuseMap.Sample(samLinear, pIn.Tex);
+
+		if (gAlphaClip)
+		{
+			// Discard pixel if alpha < 0.1
+			clip(texColor.a - 0.1f);
+		}
+
+		if(inMenu)
+		{
+			texColor.rgb = dot(texColor.rgb, float3(0.3, 0.59, 0.11));
+			texColor.rgb *= 0.5;
+			//texColor.a = 1;
+		}
+	}
+
+	//--------------------------------------------------------
+	// Normal mapping
+	//--------------------------------------------------------
+	float3 normalMapSample = gNormalMap.Sample(samLinear, pIn.Tex).rgb;
+	float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pIn.NormalW, pIn.TangentW);
+
+	//--------------------------------------------------------
+	// Lighting
+	//--------------------------------------------------------
+	float4 litColor = texColor;
+	if (gDirLightCount > 0 || gPointLightCount > 0)
+	{
+	    // Initialize values
+		float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+		float3 shadow = float3(1.0f, 1.0f, 1.0f);
+		shadow[0] = CalcShadowFactor(samShadow, gShadowMap, pIn.ShadowPosH);
+
+		[unroll]
+		for (int i = 0; i < gPointLightCount; ++i)
+		{
+			float4 A, D, S;
+			ComputePointLight(gMaterial, gPointLights[i], pIn.PosW, bumpedNormalW, toEye, A, D, S);
+
+			ambient += A;
+			//diffuse += shadow[i]*D;
+			//specular += shadow[i]*S;
+			diffuse += D;
+			specular += S;
+		}
+
+		[unroll]
+		for (int j = 0; j < gDirLightCount; ++j)
+		{
+			float4 A, D, S;
+			ComputeDirectionalLight(gMaterial, gDirLights[j], bumpedNormalW, toEye, A, D, S);
+
+			ambient += A;
+			diffuse += shadow[j]*D;
+			specular += shadow[j]*S;
+		}
+
+		litColor = texColor * (ambient + diffuse) + specular;
+
+		if (gReflectionEnabled)
+		{
+			float3 incident = -toEye;
+			float3 reflectionVector = reflect(incident, bumpedNormalW);
+			float4 reflectionColor = gCubeMap.Sample(samLinear, reflectionVector);
+
+			litColor += gMaterial.Reflect * reflectionColor;
+		}
+	}
+
+	//--------------------------------------------------------
+	// Fogging
+	//--------------------------------------------------------
+	if (gFogEnabled)
+	{
+		float fogLerp = saturate((distToEye - gFogStart) / gFogRange);
+
+		// Blend fog color and lit color
+		litColor = lerp(litColor, gFogColor, fogLerp);
+	}
+
+	litColor.a = gMaterial.Diffuse.a * texColor.a;
+
+	return litColor;
+}
+
 technique11 DirLights3Tex
 {
 	pass P0
@@ -278,5 +497,32 @@ technique11 DirLights3TexSkinned
 		SetVertexShader(CompileShader(vs_5_0, SkinnedVS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_DirLight(3, true, false, false, false)));
+	}
+}
+
+technique11 DirLights3PointLight12TexAlphaClip
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_DirLightPointLight(3, 12, true, true, false, false)));
+	}
+}
+
+technique11 DirLights3PointLight12TexAlphaClip_NOT_IN_USE
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_DirLight(3, true, true, false, false)));
+	}
+
+	pass P1
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_PointLight(12, true, true, false, false)));
 	}
 }

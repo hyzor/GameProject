@@ -35,6 +35,19 @@ World::World()
 			}
 		}
 	}
+
+	UINT pointLightIndex = 0;
+	for (UINT i = 0; i < mPlatforms.size(); ++i)
+	{
+		for (UINT j = 0; j < mPlatforms[i]->mPointLights.size(); ++j)
+		{
+			if (pointLightIndex >= numPointLights)
+				continue;
+
+			mPointLights[pointLightIndex] = mPlatforms[i]->mPointLights[j];
+			pointLightIndex++;
+		}
+	}
 }
 
 World::~World()
