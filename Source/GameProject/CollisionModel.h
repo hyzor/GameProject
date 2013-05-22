@@ -39,8 +39,8 @@ class CollisionModel
 		
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 
-		XMVECTOR* vMin;
-		XMVECTOR* vMax;
+		XMFLOAT3 vMin;
+		XMFLOAT3 vMax;
 
 	private:
 

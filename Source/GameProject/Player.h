@@ -36,22 +36,24 @@ class Player
 		bool IsAlive() const { return mIsAlive; }
 		bool OutOfMap();
 
-		void TakeDamage(float damage);
 		void Kill();
 		void Die();
 
+		bool mIsAlive;
+		float mHealth;
+
 	protected:
 		int mPlayerID;
-		float mHealth;
 		std::string mNickname;
 		float mSpeed;
-		bool mIsAlive;
-		XMFLOAT3 move;
 		bool OnGround;
 		bool rotating;
+		float aliveTime;
 
 		float ySpeed;
 		XMFLOAT3 mPosition;
+		XMFLOAT3 rotation;
+		XMFLOAT3 move;
 		
 		Camera* mCamera;
 		XMMATRIX* Joint;

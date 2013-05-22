@@ -8,6 +8,9 @@ Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, f
 	this->posX = posX;
 	this->posY = posY;
 	this->posZ = posZ;
+	this->movX = 0;
+	this->movY = 0;
+	this->movZ = 0;
 
 	update = false;
 	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
@@ -42,12 +45,18 @@ Package* Platform::GetUpdate()
 			float posX;
 			float posY;
 			float posZ;
+			float movX;
+			float movY;
+			float movZ;
 		};
 
 		PlatformUpdate* pu = new PlatformUpdate();
 		pu->posX = posX;
 		pu->posY = posY;
 		pu->posZ = posZ;
+		pu->movX = movX;
+		pu->movY = movY;
+		pu->movZ = movZ;
 
 		update = false;
 

@@ -6,6 +6,8 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 
 	player = new PlayerLocal("Hyzor", XMFLOAT3(1,300,50));
 	player->InitWeapons(device, dc);
+	this->device = device;
+	this->dc = dc;
 
 	multiplayers = new std::vector<Player*>();
 
@@ -36,17 +38,40 @@ void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule*
 
 void Game::HandlePackage(Package* p)
 {
-	if(p->GetHeader().operation == 2)
-		multiplayers->push_back(new PlayerMulti(p->GetHeader().id, std::string(p->GetBody().Read(50)), XMFLOAT3(0,0,0)));
-	else
+	int o = p->GetHeader().operation;
+	if(o == 2)
+	{
+		Package::Body b = p->GetBody();
+		XMFLOAT3 pos = *(XMFLOAT3*)b.Read(4*3);
+		float h = *(float*)b.Read(4);
+		int a = *(int*)b.Read(4);
+		PlayerMulti* pm = new PlayerMulti(p->GetHeader().id, std::string(b.Read(50)), pos);
+		pm->mHealth = h;
+		pm->mIsAlive = a==1;
+		pm->InitWeapons(this->device, this->dc);
+		multiplayers->push_back(pm);
+	}
+	else if(o == 1 || o == 3)
 	{
 		if(p->GetHeader().id == 0)
 			player->HandelPackage(p);
 		else
 			for(UINT i = 0; i < multiplayers->size(); i++)
 				if(multiplayers->at(i)->GetID() == p->GetHeader().id)
+				{
 					multiplayers->at(i)->HandelPackage(p);
+					break;
+				}
 	}
+	else if(o == 4)
+	{
+		for(int i = 0; i< multiplayers->size(); i++)
+			if(multiplayers->at(i)->GetID() == p->GetHeader().id)
+				multiplayers->erase(multiplayers->begin() + i);
+	}
+	else if(o == 5 || o == 6)
+		world->HandlePackage(p);
+
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)

@@ -1,16 +1,14 @@
 #include "Platform.h"
 
 Platform::Platform()
-	: mEntity(0), mCollision(0), mFilePath("Data\\Models\\Collada\\")
+	: mEntity(0), mCollision(0), mFilePath("Data\\Models\\Collada\\"), move(0,0,0), pos(0,0,0)
 {
 }
 
 Platform::~Platform()
 {
 	for(unsigned int i = 0; i < this->mSwitches.size(); i++)
-	{
 		SafeDelete(this->mSwitches.at(i));
-	}
 	SafeDelete(mCollision);
 	SafeDelete(mEntity);
 }
@@ -23,26 +21,27 @@ void Platform::Initialize(int id, XMFLOAT3 pos)
 	this->mCollision = new CollisionModel(pos);
 	std::string finalPath = mFilePath + mModelName + ".obj";
 	this->mCollision->LoadObj(finalPath);
-}
-
-void Platform::Move(XMFLOAT3 pos)
-{
-	mEntity->Position = pos;
-	mCollision->SetPosition(pos);
+	this->pos = pos;
 }
 
 void Platform::Update(float dt)
 {
+	XMVECTOR pos = XMLoadFloat3(&this->pos);
+
+	//pos += XMLoadFloat3(&move)*dt;
+
 	HandleScript();
+
+	XMStoreFloat3(&this->pos, pos);
+	mEntity->Position = this->pos;
+	mCollision->SetPosition(this->pos);
 }
 
 void Platform::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)
 {
 	mEntity->Draw(dc, at, camera, shadowMap);
 	for(unsigned int i = 0; i < this->mSwitches.size(); i++)
-	{
 		this->mSwitches.at(i)->Draw(dc, at, camera, shadowMap);
-	}
 }
 
 PlatformSwitch* Platform::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length)
@@ -64,4 +63,14 @@ PlatformSwitch* Platform::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float l
 		}
 	}
 	return NULL;
+}
+
+void Platform::HandlePackage(Package* p)
+{
+	if(p->GetHeader().operation == 6)
+	{
+		Package::Body b = p->GetBody();
+		this->pos = *(XMFLOAT3*)b.Read(4*3);
+		this->move = *(XMFLOAT3*)b.Read(4*3);
+	}
 }

@@ -3,8 +3,6 @@
 Game::Game(std::queue<PackageTo*>* send)
 {
 	this->send = send;
-	this->mTimer.start();
-	this->mTimer.reset();
 
 	Python->LoadModule("platform_script");
 	Python->CallFunction(
@@ -46,6 +44,10 @@ Game::Game(std::queue<PackageTo*>* send)
 			dReturns.clear();
 		}
 	}
+
+	t = 0;
+	this->mTimer.start();
+	this->mTimer.reset();
 }
 
 Game::~Game()
@@ -58,20 +60,29 @@ Game::~Game()
 
 void Game::Update()
 {
-	for(unsigned int i = 0; i < platforms.size(); i++)
+	t += this->mTimer.getDeltaTime();
+	if(t > 1)
 	{
-		platforms[i]->Update(this->mTimer.getDeltaTime());
-		Package* p = platforms[i]->GetUpdate();
-		if(!p == NULL)
-			send->push(new PackageTo(p, 0));
+		t = 0;
+		for(unsigned int i = 0; i < platforms.size(); i++)
+		{
+			platforms[i]->Update(this->mTimer.getDeltaTime());
+			Package* p = platforms[i]->GetUpdate();
+			if(!p == NULL)
+				send->push(new PackageTo(p, 0));
+		}
 	}
+
+
+	this->mTimer.reset();
 }
 
 void Game::HandelPackage(Package* p, char* socket)
 {
 	if(p->GetHeader().operation == 2) // new player connected
 	{
-		players.push_back(new Player(send, (int)socket, std::string(p->GetBody().Read(50))));
+		Player* player = new Player(send, (int)socket, std::string(p->GetBody().Read(50)));
+		players.push_back(player);
 		send->push(new PackageTo(players[players.size()-1]->GetConnect(), 0));
 
 		for(unsigned int i = 0; i < players.size() - 1; i++)
@@ -79,6 +90,17 @@ void Game::HandelPackage(Package* p, char* socket)
 
 		for(unsigned int i = 0; i < platforms.size(); i++)
 			send->push(new PackageTo(platforms[i]->GetConnect(), socket));
+
+		//first player spawn
+		player->posX = 1;
+		player->posY = 300;
+		player->posZ = 50;
+		player->alive = true;
+		player->health = 100;
+		send->push(new PackageTo(player->GetSpawn(), 0));
+		Package* spawnP = player->GetSpawn();
+		spawnP->SetId(0);
+		send->push(new PackageTo(spawnP, socket));
 	}
 	else if(p->GetHeader().operation == 1 || p->GetHeader().operation == 3)
 	{
@@ -87,6 +109,7 @@ void Game::HandelPackage(Package* p, char* socket)
 		if(player != NULL)
 		{
 			player->HandelPackage(p);
+			player->Update();
 			send->push(new PackageTo(player->GetUpdate(), 0));
 		}
 	}

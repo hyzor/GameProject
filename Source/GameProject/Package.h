@@ -29,7 +29,8 @@ class Package
 		};
 
 		Package();
-		Package(char* data, int size);
+		Package(char* data);
+		Package(char* data, bool shared);
 		Package(Header header, Body body);
 		~Package();
 
@@ -45,6 +46,7 @@ class Package
 		int size;
 		Header header;
 		Body body;
+		bool shared;
 
 		void setHeader();
 		void setBody();

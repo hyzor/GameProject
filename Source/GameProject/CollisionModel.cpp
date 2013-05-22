@@ -46,23 +46,26 @@ void CollisionModel::LoadObj(std::string fileName, const XMMATRIX &matrix)
 	XMFLOAT3 vMinf3(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
 	XMFLOAT3 vMaxf3(-MathHelper::infinity, -MathHelper::infinity, -MathHelper::infinity);
 
-	vMin = &XMLoadFloat3(&vMinf3);
-	vMax = &XMLoadFloat3(&vMaxf3);
+	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
+	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
 
 	for (int i = 0; i < Size(); i++)
 	{
 		XMVECTOR pos = XMLoadFloat3(GetPosition(i));
 
-		*vMin = XMVectorMin(*vMin, pos);
-		*vMax = XMVectorMax(*vMax, pos);
+		vMin = XMVectorMin(vMin, pos);
+		vMax = XMVectorMax(vMax, pos);
 	}
 
 	XMFLOAT3 p;
 	XMFLOAT3 s;
-	XMStoreFloat3(&p, *vMin);
-	XMStoreFloat3(&s, *vMax-*vMin);
+	XMStoreFloat3(&p, vMin);
+	XMStoreFloat3(&s, vMax-vMin);
 
-	SplitTree = new SplitNodeParent(*vMin, *vMax, 5);
+	XMStoreFloat3(&this->vMin, vMin);
+	XMStoreFloat3(&this->vMax, vMax);
+
+	SplitTree = new SplitNodeParent(vMin, vMax, 0);
 	for(int i = 0; i < Size(); i+=3)
 		SplitTree->Add(GetPosition(i+0), GetPosition(i+1), GetPosition(i+2));
 	SplitTree->CleanUp();
@@ -84,8 +87,8 @@ XMFLOAT3 *CollisionModel::GetPosition(int index)
 void CollisionModel::SetPosition(XMFLOAT3 position)
 {
 	pos = position;
-	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1))+*vMin+0.5f*(*vMax-*vMin));
-	XMStoreFloat3(&boundingBox.Extents, 0.5f*(*vMax-*vMin));
+	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1))+XMLoadFloat3(&vMin)+0.5f*(XMLoadFloat3(&vMax)-XMLoadFloat3(&vMin)));
+	XMStoreFloat3(&boundingBox.Extents, 0.5f*(XMLoadFloat3(&vMax)-XMLoadFloat3(&vMin)));
 }
 
 

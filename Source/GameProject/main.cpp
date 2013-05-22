@@ -374,14 +374,23 @@ void Projekt::UpdateNetwork()
 {
 	if(Network::GetInstance()->Running())
 	{
-		Package* p = Network::GetInstance()->GetPackage();
-		if(p != NULL)
-			mGame->HandlePackage(p);
-		delete p;
+		std::queue<Package*> packs = Network::GetInstance()->GetPackage();
+		if(!packs.empty())
+		{
+			char* data = packs.front()->GetData();
+			while(!packs.empty())
+			{
+				Package* p = packs.front();
+				packs.pop();
+				mGame->HandlePackage(p);
+				delete p;
+			}
+			delete [] data;
+		}
 
 		for(UINT i = 0; i < Network::GetInstance()->Queue().size(); i++)
 		{
-			p = Network::GetInstance()->Pop();
+			Package* p = Network::GetInstance()->Pop();
 			Network::GetInstance()->SendPackage(p->GetData(), p->Size());
 			delete p;
 		}

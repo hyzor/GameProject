@@ -4,7 +4,7 @@
 World::World()
 	: mPlatformAmount(2), mPlatforms(std::vector<Platform*>())
 {
-	srand(unsigned int(time(nullptr)));
+	/*srand(unsigned int(time(nullptr)));
 	int platformId = 0;
 	int offset = 400;
 	int random = 0;
@@ -34,7 +34,7 @@ World::World()
 				platformId++;
 			}
 		}
-	}
+	}*/
 
 	UINT pointLightIndex = 0;
 	for (UINT i = 0; i < mPlatforms.size(); ++i)
@@ -98,4 +98,40 @@ PlatformSwitch* World::IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float leng
 			return s;
 	}
 	return NULL;
+}
+
+void World::HandlePackage(Package* p)
+{
+	if (p->GetHeader().operation == 5)
+	{
+		Package::Body b = p->GetBody();
+		int type = *(int*)b.Read(4);
+		XMFLOAT3 pos = *(XMFLOAT3*)b.Read(4*3);
+
+		switch(type)
+		{
+			case 1:
+				mPlatforms.push_back(new Platform1());
+				break;
+			case 2:
+				mPlatforms.push_back(new Platform2());
+				break;
+			case 3:
+				mPlatforms.push_back(new Platform3());
+				break;
+			case 4:
+				mPlatforms.push_back(new Platform4());
+				break;
+		}
+		mPlatforms[mPlatforms.size()-1]->Initialize(p->GetHeader().id, pos);
+	}
+	else if(p->GetHeader().operation == 6)
+	{
+		for(unsigned int i = 0; i < mPlatforms.size(); i++)
+			if(p->GetHeader().id == mPlatforms[i]->mID)
+			{
+				mPlatforms[i]->HandlePackage(p);
+				break;
+			}
+	}
 }

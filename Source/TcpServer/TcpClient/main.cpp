@@ -27,8 +27,8 @@ int main()
 	Python->Initialize();
 
 	std::cout << "Port: ";
-	int port;
-	std::cin >> port;
+	int port = 13;
+	//std::cin >> port;
 	acceptor = new tcp::acceptor(io_service, tcp::endpoint(tcp::v4(), port));
 
 	send2 = new std::queue<PackageTo*>();
@@ -59,6 +59,24 @@ void addSockets()
 	}
 }
 
+void disconect(tcp::socket *s)
+{
+	int at = 0;
+	for(unsigned int i = 1; i < sockets.size(); i++)
+		if(sockets[i] == s)
+		{
+			at = i;
+			break;
+		}
+	std::cout << s << " disconnected\n";
+	boost::system::error_code error;
+	(*s).shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
+	(*s).close();
+	delete s;
+	sockets.erase(sockets.begin()+at);
+	game->Disconnect((char*)s);
+}
+
 void getPackade(tcp::socket *s)
 {
 	while(true)
@@ -70,15 +88,7 @@ void getPackade(tcp::socket *s)
 		if (error == boost::asio::error::eof) //disconnect
 		{
 			delete [] buf;
-			int at = 0;
-			for(unsigned int i = 1; i < sockets.size(); i++)
-				if(sockets[i] == s)
-				{
-					at = i;
-					break;
-				}
-			std::cout << s << " disconnected\n";
-			sockets.erase(sockets.begin()+at);
+			disconect(s);
 			break;
 		}
 		else //new package
@@ -95,7 +105,31 @@ void sendPackage()
 	{
 		game->Update();
 
-		while(!send2->empty())
+		/*for(int i = 0; i < sockets.size(); i++)
+		{
+			size_t len = (*sockets[i]).available();
+			if(len > 0)
+			{
+				char* buf = new char[len];
+
+				boost::system::error_code error;
+				len = (*sockets[i]).read_some(boost::asio::buffer(buf, len), error);
+
+				if (error == boost::asio::error::eof)
+				{
+					delete [] buf;
+					disconect(sockets[i]);
+					continue;
+				}
+				else
+				{
+					Package p = Package(buf, len);
+					game->HandelPackage(&p, (char*)sockets[i]);
+				}
+			}
+		}*/
+
+		if(!send2->empty())
 		{
 			Package* p = send2->front()->p;
 			char* to = send2->front()->to;
@@ -116,8 +150,10 @@ void sendPackage()
 				{
 					if(p->GetHeader().id != (int)sockets[i])
 					{
-						boost::system::error_code ignored_error;
-						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), ignored_error);
+						boost::system::error_code error;
+						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), error);
+						if (error == boost::asio::error::eof)
+							disconect(sockets[i]);
 					}
 				}
 			}
@@ -127,13 +163,17 @@ void sendPackage()
 				{
 					if(to == (char*)sockets[i])
 					{
-						boost::system::error_code ignored_error;
-						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), ignored_error);
+						boost::system::error_code error;
+						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), error);
+						if (error == boost::asio::error::eof)
+							disconect(sockets[i]);
 					}
 				}
 			}
 
 			delete p;
+
+			//boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 		}
 	}
 }

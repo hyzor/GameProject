@@ -18,7 +18,7 @@ Network::Network()
 Network::~Network()
 {
 	while(!Queue().empty())
-			delete Pop();
+		delete Pop();
 }
 
 void Network::Initialize()
@@ -47,8 +47,10 @@ void Network::Start()
 		close();
 }
 
-Package* Network::GetPackage()
+std::queue<Package*> Network::GetPackage()
 {
+	std::queue<Package*> packs;
+
 	size_t len = (*s).available();
 	if(len > 0)
 	{
@@ -57,15 +59,24 @@ Package* Network::GetPackage()
 		boost::system::error_code error;
 		len = (*s).read_some(boost::asio::buffer(buf, len), error);
 
+
 		if (error == boost::asio::error::eof)
 		{
 			close();
 			delete [] buf;
 		}
 		else
-			return new Package(buf, len);
+		{
+			int offset = 0;
+			while(len-offset > 0)
+			{
+				Package* p = new Package((char*)(buf+offset), true);
+				packs.push(p);
+				offset += p->Size();
+			}
+		}
 	}
-	return NULL;
+	return packs;
 }
 
 void Network::SendPackage(char* data, int size)

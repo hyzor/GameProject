@@ -8,19 +8,21 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 		Python->GetFunction("CreatePlayerStats"),
 		Python->CreateArg(PlayerID, Nickname.c_str()));
 
-	mHealth = 1;
+	mHealth = 0;
 	mNickname = Nickname;
 	mSpeed = 100;
 	ySpeed = 0;
 	mPosition = Position;
 	mPlayerID = PlayerID;
-	mIsAlive = true;
+	mIsAlive = false;
 	OnGround = false;
 	rotating = false;
 	move = XMFLOAT3(0, 0, 0);
+	aliveTime = 0;
 
 	this->Joint = new XMMATRIX(XMMatrixIdentity());
-
+	
+	rotation = XMFLOAT3(0,0,0);
 	mCamera = new Camera();
 
 
@@ -40,21 +42,15 @@ Player::~Player()
 bool Player::Shoot()
 {
 	XMMATRIX cJoint = *Joint;
-
-	XMVECTOR p = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0.0f, 8.0f, 0.0f)), cJoint);
-	XMFLOAT3 p2;
-	XMStoreFloat3(&p2, p);
-
-	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p2, mCamera->GetLook()))
+	XMVECTOR v = XMLoadFloat3(&mPosition)+XMLoadFloat3(&XMFLOAT3(0,15,0));
+	XMFLOAT3 p;
+	XMStoreFloat3(&p,v);
+	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook()))
 		return true;
 
 	return false;
 }
 
-void Player::TakeDamage(float damage)
-{
-	mHealth -= damage;
-}
 
 void Player::Kill()
 {
@@ -92,18 +88,12 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	// Move
 	pos += XMLoadFloat3(&move);	
 
-	// Shoot
-	if (dInput->GetMouseState().rgbButtons[0])
-	{
-		if (Shoot())
-			//int temp = 1;
-			sm->playSFX(mPosition, FireWeapon, false);
-	}
 
 	// Gravity
 	if(!rotating)
 	{
-		ySpeed += 300*dt;
+		if(mIsAlive && aliveTime > 0)
+			ySpeed += 300*dt;
 		pos -= XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0))*ySpeed*dt, cJoint);
 	}
 
@@ -113,18 +103,18 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	CollisionModel::Hit hit;
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), cJoint), dir, 20); 
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,30,0)), cJoint), dir, 30); 
 	if(hit.hit)
 	{
 		//feet
-		if(hit.t > 10)
+		if(hit.t > 15)
 		{
 			OnGround = true;
 			ySpeed = 0;
-			pos -= dir*20-dir*hit.t;
+			pos -= dir*30-dir*hit.t;
 		}
 		//head
-		if(hit.t < 10)
+		if(hit.t < 15)
 		{
 			OnGround = false;
 			ySpeed = 0;
@@ -162,10 +152,13 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	else
 		sm->stopSound(Running);		
 
+
+	cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);
+
 	XMStoreFloat3(&mPosition, pos);
 
 	XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
+	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), cJoint));
 	mCamera->SetPosition(camPos);
 	mCamera->UpdateViewMatrix(XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 1, 0)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 0, 1)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(1, 0, 0)), cJoint));
 
@@ -175,16 +168,26 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 	delete Joint;
 	this->Joint = new XMMATRIX(cJoint);
+
+	aliveTime += dt;
 }
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
-	// activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
+	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
 	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap);
 }
 
 void Player::HandelPackage(Package *p)
 {
+	if (p->GetHeader().operation == 3)
+	{
+		Package::Body b = p->GetBody();
+		this->mPosition = *(XMFLOAT3*)b.Read(4*3);
+		this->mIsAlive = (*(int*)b.Read(4))==1;
+		this->mHealth = *(float*)b.Read(4);
+		this->aliveTime = 0;
+	}
 }
 
 void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
@@ -202,7 +205,7 @@ void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
 	this->mCurWeaponIndex = 0;
 }
 
-bool Player::OutOfMap()
+bool Player::OutOfMap() //flytta till server
 {
 	if( mPosition.x > 1000  ||
 		mPosition.x < -1000 ||

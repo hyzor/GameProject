@@ -28,6 +28,7 @@ class Game
 
 		Player* findPlayer(int id);
 
+		float t;
 };
 
 

@@ -18,7 +18,7 @@ class Network
 		void Start();
 		void Close();
 		
-		Package* GetPackage();
+		std::queue<Package*> GetPackage();
 		void SendPackage(char* data, int size);
 		std::queue<Package*> Queue();
 		void Push(Package* p);

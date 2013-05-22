@@ -4,6 +4,7 @@
 #include "CollisionModel.h"
 #include "Entity.h"
 #include "PlatformSwitch.h"
+#include "Package.h"
 
 class Platform
 {
@@ -16,18 +17,22 @@ public:
 	virtual void HandleScript() = 0;
 	CollisionModel* getCollision() { return this->mCollision; }
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
-	void Move(XMFLOAT3 pos);
+	
+	void HandlePackage(Package* p);
+	int mID;
 
 	std::vector<PointLight> mPointLights;
 
 protected:
 	std::string mModelName;
 	std::vector<PlatformSwitch*> mSwitches;
-	int mID;
 	std::string mFilePath;
 
 private:
 	CollisionModel* mCollision;
 	Entity* mEntity;
+
+	XMFLOAT3 move;
+	XMFLOAT3 pos;
 };
 #endif

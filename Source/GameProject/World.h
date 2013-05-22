@@ -7,6 +7,7 @@
 #include "Platform2.h"
 #include "Platform3.h"
 #include "Platform4.h"
+#include "Package.h"
 
 class World
 {
@@ -17,6 +18,8 @@ public:
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
 	CollisionModel::Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
+
+	void HandlePackage(Package *p);
 
 	static const UINT numPointLights = 12;
 	PointLight mPointLights[numPointLights];

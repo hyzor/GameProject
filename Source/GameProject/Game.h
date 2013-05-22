@@ -44,5 +44,6 @@ class Game
 
 		// Should contain all the weapons in the game
 		std::vector<Weapon*> mWeapons;
+		ID3D11Device* device; ID3D11DeviceContext* dc;
 };
 #endif

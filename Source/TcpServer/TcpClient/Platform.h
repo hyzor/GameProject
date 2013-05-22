@@ -27,6 +27,9 @@ class Platform
 		float posX;
 		float posY;
 		float posZ;
+		float movX;
+		float movY;
+		float movZ;
 		std::vector<double> mdReturns;
 		std::queue<PackageTo*>* send;
 };

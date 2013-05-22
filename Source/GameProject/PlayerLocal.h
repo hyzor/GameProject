@@ -16,12 +16,7 @@ class PlayerLocal : public Player
 		void HandelPackage(Package *p);
 	private:
 		float t;
-		float rotateToX;
-		float rotX;
-		float rotateToZ;
-		float rotZ;
-		float rotateToY;
-		float rotY;
+		XMFLOAT3 rotateTo;
 
 		bool eDown;
 		bool rDown;
