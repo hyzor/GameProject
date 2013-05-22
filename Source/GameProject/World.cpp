@@ -2,7 +2,7 @@
 #include <ctime>
 
 World::World()
-	: mPlatformAmount(2), mPlatforms(std::vector<Platform*>())
+	: mPlatformAmount(1), mPlatforms(std::vector<Platform*>())
 {
 	srand(unsigned int(time(nullptr)));
 	int platformId = 0;

@@ -31,14 +31,24 @@ public:
 	// Pointer to all vertices of all meshes
 	//std::vector<Vertex::Basic32*> vertices;
 
+	const std::vector<XMFLOAT3>& GetVertexPositions() const;
+	const XNA::AxisAlignedBox& GetBoundingBox() const;
+	const XMFLOAT3& GetVertexMin() const;
+	const XMFLOAT3& GetVertexMax() const;
+
+	Vertex::PosNormalTexTan* GetVertex(int index);
+	int GetVertexCount();
+
+	void CreatePositions(const std::string& fileName);
+
+private:
+	// Vertex vector containing all the positions
+	std::vector<XMFLOAT3> mVertexPositions;
+
 	// Bounding box
 	XNA::AxisAlignedBox boundingBox;
 
-	Vertex::Basic32* GetVertex(int index);
-	int GetVertexCount();
-
-	//
-	void CreatePositions(const std::string& fileName);
+	XMFLOAT3 mVertexMin, mVertexMax;
 };
 
 struct GenericModelInstance

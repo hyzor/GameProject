@@ -2,7 +2,7 @@
 
 CollisionModel::CollisionModel(XMFLOAT3 p)
 {
-	vertices = std::vector<XMFLOAT3>();
+	//vertices = std::vector<XMFLOAT3>();
 	this->pos = p;
 }
 
@@ -11,6 +11,7 @@ CollisionModel::~CollisionModel()
 	SafeDelete(SplitTree);
 }
 
+/*
 void CollisionModel::LoadObj(std::string fileName)
 {
 	this->LoadObj(fileName, XMMatrixIdentity());
@@ -41,6 +42,7 @@ void CollisionModel::LoadObj(std::string fileName, const XMMATRIX &matrix)
 			}
 		}
 	}
+
 	infile.close();
 
 	XMFLOAT3 vMinf3(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
@@ -66,9 +68,67 @@ void CollisionModel::LoadObj(std::string fileName, const XMMATRIX &matrix)
 	for(int i = 0; i < Size(); i+=3)
 		SplitTree->Add(GetPosition(i+0), GetPosition(i+1), GetPosition(i+2));
 	SplitTree->CleanUp();
-	
 
 	SetPosition(pos);
+}
+*/
+
+/*
+void CollisionModel::SplitBoundingBox()
+{
+// 	XMFLOAT3 vMinf3(+MathHelper::infinity, +MathHelper::infinity, +MathHelper::infinity);
+// 	XMFLOAT3 vMaxf3(-MathHelper::infinity, -MathHelper::infinity, -MathHelper::infinity);
+// 
+// 	vMin = &XMLoadFloat3(&vMinf3);
+// 	vMax = &XMLoadFloat3(&vMaxf3);
+// 
+// 	for (int i = 0; i < Size(); i++)
+// 	{
+// 		XMVECTOR pos = XMLoadFloat3(GetPosition(i));
+// 
+// 		*vMin = XMVectorMin(*vMin, pos);
+// 		*vMax = XMVectorMax(*vMax, pos);
+// 	}
+// 
+// 	XMFLOAT3 p;
+// 	XMFLOAT3 s;
+// 	XMStoreFloat3(&p, *vMin);
+// 	XMStoreFloat3(&s, *vMax-*vMin);
+
+	SplitTree = new SplitNodeParent(*vMin, *vMax, 5);
+
+	for(int i = 0; i < Size(); i+=3)
+		SplitTree->Add(GetPosition(i+0), GetPosition(i+1), GetPosition(i+2));
+
+	SplitTree->CleanUp();
+}
+*/
+
+void CollisionModel::SetVertices(const std::vector<XMFLOAT3>& vertices)
+{
+	this->vertices = vertices;
+}
+
+void CollisionModel::SetVertexMinMax(const XMFLOAT3& vMin, const XMFLOAT3& vMax)
+{
+	vMinf3 = vMin;
+	vMaxf3 = vMax;
+
+	//this->vMin = XMLoadFloat3(vMin);
+	//this->vMax = XMLoadFloat3(vMax);
+}
+
+void CollisionModel::BuildSplitTree(int layer)
+{
+	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
+	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
+
+	SplitTree = new SplitNodeParent(vMin, vMax, layer);
+
+	for(UINT i = 0; i < vertices.size(); i+=3)
+		SplitTree->Add(GetPosition(i+0), GetPosition(i+1), GetPosition(i+2));
+
+	SplitTree->CleanUp();
 }
 
 int CollisionModel::Size()
@@ -83,11 +143,13 @@ XMFLOAT3 *CollisionModel::GetPosition(int index)
 
 void CollisionModel::SetPosition(XMFLOAT3 position)
 {
-	pos = position;
-	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1))+*vMin+0.5f*(*vMax-*vMin));
-	XMStoreFloat3(&boundingBox.Extents, 0.5f*(*vMax-*vMin));
-}
+	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
+	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
 
+	pos = position;
+	XMStoreFloat3(&boundingBox.Center, XMLoadFloat3(&pos)*XMLoadFloat3(&XMFLOAT3(1,1,-1))+vMin+0.5f*(vMax-vMin));
+	XMStoreFloat3(&boundingBox.Extents, 0.5f*(vMax-vMin));
+}
 
 CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, float length)
 {
@@ -126,14 +188,6 @@ std::vector<std::string> CollisionModel::split(std::string line)
 	return elements;
 }
 
-
-
-
-
-
-
-
-
 CollisionModel::Plane::Plane(XMFLOAT3 pos, XMFLOAT3 dir)
 {
 	this->pos = pos;
@@ -163,7 +217,6 @@ bool CollisionModel::Plane::intersectsTriangle(XMFLOAT3* v0, XMFLOAT3* v1, XMFLO
 		return true;
 	return false;
 }
-
 
 CollisionModel::SplitNode::SplitNode(XMVECTOR vMin, XMVECTOR vMax)
 {
@@ -245,8 +298,10 @@ void CollisionModel::SplitNodeParent::Add(XMFLOAT3* v0, XMFLOAT3* v1, XMFLOAT3* 
 
 void CollisionModel::SplitNodeParent::CleanUp()
 {
-	if(!left->HasGeometry()) SafeDelete(left);
-	if(!right->HasGeometry()) SafeDelete(right);
+	if(!left->HasGeometry()) 
+		SafeDelete(left);
+	if(!right->HasGeometry()) 
+		SafeDelete(right);
 }
 
 CollisionModel::Hit CollisionModel::SplitNodeParent::Intersects(XMVECTOR* origin, XMVECTOR* dir, float length)

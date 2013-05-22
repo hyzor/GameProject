@@ -67,8 +67,15 @@ GenericModel::GenericModel(ID3D11Device* device, TextureManager* textureMgr, con
 
 			vMin = XMVectorMin(vMin, pos);
 			vMax = XMVectorMax(vMax, pos);
+
+			// Also push back vertex positions in vertex array containing all vertices of all meshes
+			mVertexPositions.push_back(meshes[i].vertices[j].position);
 		}
 	}
+
+	// Cache vertex min and max
+	XMStoreFloat3(&mVertexMin, vMin);
+	XMStoreFloat3(&mVertexMax, vMax);
 
 // 	for (int i = 0; i < vertices.size(); ++i)
 // 	{
@@ -90,7 +97,7 @@ GenericModel::~GenericModel(void)
 {
 }
 
-Vertex::Basic32* GenericModel::GetVertex(int index)
+Vertex::PosNormalTexTan* GenericModel::GetVertex(int index)
 {
 	for (UINT i = 0; i < meshCount; ++i)
 	{
@@ -118,5 +125,25 @@ int GenericModel::GetVertexCount()
 		size += meshes[i].vertices.size();
 
 
-	return size-10000;
+	return size;
+}
+
+const std::vector<XMFLOAT3>& GenericModel::GetVertexPositions() const
+{
+	return mVertexPositions;
+}
+
+const XNA::AxisAlignedBox& GenericModel::GetBoundingBox() const
+{
+	return boundingBox;
+}
+
+const XMFLOAT3& GenericModel::GetVertexMin() const
+{
+	return mVertexMin;
+}
+
+const XMFLOAT3& GenericModel::GetVertexMax() const
+{
+	return mVertexMax;
 }

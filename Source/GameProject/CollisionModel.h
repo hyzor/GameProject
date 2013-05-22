@@ -30,27 +30,32 @@ class CollisionModel
 		CollisionModel(XMFLOAT3 pos);
 		~CollisionModel();
 
-		void LoadObj(std::string fileName);
-		void LoadObj(std::string fileName, const XMMATRIX &matrix);
+		//void LoadObj(std::string fileName);
+		//void LoadObj(std::string fileName, const XMMATRIX &matrix);
 
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
 		void SetPosition(XMFLOAT3 position);
+
+		void SetVertices(const std::vector<XMFLOAT3>& vertices);
+		void SetVertexMinMax(const XMFLOAT3& vMin, const XMFLOAT3& vMax);
+		void BuildSplitTree(int layer);
 		
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 
-		XMVECTOR* vMin;
-		XMVECTOR* vMax;
+		XMFLOAT3 vMinf3;
+		XMFLOAT3 vMaxf3;
+
+		//XMVECTOR* vMin;
+		//XMVECTOR* vMax;
 
 	private:
-
 		std::vector<XMFLOAT3> vertices;
 		XMFLOAT3 pos;
 
 		XNA::AxisAlignedBox boundingBox;
 
 		std::vector<std::string> CollisionModel::split(std::string line);
-
 		
 		class Plane
 		{

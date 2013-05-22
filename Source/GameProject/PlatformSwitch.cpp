@@ -23,17 +23,17 @@ void PlatformSwitch::Initialize(XMFLOAT3 pos, int type, int rotType, XMFLOAT4X4 
 	case 1:
 		mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("Switch"), pos);
 		mCollision = new CollisionModel(colPos);
-		mCollision->LoadObj("Data\\Models\\Collada\\Switch.obj"/*, rotM*/);
+		//mCollision->LoadObj("Data\\Models\\Collada\\Switch.obj"/*, rotM*/);
 		break;
 	case 2:
 		mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("SwitchY"), pos);
 		mCollision = new CollisionModel(colPos);
-		mCollision->LoadObj("Data\\Models\\Collada\\Switch_rotY.obj"/*, rotM*/);
+		//mCollision->LoadObj("Data\\Models\\Collada\\Switch_rotY.obj"/*, rotM*/);
 		break;
 	case 3:
 		mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("SwitchZ"), pos);
 		mCollision = new CollisionModel(colPos);
-		mCollision->LoadObj("Data\\Models\\Collada\\Switch_rotZ.obj"/*, rotM*/);
+		//mCollision->LoadObj("Data\\Models\\Collada\\Switch_rotZ.obj"/*, rotM*/);
 		break;
 	}
 

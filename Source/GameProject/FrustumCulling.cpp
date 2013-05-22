@@ -43,7 +43,7 @@ void FrustumCulling::FrustumCull(std::vector<GenericModelInstance>& instances, C
 		XNA::TransformFrustum(&localspaceFrustum, &camera.GetFrustum(), XMVectorGetX(scale), rotQuat, translation);
 
 		// Perform the box/frustum intersection test in local space.
-		if(XNA::IntersectAxisAlignedBoxFrustum(&instances[i].model->boundingBox, &localspaceFrustum) != 0)
+		if(XNA::IntersectAxisAlignedBoxFrustum(&instances[i].model->GetBoundingBox(), &localspaceFrustum) != 0)
 		{
 			// Write the instance data to dynamic VB of the visible objects.
 			//dataView[mVisibleObjectCount++] = mInstancedData[i];

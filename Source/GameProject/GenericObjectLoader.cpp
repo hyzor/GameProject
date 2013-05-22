@@ -823,7 +823,7 @@ bool GenericObjectLoader::loadObject(const std::string& fileName,
 			//------------------------------------------------------------
 			for (UINT j = 0; j < numVertices; ++j)
 			{
-				Vertex::Basic32 vertex;
+				Vertex::PosNormalTexTan vertex;
 				//ZeroMemory(&vertex, sizeof(vertex));
 
 				// Vertex position
@@ -850,6 +850,11 @@ bool GenericObjectLoader::loadObject(const std::string& fileName,
 
 				vertex.texCoord.x = mesh->mTextureCoords[0][j].x;
 				vertex.texCoord.y = mesh->mTextureCoords[0][j].y;
+
+				vertex.tangentU.x = mesh->mTangents[j].x;
+				vertex.tangentU.y = mesh->mTangents[j].y;
+				vertex.tangentU.z = mesh->mTangents[j].z;
+				vertex.tangentU.w = -1.0f;
 
 				// Insert vertex to model
 				myMesh.vertices.push_back(vertex);

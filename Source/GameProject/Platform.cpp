@@ -22,7 +22,11 @@ void Platform::Initialize(int id, XMFLOAT3 pos)
 	this->mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel(mModelName), pos);
 	this->mCollision = new CollisionModel(pos);
 	std::string finalPath = mFilePath + mModelName + ".obj";
-	this->mCollision->LoadObj(finalPath);
+	//this->mCollision->LoadObj(finalPath);
+	mCollision->SetVertices(mEntity->mInstance.model->GetVertexPositions());
+	mCollision->SetVertexMinMax(mEntity->mInstance.model->GetVertexMin(), mEntity->mInstance.model->GetVertexMax());
+	mCollision->BuildSplitTree(5);
+	mCollision->SetPosition(pos);
 }
 
 void Platform::Move(XMFLOAT3 pos)
