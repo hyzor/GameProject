@@ -42,7 +42,7 @@ Player::~Player()
 bool Player::Shoot()
 {
 	XMMATRIX cJoint = *Joint;
-	XMVECTOR v = XMLoadFloat3(&mPosition)+XMLoadFloat3(&XMFLOAT3(0,15,0));
+	XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), cJoint);
 	XMFLOAT3 p;
 	XMStoreFloat3(&p,v);
 	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook()))
@@ -153,7 +153,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 		sm->stopSound(Running);		
 
 
-	cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);
+	cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);//XMMatrixLookAtLH(XMLoadFloat3(&XMFLOAT3(0,0,0)), XMLoadFloat3(&XMFLOAT3(1,0,0)), XMLoadFloat3(&XMFLOAT3(0,1,0)));
 
 	XMStoreFloat3(&mPosition, pos);
 

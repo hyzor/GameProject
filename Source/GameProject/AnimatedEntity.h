@@ -16,6 +16,7 @@ public:
 	void Update(float dt);
 
 	void SetPosition(XMFLOAT3 pos);
+	void RotateXYZ(XMFLOAT3 rot);
 
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;

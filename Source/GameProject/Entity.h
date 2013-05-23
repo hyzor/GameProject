@@ -24,6 +24,7 @@ public:
 	void RotateEntityZ(float rot);
 
 	void RotateRollPitchYaw(float yaw, float pitch, float roll);
+	void RotateXYZ(XMFLOAT3 rot);
 	void SetPosition(XMFLOAT3 pos);
 
 	XMFLOAT3 Position;

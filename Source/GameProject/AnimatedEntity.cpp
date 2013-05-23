@@ -94,3 +94,11 @@ void AnimatedEntity::SetPosition(XMFLOAT3 pos)
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
 }
+
+void AnimatedEntity::RotateXYZ(XMFLOAT3 rot)
+{
+	XMMATRIX modelRot = XMMatrixRotationX(rot.x) * XMMatrixRotationY(rot.y) * XMMatrixRotationZ(rot.z);
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+}

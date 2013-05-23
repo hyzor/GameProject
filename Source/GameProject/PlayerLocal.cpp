@@ -70,13 +70,14 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 	{
 		//gravity switch
 		XMVECTOR dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), cJoint);
+
 		PlatformSwitch* psCol = world->IntersectSwitch(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint), dir, 10);
 		if(psCol != NULL)
 		{
 			XMVECTOR up = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), cJoint);
 			SwitchRotations sr = psCol->GetRotations(up);
 
-			if(!(&sr.rot.x == 0 && sr.rot.y == 0 && sr.rot.z == 0))
+			if(!(sr.rot.x == 0 && sr.rot.y == 0 && sr.rot.z == 0))
 			{
 				rotation = sr.start;
 				rotateTo = sr.start;
@@ -110,7 +111,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		{
 			if(!rDown)
 			{
-				rotateTo.z += (float)PI/2;
+				rotateTo.z -= (float)PI/2;
 				ySpeed = 0;
 				rotating = true;
 			}

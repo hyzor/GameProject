@@ -128,3 +128,11 @@ void Entity::RotateRollPitchYaw(float yaw, float pitch, float roll)
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
 }
+
+void Entity::RotateXYZ(XMFLOAT3 rot)
+{
+	XMMATRIX modelRot = XMMatrixRotationX(rot.x) * XMMatrixRotationY(rot.y) * XMMatrixRotationZ(rot.z);
+	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
+	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+}

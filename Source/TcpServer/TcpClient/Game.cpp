@@ -97,7 +97,7 @@ void Game::HandelPackage(Package* p, char* socket)
 
 		//first player spawn
 		player->posX = 1;
-		player->posY = 400;
+		player->posY = 500;
 		player->posZ = 50;
 		player->alive = true;
 		player->health = 100;
