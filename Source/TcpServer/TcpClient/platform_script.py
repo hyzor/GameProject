@@ -50,19 +50,9 @@ def GetPlatform(index):
 def GetPos(index):
         return platforms[index].pos.GetSelf()
 
-def CreatePlatforms():
-        global platforms
-        amount = 2
-        index = 0
-        offset = 400
-        for i in range(amount):
-                for j in range(amount):
-                        for k in range(amount):
-                                pos = Position(i*offset, j*offset, k*offset)
-                                type = random.randint(1, 4)
-                                platforms.append(Platform(index, type, pos))
-                                PyEngine.NotifyWhen("Create", GetPlatform, index)
-                                index += 1
+def PrintPlatforms():
+        for Platform in platforms:
+                print Platform.GetSelf()
 
 def MovePlatform(index):
         global platforms
@@ -72,4 +62,39 @@ def MovePlatform(index):
 
 def Solution(index):
         PyEngine.NotifyWhen("ToTheProblem", GetPos, index)
-                
+
+def CreatePlatforms():
+        global platforms
+        f = open("platform_info.txt")
+        i = 0
+        for l in f:
+                x, y, z = [int(v) for v in l.split()]
+                type = random.randint(1, 4)
+                platforms.append(Platform(i, type, Position(x, y, z)))
+                PyEngine.NotifyWhen("Create", GetPlatform, i)
+                i += 1
+                pass
+        f.close()
+
+##CreatePlatforms()
+##PrintPlatforms()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

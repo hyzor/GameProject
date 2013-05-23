@@ -280,7 +280,6 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		else
 			rotating = false;
 	}
-
 	
 	/*if(!mIsAlive) //flytta till servern
 	{

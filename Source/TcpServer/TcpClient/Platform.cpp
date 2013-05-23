@@ -1,5 +1,5 @@
 #include "Platform.h"
-
+#include <iostream>
 
 Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, float posY, float posZ)
 {
@@ -19,6 +19,8 @@ Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, f
 
 Package* Platform::GetConnect()
 {
+	std::cout << "Inside platform getconnect." << std::endl;
+
 	struct PlatformConnect
 	{
 		int type;

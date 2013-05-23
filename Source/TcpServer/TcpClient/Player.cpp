@@ -33,9 +33,6 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 	this->mTimer.start();
 	this->mTimer.reset();
 
-	posX = 0;
-	posY = 0;
-	posZ = 0;
 	movX = 0;
 	movY = 0;
 	movZ = 0;

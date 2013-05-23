@@ -18,8 +18,8 @@ class Position(object):
 
 class Player(object):
 
-        def __init__(self, index, name, pos):
-                self.index = index
+        def __init__(self, id, name, pos):
+                self.id = id
                 self.name = name
                 self.pos = pos
 
@@ -27,7 +27,7 @@ class Player(object):
                 return self.pos.GetSelf()
 
         def GetSelf(self):
-                return self.index, self.name, self.pos.GetSelf()
+                return self.id, self.name, self.pos.GetSelf()
                 
 spawnpoints = []
 players = []
@@ -43,13 +43,17 @@ def RandomizeSpawn():
         y = spawnpoints[index].y
         z = spawnpoints[index].z
         del spawnpoints[index]
-        pos = Position(x, y, z)
         return Position(x, y, z)
 
-def GetPos(index):
-        return players[index].GetPos()
+def FindByID(id):
+        for i in range(len(players)):
+                if players[i].id is id:
+                        return players[i]
 
-def CreatePlayer(index, name):
+def GetPos(id):
+        return FindByID(id).GetPos()
+
+def CreatePlayer(id, name):
         global players
-        players.append(Player(index, name, RandomizeSpawn()))
-        PyEngine.NotifyWhen("Create player", GetPos, index)
+        players.append(Player(id, name, RandomizeSpawn()))
+        PyEngine.NotifyWhen("Create player", GetPos, id)

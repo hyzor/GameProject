@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 Game::Game(std::queue<PackageTo*>* send)
 {
@@ -52,10 +53,11 @@ Game::Game(std::queue<PackageTo*>* send)
 
 Game::~Game()
 {
-	for(unsigned int i = 0; i < players.size(); i++)
-		delete players[i];
-	for(unsigned int i = 0; i < platforms.size(); i++)
-		delete platforms[i];
+	for(auto it(players.begin()); it != players.end(); ++it)
+		if(*it) delete *it;
+
+	for(auto it(platforms.begin()); it != platforms.end(); ++it)
+		if(*it) delete *it;
 }
 
 void Game::Update()
@@ -91,12 +93,6 @@ void Game::HandelPackage(Package* p, char* socket)
 		for(unsigned int i = 0; i < platforms.size(); i++)
 			send->push(new PackageTo(platforms[i]->GetConnect(), socket));
 
-		//first player spawn
-		player->posX = 1;
-		player->posY = 300;
-		player->posZ = 50;
-		player->alive = true;
-		player->health = 100;
 		send->push(new PackageTo(player->GetSpawn(), 0));
 		Package* spawnP = player->GetSpawn();
 		spawnP->SetId(0);
