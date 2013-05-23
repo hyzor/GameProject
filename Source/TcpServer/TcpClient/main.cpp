@@ -76,13 +76,9 @@ void disconect(tcp::socket *s)
 	sockets.erase(sockets.begin()+at);
 	game->Disconnect((char*)s);
 }
-<<<<<<< HEAD
-=======
 
 void getPackade(tcp::socket *s)
 {
-	std::cout << "Inside getpackage" << std::endl;
-
 	while(true)
 	{
 		char* buf = new char[256];
@@ -103,7 +99,6 @@ void getPackade(tcp::socket *s)
 	}
 }
 
->>>>>>> Allmänt grejs bara mest typ liksom
 void sendPackage()
 {
 	while(true)

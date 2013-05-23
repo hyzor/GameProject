@@ -153,6 +153,8 @@ bool Projekt::Init()
 	CSplashWnd splash;
 	splash.SetImage(Gdiplus::Image::FromFile(L"Data\\Textures\\test.jpg"));
 	splash.Show();
+	splash.SetProgressBarColor(0x00000000);
+	splash.SetAutoProgress(0, 100, 50);
 
 	if (!D3D11App::Init())
 		return false;

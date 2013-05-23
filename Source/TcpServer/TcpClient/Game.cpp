@@ -52,12 +52,6 @@ Game::Game(std::queue<PackageTo*>* send)
 
 Game::~Game()
 {
-<<<<<<< HEAD
-	for(unsigned int i = 0; i < players.size(); i++)
-		delete players[i];
-	for(unsigned int i = 0; i < platforms.size(); i++)
-		delete platforms[i];
-=======
 	for(auto it(players.begin()); it != players.end(); ++it)
 		if(*it) delete *it;
 
@@ -66,7 +60,6 @@ Game::~Game()
 
 	for(auto it(pickups.begin()); it != pickups.end(); ++it)
 		if(*it) delete *it;
->>>>>>> Allmänt grejs bara mest typ liksom
 }
 
 void Game::Update()
