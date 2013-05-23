@@ -18,9 +18,10 @@ void Platform::Initialize(int id, XMFLOAT3 pos)
 	mFilePath += mModelName + "\\";
 	this->mID = id;
 	this->mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel(mModelName), pos);
-	this->mCollision = new CollisionModel(pos);
-	std::string finalPath = mFilePath + mModelName + ".obj";
-	this->mCollision->LoadObj(finalPath);
+	this->mCollision = new CollisionModel();
+	*this->mCollision = *GenericHandler::GetInstance()->GetCollisionModel(mModelName);
+	//std::string finalPath = mFilePath + mModelName + ".obj";
+	//this->mCollision->LoadObj(finalPath);
 	this->pos = pos;
 }
 

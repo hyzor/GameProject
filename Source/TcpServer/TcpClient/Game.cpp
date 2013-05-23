@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <iostream>
 
 Game::Game(std::queue<PackageTo*>* send)
 {
@@ -53,30 +52,29 @@ Game::Game(std::queue<PackageTo*>* send)
 
 Game::~Game()
 {
-	for(auto it(players.begin()); it != players.end(); ++it)
-		if(*it) delete *it;
-
-	for(auto it(platforms.begin()); it != platforms.end(); ++it)
-		if(*it) delete *it;
+	for(unsigned int i = 0; i < players.size(); i++)
+		delete players[i];
+	for(unsigned int i = 0; i < platforms.size(); i++)
+		delete platforms[i];
 }
 
 void Game::Update()
 {
-	t += this->mTimer.getDeltaTime();
+	float dt = this->mTimer.getDeltaTime();
+
+	t += dt;
 	if(t > 1)
 	{
 		t = 0;
 		for(unsigned int i = 0; i < platforms.size(); i++)
 		{
-			platforms[i]->Update(this->mTimer.getDeltaTime());
+			platforms[i]->Update(dt);
 			Package* p = platforms[i]->GetUpdate();
 			if(!p == NULL)
 				send->push(new PackageTo(p, 0));
 		}
 	}
 
-
-	this->mTimer.reset();
 }
 
 void Game::HandelPackage(Package* p, char* socket)
@@ -93,6 +91,12 @@ void Game::HandelPackage(Package* p, char* socket)
 		for(unsigned int i = 0; i < platforms.size(); i++)
 			send->push(new PackageTo(platforms[i]->GetConnect(), socket));
 
+		//first player spawn
+		player->posX = 1;
+		player->posY = 400;
+		player->posZ = 50;
+		player->alive = true;
+		player->health = 100;
 		send->push(new PackageTo(player->GetSpawn(), 0));
 		Package* spawnP = player->GetSpawn();
 		spawnP->SetId(0);

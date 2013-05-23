@@ -33,6 +33,9 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 	this->mTimer.start();
 	this->mTimer.reset();
 
+	posX = 0;
+	posY = 0;
+	posZ = 0;
 	movX = 0;
 	movY = 0;
 	movZ = 0;
@@ -63,8 +66,8 @@ void Player::HandelPackage(Package* p)
 		this->pitch = *(float*)b.Read(4);
 		this->roll = *(float*)b.Read(4);
 		this->yaw = *(float*)b.Read(4);
-		int a = *(int*)b.Read(4); //padding 3 bytes
-		if(this->alive == 1)
+		int a = *(int*)b.Read(4);
+		if(this->alive == 1) //sync problem vänta en stund efter senaste spawn
 			this->alive = a;
 		this->health = *(float*)b.Read(4);
 		//for(int i = 0; i < 64; i++)
@@ -74,6 +77,8 @@ void Player::HandelPackage(Package* p)
 
 void Player::Update()
 {
+	float dt = this->mTimer.getDeltaTime();
+
 	////respawn player if dead
 	//posX = 0;
 	//posY = 0;
@@ -82,7 +87,6 @@ void Player::Update()
 	//send->push(new PackageTo(this->GetSpawn(), (char*)id));
 
 	
-	this->mTimer.reset();
 }
 
 Package* Player::GetConnect()

@@ -18,6 +18,7 @@ boost::asio::io_service io_service;
 tcp::acceptor* acceptor;
 
 std::vector<tcp::socket*> sockets;
+tcp::socket* addsocket;
 
 Game* game;
 std::queue<PackageTo*>* send2;
@@ -35,9 +36,10 @@ int main()
 	game = new Game(send2);
 
 	std::cout << "Server running" << std::endl;
+	
+	addsocket = NULL;
 	boost::thread f(addSockets);
-	boost::thread SendPackage(sendPackage);
-	f.join();
+	sendPackage();
 
 	delete acceptor;
 	delete game;
@@ -45,7 +47,6 @@ int main()
 	return 0;
 }
 
-void getPackade(tcp::socket *s);
 
 void addSockets()
 {
@@ -53,9 +54,8 @@ void addSockets()
 	{
 		tcp::socket *s = new tcp::socket(io_service);
 		acceptor->accept(*s);
-		sockets.push_back(s);
+		addsocket = s;
 		std::cout << s << " connected\n";
-		boost::thread GetPackage(boost::bind(getPackade, s));
 	}
 }
 
@@ -76,38 +76,22 @@ void disconect(tcp::socket *s)
 	sockets.erase(sockets.begin()+at);
 	game->Disconnect((char*)s);
 }
-
-void getPackade(tcp::socket *s)
-{
-	while(true)
-	{
-		char* buf = new char[256];
-		boost::system::error_code error;
-		size_t len = (*s).read_some(boost::asio::buffer(buf, 256), error);
-
-		if (error == boost::asio::error::eof) //disconnect
-		{
-			delete [] buf;
-			disconect(s);
-			break;
-		}
-		else //new package
-		{
-			Package p = Package(buf, len);
-			game->HandelPackage(&p, (char*)s);
-		}
-	}
-}
-
 void sendPackage()
 {
 	while(true)
 	{
 		game->Update();
-
-		/*for(int i = 0; i < sockets.size(); i++)
+		
+		if(addsocket != NULL)
 		{
-			size_t len = (*sockets[i]).available();
+			sockets.push_back(addsocket);
+			addsocket = NULL;
+		}
+
+		for(int i = 0; i < sockets.size(); i++)
+		{
+			boost::system::error_code error2;
+			size_t len = (*sockets[i]).available(error2);
 			if(len > 0)
 			{
 				char* buf = new char[len];
@@ -115,21 +99,34 @@ void sendPackage()
 				boost::system::error_code error;
 				len = (*sockets[i]).read_some(boost::asio::buffer(buf, len), error);
 
-				if (error == boost::asio::error::eof)
+				if (error)
 				{
 					delete [] buf;
 					disconect(sockets[i]);
-					continue;
+					break;
 				}
 				else
 				{
-					Package p = Package(buf, len);
-					game->HandelPackage(&p, (char*)sockets[i]);
+					int offset = 0;
+					while(len-offset > 0)
+					{
+						Package p = Package((char*)(buf+offset), true);
+						game->HandelPackage(&p, (char*)sockets[i]);
+						offset += p.Size();
+					}
 				}
-			}
-		}*/
 
-		if(!send2->empty())
+				delete [] buf;
+			}
+			if(error2)
+			{
+				disconect(sockets[i]);
+				break;
+			}
+
+		}
+
+		while(!send2->empty())
 		{
 			Package* p = send2->front()->p;
 			char* to = send2->front()->to;

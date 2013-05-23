@@ -1,14 +1,30 @@
 #include "CollisionModel.h"
 
+CollisionModel::CollisionModel()
+{
+	vertices = std::vector<XMFLOAT3>();
+	this->pos = XMFLOAT3(0,0,0);
+	this->shared = false;
+}
+
 CollisionModel::CollisionModel(XMFLOAT3 p)
 {
 	vertices = std::vector<XMFLOAT3>();
 	this->pos = p;
+	this->shared = false;
+}
+
+CollisionModel::CollisionModel(bool shared)
+{
+	vertices = std::vector<XMFLOAT3>();
+	this->pos = XMFLOAT3(0,0,0);
+	this->shared = shared;
 }
 
 CollisionModel::~CollisionModel()
 {
-	SafeDelete(SplitTree);
+	if(!shared)
+		SafeDelete(SplitTree);
 }
 
 void CollisionModel::LoadObj(std::string fileName)

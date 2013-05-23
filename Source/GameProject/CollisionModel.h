@@ -26,8 +26,10 @@ class CollisionModel
 			bool hit;
 			float t;
 		};
-
+		
+		CollisionModel();
 		CollisionModel(XMFLOAT3 pos);
+		CollisionModel(bool shared);
 		~CollisionModel();
 
 		void LoadObj(std::string fileName);
@@ -42,6 +44,8 @@ class CollisionModel
 		XMFLOAT3 vMin;
 		XMFLOAT3 vMax;
 
+		bool shared;
+
 	private:
 
 		std::vector<XMFLOAT3> vertices;
@@ -50,6 +54,7 @@ class CollisionModel
 		XNA::AxisAlignedBox boundingBox;
 
 		std::vector<std::string> CollisionModel::split(std::string line);
+
 
 		
 		class Plane

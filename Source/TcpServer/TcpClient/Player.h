@@ -40,7 +40,6 @@ class Player
 		int alive;
 		float health;
 
-
 	private:
 		int id;
 		std::string name;

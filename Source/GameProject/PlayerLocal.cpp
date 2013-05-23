@@ -49,7 +49,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		data->pitch = this->mCamera->Pitch;
 		data->roll = this->mCamera->Roll;
 		data->yaw = this->mCamera->Yaw;
-		data->alive = this->mIsAlive?1:0;
+		data->alive = (this->mIsAlive || aliveTime < 2)?1:0; //sync problem se till att man har levt minst 2 sec innan man kan skicka att man är död
 		data->health = this->mHealth;
 		//for(int i = 0; i < 64; i++) 
 			//*((char*)&data->joint+i) = *((char*)&cJoint+i);
@@ -280,6 +280,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		else
 			rotating = false;
 	}
+
 	
 	/*if(!mIsAlive) //flytta till servern
 	{

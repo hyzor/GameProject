@@ -7,17 +7,27 @@ Package::Package()
 	this->data = new char();
 }
 
-Package::Package(char* data, int size)
+Package::Package(char* data)
+{
+	this->shared = false;
+	this->data = data;
+	setHeader();
+	this->size = sizeof(Package::Header)+header.contentsize;
+	setBody();
+}
+
+Package::Package(char* data, bool shared)
 {
 	this->data = data;
-	this->size = sizeof(Package::Header)+size;
-
 	setHeader();
+	this->size = sizeof(Package::Header)+header.contentsize;
 	setBody();
+	this->shared = shared;
 }
 
 Package::Package(Package::Header header, Package::Body body)
 {
+	this->shared = false;
 	size = sizeof(Package::Header)+header.contentsize;
 	data = new char[size];
 	Package::Header* h = (Package::Header*)data;
@@ -33,7 +43,8 @@ Package::Package(Package::Header header, Package::Body body)
 
 Package::~Package()
 {
-	delete [] data;
+	if(!shared)
+		delete [] data;
 }
 
 char* Package::GetData()

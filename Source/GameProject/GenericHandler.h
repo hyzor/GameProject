@@ -2,6 +2,7 @@
 #define GENERICHANDLER_H
 #include "GenericModel.h"
 #include "GenericSkinnedModel.h"
+#include "CollisionModel.h"
 #include <map>
 
 /*
@@ -18,6 +19,7 @@ public:
 	void Initialize(ID3D11Device* device, TextureManager* mTextureMgr);
 	GenericModel* GetGenericModel(std::string key);
 	GenericSkinnedModel* GetGenericSkinnedModel(std::string key);
+	CollisionModel* GetCollisionModel(std::string key);
 
 	void Shutdown();
 
@@ -29,5 +31,6 @@ private:
 
 	std::map<std::string, GenericModel*> mGModels;
 	std::map<std::string, GenericSkinnedModel*> mGSModels;
+	std::map<std::string, CollisionModel*> cModels;
 };
 #endif
