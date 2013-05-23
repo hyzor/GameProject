@@ -49,7 +49,7 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 	health = 100;
 }
 
-void Player::HandelPackage(Package* p)
+void Player::HandlePackage(Package* p)
 {
 	if(p->GetHeader().operation == 1)
 	{
@@ -73,6 +73,13 @@ void Player::HandelPackage(Package* p)
 		//for(int i = 0; i < 64; i++)
 			//this->joint[i] = *(char*)b.Read(1);
 	}
+}
+
+void Player::HandlePickup(Pickup* p)
+{
+	//give pickup effect
+	this->health += 100;
+	this->updated = true;
 }
 
 void Player::Update()
@@ -150,6 +157,25 @@ Package* Player::GetUpdate()
 	pu->health = health;
 
 	return new Package(Package::Header(1, id, sizeof(PlayerUpdate)), Package::Body((char*)pu));
+}
+
+Package* Player::GetSelfUpdate()
+{
+	if(updated)
+	{
+		struct PlayerSelf
+		{
+			float health;
+		};
+
+		PlayerSelf* ps;
+		ps->health = this->health;
+
+		this->updated = false;
+
+		return new Package(Package::Header(10, 0, sizeof(PlayerSelf)), Package::Body((char*)ps));
+	}
+	return NULL;
 }
 
 Package* Player::GetSpawn()

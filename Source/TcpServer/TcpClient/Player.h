@@ -6,6 +6,7 @@
 #include "Package.h"
 #include "PyEngine.h"
 #include "GameTimer.h"
+#include "Pickup.h"
 
 class Player
 {
@@ -13,11 +14,13 @@ class Player
 		
 		Player(std::queue<PackageTo*>* send, int id, std::string name);
 		
-		void HandelPackage(Package* p);
+		void HandlePackage(Package* p);
+		void HandlePickup(Pickup* p);
 		void Update();
 
 		Package* GetConnect();
 		Package* GetUpdate();
+		Package* GetSelfUpdate();
 		Package* GetSpawn();
 
 		int GetId();

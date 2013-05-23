@@ -61,13 +61,14 @@ void addSockets()
 
 void disconect(tcp::socket *s)
 {
-	int at = 0;
+	/*int at = 0;
 	for(unsigned int i = 1; i < sockets.size(); i++)
 		if(sockets[i] == s)
 		{
 			at = i;
 			break;
-		}
+		};*/
+	int at = (int)(((char*)&s-(char*)&sockets)>>2);
 	std::cout << s << " disconnected\n";
 	boost::system::error_code error;
 	(*s).shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);

@@ -11,17 +11,17 @@ class Pickup
 public:
 	Pickup(std::queue<PackageTo*>* send, int id, int type, float posX, float posY, float posZ);
 	Package* GetConnect();
-	Package* GetUpdate();
-	void Update(float dt);
-
-	bool update;
-
+	Package* GetDestroy();
+	void HandlePackage(Package* p);
+	int GetId(){return id;}
+	
+	int type;
 private:
 	int id;
-	int type;
 	float posX;
 	float posY;
 	float posZ;
+	bool remove;
 	std::vector<double> mdReturns;
 	std::queue<PackageTo*>* send;
 };

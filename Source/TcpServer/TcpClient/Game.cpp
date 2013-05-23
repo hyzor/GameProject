@@ -74,7 +74,19 @@ void Game::Update()
 		{
 			platforms[i]->Update(dt);
 			Package* p = platforms[i]->GetUpdate();
-			if(!p == NULL)
+			if(p != NULL)
+				send->push(new PackageTo(p, 0));
+		}
+		for(unsigned int i = 0; i < players.size(); i++)
+		{
+			Package* p = players[i]->GetSelfUpdate();
+			if(p != NULL)
+				send->push(new PackageTo(p, (char*)players[i]->GetId()));
+		}
+		for(unsigned int i = 0; i < pickups.size(); i++)
+		{
+			Package* p = pickups[i]->GetDestroy();
+			if(p != NULL)
 				send->push(new PackageTo(p, 0));
 		}
 	}
@@ -89,11 +101,15 @@ void Game::HandelPackage(Package* p, char* socket)
 		players.push_back(player);
 		send->push(new PackageTo(players[players.size()-1]->GetConnect(), 0));
 
-		for(unsigned int i = 0; i < players.size() - 1; i++)
-			send->push(new PackageTo(players[i]->GetConnect(), socket));
-
+		
 		for(unsigned int i = 0; i < platforms.size(); i++)
 			send->push(new PackageTo(platforms[i]->GetConnect(), socket));
+
+		for(unsigned int i = 0; i < pickups.size(); i++)
+			send->push(new PackageTo(pickups[i]->GetConnect(), socket));
+
+		for(unsigned int i = 0; i < players.size() - 1; i++)
+			send->push(new PackageTo(players[i]->GetConnect(), socket));
 
 		//first player spawn
 		player->posX = 1;
@@ -112,9 +128,27 @@ void Game::HandelPackage(Package* p, char* socket)
 		Player* player = findPlayer(p->GetHeader().id);
 		if(player != NULL)
 		{
-			player->HandelPackage(p);
+			player->HandlePackage(p);
 			player->Update();
 			send->push(new PackageTo(player->GetUpdate(), 0));
+		}
+	}
+	else if(p->GetHeader().operation == 9)
+	{
+		for(int i = 0; i < pickups.size(); i++)
+		{
+			if(p->GetHeader().id == pickups[i]->GetId())
+			{
+				pickups[i]->HandlePackage(p);
+
+				Package::Body b = p->GetBody();
+				Player* player = findPlayer(*(int*)b.Read(4));
+				if(player != NULL)
+					player->HandlePickup(pickups[i]);
+
+				pickups.erase(pickups.begin()+i);
+				break;
+			}
 		}
 	}
 }

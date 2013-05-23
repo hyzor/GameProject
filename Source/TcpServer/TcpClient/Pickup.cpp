@@ -12,7 +12,7 @@ Pickup::Pickup(std::queue<PackageTo*>* send, int id, int type, float posX, float
 
 	this->send = send;
 
-	this->update = false;
+	this->remove = false;
 }
 
 Package* Pickup::GetConnect()
@@ -34,24 +34,28 @@ Package* Pickup::GetConnect()
 	return new Package(Package::Header(7, this->id, sizeof(PickupConnect)), Package::Body((char*)puc));
 }
 
-Package* Pickup::GetUpdate()
+Package* Pickup::GetDestroy()
 {
-	struct PickupUpdate
+	if(remove)
 	{
-		float posX;
-		float posY;
-		float posZ;
-	};
+		struct PickupDestroy
+		{
+			int id; //dummy
+		};
 	
-	PickupUpdate* puu = new PickupUpdate();
-	puu->posX = this->posX;
-	puu->posY = this->posY;
-	puu->posZ = this->posZ;
+		PickupDestroy* puu = new PickupDestroy();
+		puu->id = this->id;
 
-	return new Package(Package::Header(8, this->id, sizeof(PickupUpdate)), Package::Body((char*)puu));
+		return new Package(Package::Header(8, this->id, sizeof(PickupDestroy)), Package::Body((char*)puu));
+	}
+	return NULL;
 }
 
-void Pickup::Update(float dt)
+void Pickup::HandlePackage(Package* p)
 {
-	// this->update = true;
+	if(p->GetHeader().operation == 9)
+	{
+		this->remove = true;
+	}
 }
+
