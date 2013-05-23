@@ -76,6 +76,34 @@ void disconect(tcp::socket *s)
 	sockets.erase(sockets.begin()+at);
 	game->Disconnect((char*)s);
 }
+<<<<<<< HEAD
+=======
+
+void getPackade(tcp::socket *s)
+{
+	std::cout << "Inside getpackage" << std::endl;
+
+	while(true)
+	{
+		char* buf = new char[256];
+		boost::system::error_code error;
+		size_t len = (*s).read_some(boost::asio::buffer(buf, 256), error);
+
+		if (error == boost::asio::error::eof) //disconnect
+		{
+			delete [] buf;
+			disconect(s);
+			break;
+		}
+		else //new package
+		{
+			Package p = Package(buf, len);
+			game->HandelPackage(&p, (char*)s);
+		}
+	}
+}
+
+>>>>>>> Allmänt grejs bara mest typ liksom
 void sendPackage()
 {
 	while(true)
@@ -132,14 +160,14 @@ void sendPackage()
 			char* to = send2->front()->to;
 			send2->pop();
 
-			std::cout << "Forwarding package from " << p->GetHeader().id << " to " << (int)to << " :" << std::endl 
-				<< "  operation: " << p->GetHeader().operation << std::endl
-				<< "  id       : " << p->GetHeader().id << std::endl
-				<< "  body size: " << p->GetHeader().contentsize << std::endl
-				<< "  body     : ";
-			for(int i = 0; i < p->GetHeader().contentsize; i++)
-				std::cout << p->GetBody().data[i];
-			std::cout << std::endl;
+			//std::cout << "Forwarding package from " << p->GetHeader().id << " to " << (int)to << " :" << std::endl 
+			//	<< "  operation: " << p->GetHeader().operation << std::endl
+			//	<< "  id       : " << p->GetHeader().id << std::endl
+			//	<< "  body size: " << p->GetHeader().contentsize << std::endl
+			//	<< "  body     : ";
+			//for(int i = 0; i < p->GetHeader().contentsize; i++)
+			//	std::cout << p->GetBody().data[i];
+			//std::cout << std::endl;
 
 			if(to == 0)
 			{

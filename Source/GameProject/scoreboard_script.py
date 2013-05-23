@@ -25,6 +25,7 @@ sb = ScoreBoard()
 def CreatePlayerStats(id, name):
         global sb
         sb.ps.append(PlayerStats(id, name))
+##        PyEngine.Print(FindByIndex(id).GetString())
 ##        sp.ps.append(PlayerStats(id+1, "Gnidleif"))
 ##        sp.ps[id+1].kills = 4
 

@@ -303,7 +303,8 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 	if(!lpReturns)
 	{
 		std::cout << "Something went wrong with calling the function!" << std::endl;
-		PyErr_Print();
+		if(PyErr_Occurred())
+			PyErr_Print();
 		return nullptr;
 	}
 

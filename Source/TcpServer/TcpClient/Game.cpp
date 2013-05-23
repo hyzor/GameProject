@@ -52,10 +52,21 @@ Game::Game(std::queue<PackageTo*>* send)
 
 Game::~Game()
 {
+<<<<<<< HEAD
 	for(unsigned int i = 0; i < players.size(); i++)
 		delete players[i];
 	for(unsigned int i = 0; i < platforms.size(); i++)
 		delete platforms[i];
+=======
+	for(auto it(players.begin()); it != players.end(); ++it)
+		if(*it) delete *it;
+
+	for(auto it(platforms.begin()); it != platforms.end(); ++it)
+		if(*it) delete *it;
+
+	for(auto it(pickups.begin()); it != pickups.end(); ++it)
+		if(*it) delete *it;
+>>>>>>> AllmÃ¤nt grejs bara mest typ liksom
 }
 
 void Game::Update()
@@ -134,4 +145,11 @@ Player* Game::findPlayer(int id)
 		if(players[i]->GetId() == id)
 			return players[i];
 	return nullptr;
+}
+
+void Game::CheckPickups()
+{
+	/*
+	Funktionen här bör kallas varje update för att kolla scriptet och skapa pickups
+	*/
 }

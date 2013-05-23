@@ -65,7 +65,7 @@ void Game::HandlePackage(Package* p)
 	}
 	else if(o == 4)
 	{
-		for(int i = 0; i< multiplayers->size(); i++)
+		for(UINT i = 0; i< multiplayers->size(); i++)
 			if(multiplayers->at(i)->GetID() == p->GetHeader().id)
 				multiplayers->erase(multiplayers->begin() + i);
 	}

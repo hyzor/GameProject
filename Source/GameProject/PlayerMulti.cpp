@@ -12,20 +12,19 @@ PlayerMulti::~PlayerMulti()
 
 void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
 {
+	this->Player::Update(dt, gameTime, dInput, sm, world);
+
 	mModel->Update(dt);
 
-	
-
-	this->Player::Update(dt, gameTime, dInput, sm, world);
 	mModel->SetPosition(this->mPosition);
 }
 
 void PlayerMulti::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
+	this->Player::Draw(dc, activeTech, mCamera, shadowMap);
+
 	if(mIsAlive)
 		mModel->Draw(dc, activeTech, mCamera, shadowMap);
-
-	this->Player::Draw(dc, activeTech, mCamera, shadowMap);
 }
 
 void PlayerMulti::HandelPackage(Package *p)

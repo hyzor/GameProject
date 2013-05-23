@@ -59,7 +59,7 @@ public:
 	PyObject* GetFunction(const char* funcName); // Returerar en PyObject* med funktionen i givet namnet på funktionen
 	PyObject* GetModule() const { return this->mModule; }
 
-	void Print(std::string msg); // Aldrig använt denna, men den är rätt självförklarande
+	void Print(std::string msg); // Används av funktionen som wrappar pythons print
 
 	void Update(float dt); // Update för timerevents
 

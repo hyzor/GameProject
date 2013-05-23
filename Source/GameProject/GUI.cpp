@@ -194,7 +194,8 @@ void GUI::drawScoreBoard(ID3D11DeviceContext *context)
 	size_t convertedChars = 0;
 	mbstowcs_s(&convertedChars, wText, strLength, text.c_str(), strLength);
 
-	drawText(context, wText, XMFLOAT2(width/4.0f, height/4.0f), 25.0f, 0xff0000ff);
+	float lFontSize = width*0.02f;
+	drawText(context, wText, XMFLOAT2(width*0.25f, height*0.25f), lFontSize, 0xff0000ff);
 	SafeDelete(wText);
 }
 
