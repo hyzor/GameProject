@@ -23,7 +23,7 @@ GenericHandler::~GenericHandler()
 void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMgr)
 {
 	// Initializing GenericModel objects
-	//mGModels["Duck"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.obj", L"Data\\Models\\Collada\\");
+	mGModels["Duck"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\duck.obj", L"Data\\Models\\Collada\\");
 	//mGModels["Player"] = new GenericModel(device, mTextureMgr, "Data\\Models\\OBJ\\Cop\\cop.obj", L"Data\\Models\\OBJ\\Cop\\");
 
 	mGModels["Switch"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Switch.obj", L"Data\\Models\\Collada\\");

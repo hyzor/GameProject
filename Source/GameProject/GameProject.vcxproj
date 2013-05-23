@@ -92,6 +92,7 @@
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="OggVorbisPlayer.cpp" />
     <ClCompile Include="Package.cpp" />
+    <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Platform1.cpp" />
     <ClCompile Include="Platform2.cpp" />
     <ClCompile Include="Platform3.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="OggVorbisPlayer.h" />
     <ClInclude Include="Package.h" />
+    <ClInclude Include="Pickup.h" />
     <ClInclude Include="Platform1.h" />
     <ClInclude Include="Platform2.h" />
     <ClInclude Include="Platform3.h" />

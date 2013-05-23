@@ -23,6 +23,8 @@
 #include "SoundModule.h"
 #include "SoundHelp.h"
 
+#include "Pickup.h"
+
 class Game
 {
 	public:
@@ -38,6 +40,7 @@ class Game
 	private:
 		World* world;
 		Player* player;
+		Pickup mPU;
 		std::vector<Player*>* multiplayers;
 
 		AnimatedEntity* animatedEntity;

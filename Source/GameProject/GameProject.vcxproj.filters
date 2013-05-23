@@ -192,6 +192,9 @@
     <ClCompile Include="Common\SplashWnd.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="Pickup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\TextureManager.h">
@@ -358,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="Common\SplashWnd.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickup.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

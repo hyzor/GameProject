@@ -9,6 +9,8 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 	this->device = device;
 	this->dc = dc;
 
+	//mPU.Initialize(0, EXTRA_HEALTH, this->player->GetPosition());
+
 	multiplayers = new std::vector<Player*>();
 
  	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
@@ -32,7 +34,6 @@ void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule*
 		multiplayers->at(i)->Update(deltaTime, gameTime, di, sm, world);
 
 	animatedEntity->Update(deltaTime);
-
 	world->Update(deltaTime);
 }
 
@@ -89,6 +90,8 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+
+	//mPU.Draw(dc, activeTech, player->GetCamera(), shadowMap);
 }
 
 Camera* Game::GetCamera()
