@@ -27,6 +27,7 @@ public:
 	void HandlePackage(Package* package);
 	
 private:
+
 	int mID;
 	int mType;
 	XMFLOAT3 mPos;
@@ -35,7 +36,5 @@ private:
 
 	std::string mModelName;
 	XNA::Sphere mSphere;
-
-	void Scale();
 };
 #endif

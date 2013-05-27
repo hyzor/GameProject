@@ -42,7 +42,6 @@ def RandomizeSpawn():
         x = spawnpoints[index].x
         y = spawnpoints[index].y
         z = spawnpoints[index].z
-        del spawnpoints[index]
         return Position(x, y, z)
 
 def FindByID(id):

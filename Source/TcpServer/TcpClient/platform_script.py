@@ -65,7 +65,7 @@ def Solution(index):
 
 def CreatePlatforms():
         global platforms
-        f = open("platform_info18.txt")
+        f = open("platform_info9.txt")
         i = 0
         for l in f:
                 x, y, z = [int(v) for v in l.split()]

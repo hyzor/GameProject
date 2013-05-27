@@ -16,13 +16,16 @@ void Pickup::Initialize(int id, int type, XMFLOAT3 pos)
 	this->mType = type;
 	this->mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("Duck"), pos);
 
+	mEntity->Scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	XMMATRIX modelScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(mEntity->Position.x, mEntity->Position.y, mEntity->Position.z);
 	XMStoreFloat4x4(&mEntity->mInstance.world, modelScale*modelRot*modelOffset);
 
-	UINT vAmount = (UINT)GenericHandler::GetInstance()->GetGenericModel("Duck")->GetVertexCount();
-	XNA::ComputeBoundingSphereFromPoints(&mSphere, vAmount, &pos, 3);
+	this->mSphere.Center = pos;
+	this->mSphere.Radius = 30.0f;
+
+	//this->mBox = GenericHandler::GetInstance()->GetGenericModel("Duck")->boundingBox;
 }
 
 void Pickup::Update(float dt)

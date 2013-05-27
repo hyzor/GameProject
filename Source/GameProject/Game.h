@@ -40,8 +40,9 @@ class Game
 	private:
 		World* world;
 		Player* player;
-		Pickup mPU;
 		std::vector<Player*>* multiplayers;
+
+		Pickup* mPickup;
 
 		AnimatedEntity* animatedEntity;
 
