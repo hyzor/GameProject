@@ -10,7 +10,7 @@ class PlayerLocal : public Player
 		PlayerLocal(std::string Nickname, XMFLOAT3 Position);
 		~PlayerLocal();
 
-		void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world);
+		void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers);
 		void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 		void Spawn(float x, float y, float z, int rotation);
 		void HandelPackage(Package *p);

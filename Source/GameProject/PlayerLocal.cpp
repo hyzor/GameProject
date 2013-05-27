@@ -19,7 +19,7 @@ PlayerLocal::~PlayerLocal()
 {
 }
 
-void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
+void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
 {
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
 	XMMATRIX cJoint = *Joint;
@@ -38,8 +38,8 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 			float pitch;
 			float roll;
 			float yaw;
-			int alive;
-			float health;
+			//int alive;
+			//float health;
 		};
 
 		Data* data = new Data();
@@ -49,8 +49,8 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		data->pitch = this->mCamera->Pitch;
 		data->roll = this->mCamera->Roll;
 		data->yaw = this->mCamera->Yaw;
-		data->alive = (this->mIsAlive || aliveTime < 2)?1:0; //sync problem se till att man har levt minst 2 sec innan man kan skicka att man är död
-		data->health = this->mHealth;
+		//data->alive = (this->mIsAlive || aliveTime < 2)?1:0; //sync problem se till att man har levt minst 2 sec innan man kan skicka att man är död
+		//data->health = this->mHealth;
 		//for(int i = 0; i < 64; i++) 
 			//*((char*)&data->joint+i) = *((char*)&cJoint+i);
 
@@ -177,9 +177,47 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		// Shoot
 		if (dInput->GetMouseState().rgbButtons[0])
 		{
-			if (Shoot())
-				//int temp = 1;
-				sm->playSFX(mPosition, FireWeapon, false);
+			XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), cJoint);
+			XMFLOAT3 p;
+			XMStoreFloat3(&p,v);
+
+			XMVECTOR dir = XMVector3Normalize(mCamera->GetLookXM());
+			//platform test
+			CollisionModel::Hit h = world->Intersect(v, dir, 100000);
+			int hitId = 0;
+			//enemy test
+			for(int i = 0; i < multiplayers->size(); i++)
+			{
+				if(multiplayers->at(i)->IsAlive())
+				{
+					float t = 0;
+					XNA::IntersectRayAxisAlignedBox(v,dir,&multiplayers->at(i)->GetBounding(), &t);
+					if(t < h.t)
+					{
+						h.t = t;
+						h.hit = true;
+						hitId = multiplayers->at(i)->GetID();
+					}
+				}
+			}
+
+			//fire
+			if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook()))
+			{
+				sm->playSFX(p, FireWeapon, false);
+
+				struct Data
+				{
+					int hitId;
+					XMFLOAT3 hitAt;
+				};
+
+				Data* data = new Data();
+				XMStoreFloat3(&data->hitAt, v+dir*h.t);
+				data->hitId = hitId;
+
+				Network::GetInstance()->Push(new Package(Package::Header(11, 1, sizeof(Data)), Package::Body((char*)(data))));
+			}
 		}
 	}
 	else
@@ -308,7 +346,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 	XMStoreFloat3(&move, m);
 	XMStoreFloat3(&mPosition, pos);
 
-	this->Player::Update(dt, gameTime, dInput, sm, world);
+	this->Player::Update(dt, gameTime, dInput, sm, world, multiplayers);
 
 }
 
@@ -327,10 +365,18 @@ void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 	
 void PlayerLocal::HandelPackage(Package *p)
 {
+	if (p->GetHeader().operation == 10)
+	{
+		Package::Body b = p->GetBody();
+		this->mIsAlive = (*(int*)b.Read(4))==1;
+		this->mHealth = *(float*)b.Read(4);
+		this->score = *(int*)b.Read(4);
+	}
+
 	Player::HandelPackage(p);
 }
 
-void PlayerLocal::Spawn(float x, float y, float z, int rotation)
+void PlayerLocal::Spawn(float x, float y, float z, int rotation) //flytta till servern
 {
 	std::vector<double> dReturns(0);
 	std::vector<int> iReturns(0);
@@ -356,7 +402,7 @@ void PlayerLocal::Spawn(float x, float y, float z, int rotation)
 		}
 	
 	this->mPosition = pos;
-	this->mIsAlive = true;
+	//this->mIsAlive = true;
 	delete Joint;
 	Joint = new XMMATRIX(XMMatrixIdentity());
 }

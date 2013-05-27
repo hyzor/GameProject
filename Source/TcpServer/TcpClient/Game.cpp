@@ -66,30 +66,34 @@ void Game::Update()
 {
 	float dt = this->mTimer.getDeltaTime();
 
-	t += dt;
-	if(t > 1)
-	{
-		t = 0;
-		for(unsigned int i = 0; i < platforms.size(); i++)
+	//t += dt;
+	//if(t > 1)
+	//{
+	//	t = 0;
+		/*for(unsigned int i = 0; i < platforms.size(); i++)
 		{
 			platforms[i]->Update(dt);
 			Package* p = platforms[i]->GetUpdate();
 			if(p != NULL)
 				send->push(new PackageTo(p, 0));
-		}
+		}*/
 		for(unsigned int i = 0; i < players.size(); i++)
 		{
 			Package* p = players[i]->GetSelfUpdate();
 			if(p != NULL)
 				send->push(new PackageTo(p, (char*)players[i]->GetId()));
 		}
-		for(unsigned int i = 0; i < pickups.size(); i++)
+		/*for(unsigned int i = 0; i < pickups.size(); i++)
 		{
 			Package* p = pickups[i]->GetDestroy();
 			if(p != NULL)
+			{
 				send->push(new PackageTo(p, 0));
-		}
-	}
+				pickups.erase(pickups.begin()+i);
+				break;
+			}
+		}*/
+	//}
 
 }
 
@@ -122,7 +126,7 @@ void Game::HandelPackage(Package* p, char* socket)
 		spawnP->SetId(0);
 		send->push(new PackageTo(spawnP, socket));
 	}
-	else if(p->GetHeader().operation == 1 || p->GetHeader().operation == 3)
+	else if(p->GetHeader().operation == 1)
 	{
 		p->SetId((int)socket);
 		Player* player = findPlayer(p->GetHeader().id);
@@ -132,6 +136,17 @@ void Game::HandelPackage(Package* p, char* socket)
 			player->Update();
 			send->push(new PackageTo(player->GetUpdate(), 0));
 		}
+	}
+	else if(p->GetHeader().operation == 11)
+	{
+		p->SetId((int)socket);
+		Player* player = findPlayer(*(int*)p->GetBody().Read(4));
+		if(player != NULL)
+		{
+			player->HandlePackage(p);
+			player->Update();
+		}
+		send->push(new PackageTo(new Package(p), 0));
 	}
 	else if(p->GetHeader().operation == 9)
 	{
@@ -146,6 +161,7 @@ void Game::HandelPackage(Package* p, char* socket)
 				if(player != NULL)
 					player->HandlePickup(pickups[i]);
 
+				delete pickups[i];
 				pickups.erase(pickups.begin()+i);
 				break;
 			}

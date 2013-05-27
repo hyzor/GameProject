@@ -10,13 +10,13 @@ PlayerMulti::~PlayerMulti()
 	delete mModel;
 }
 
-void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
+void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
 {
 	mModel->Update(dt);
 	
 	
 
-	this->Player::Update(dt, gameTime, dInput, sm, world);
+	this->Player::Update(dt, gameTime, dInput, sm, world, multiplayers);
 	mModel->SetPosition(this->mPosition);
 	mModel->RotateXYZ(rotation);
 }
@@ -45,6 +45,27 @@ void PlayerMulti::HandelPackage(Package *p)
 		//XMFLOAT4X4 cJoint = *(XMFLOAT4X4*)b.Read(64);
 		//delete this->Joint;
 		//this->Joint = new XMMATRIX(XMLoadFloat4x4(&cJoint));
+	}
+	else if(p->GetHeader().operation == 11)
+	{
+		Package::Body b = p->GetBody();
+		int hitId = *(int*)b.Read(4);
+		XMFLOAT3 hitPoint = *(XMFLOAT3*)b.Read(4*3);
+
+		XMMATRIX cJoint = *Joint;
+
+		XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), cJoint);
+		XMFLOAT3 p;
+		XMStoreFloat3(&p,v);
+
+		XMVECTOR dir = XMVector3Normalize(v-XMLoadFloat3(&hitPoint));
+		XMFLOAT3 d;
+		XMStoreFloat3(&d, dir);
+
+		if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, d))
+		{
+			//sm->playSFX(p, FireWeapon, false);
+		}
 	}
 
 	Player::HandelPackage(p);

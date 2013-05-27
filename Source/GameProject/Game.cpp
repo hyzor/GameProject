@@ -32,9 +32,9 @@ Game::~Game()
 
 void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule* sm)
 {
-	player->Update(deltaTime, gameTime, di, sm, world);
+	player->Update(deltaTime, gameTime, di, sm, world, multiplayers);
 	for(UINT i = 0; i < multiplayers->size(); i++)
-		multiplayers->at(i)->Update(deltaTime, gameTime, di, sm, world);
+		multiplayers->at(i)->Update(deltaTime, gameTime, di, sm, world, multiplayers);
 
 	animatedEntity->Update(deltaTime);
 	world->Update(deltaTime);
@@ -61,7 +61,7 @@ void Game::HandlePackage(Package* p)
 		pm->InitWeapons(this->device, this->dc);
 		multiplayers->push_back(pm);
 	}
-	else if(o == 1 || o == 3)
+	else if(o == 1 || o == 3 || o == 10 || o == 11)
 	{
 		if(p->GetHeader().id == 0)
 			player->HandelPackage(p);

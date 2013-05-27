@@ -19,6 +19,7 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 	rotating = false;
 	move = XMFLOAT3(0, 0, 0);
 	aliveTime = 0;
+	score = 0;
 
 	this->Joint = new XMMATRIX(XMMatrixIdentity());
 	
@@ -37,18 +38,6 @@ Player::~Player()
 
 	for (UINT i = 0; i < mWeapons.size(); ++i)
 		delete mWeapons[i];
-}
-
-bool Player::Shoot()
-{
-	XMMATRIX cJoint = *Joint;
-	XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), cJoint);
-	XMFLOAT3 p;
-	XMStoreFloat3(&p,v);
-	if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook()))
-		return true;
-
-	return false;
 }
 
 
@@ -76,7 +65,7 @@ void Player::Die()
 	mIsAlive = false;
 }
 
-void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world)
+void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
 {
 	XMMATRIX cJoint = *Joint;
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
@@ -219,4 +208,15 @@ bool Player::OutOfMap() //flytta till server
 
 	return false;
 
+}
+
+XNA::AxisAlignedBox Player::GetBounding()
+{
+	XMMATRIX cJoint = *Joint;
+
+	XNA::AxisAlignedBox box;
+	XMStoreFloat3(&box.Center, XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
+	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(7,20,7)), cJoint));
+
+	return box;
 }

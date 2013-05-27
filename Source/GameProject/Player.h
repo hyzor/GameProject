@@ -16,13 +16,15 @@
 #include "World.h"
 #include "SoundModule.h"
 
+class Weapon;
+
 class Player
 {
 	public:
 		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position);
 		virtual ~Player();
 
-		virtual void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world);
+		virtual void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers);
 		virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
 		virtual void HandelPackage(Package *p);
@@ -35,12 +37,14 @@ class Player
 		Camera* GetCamera() { return mCamera; }
 		bool IsAlive() const { return mIsAlive; }
 		bool OutOfMap();
+		XNA::AxisAlignedBox GetBounding();
 
 		void Kill();
 		void Die();
 
 		bool mIsAlive;
 		float mHealth;
+		int score;
 
 	protected:
 		int mPlayerID;
@@ -61,6 +65,5 @@ class Player
 		int mCurWeaponIndex;
 		std::vector<Weapon*> mWeapons;
 
-		bool Shoot();	
 };
 #endif

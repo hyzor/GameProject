@@ -41,6 +41,17 @@ Package::Package(Package::Header header, Package::Body body)
 	setBody();
 }
 
+Package::Package(Package *p)
+{
+	this->shared = false;
+	this->data = new char[p->Size()];
+	for(int i = 0; i < p->Size(); i++)
+		this->data[i] = p->GetData()[i];
+	setHeader();
+	this->size = sizeof(Package::Header)+header.contentsize;
+	setBody();
+}
+
 Package::~Package()
 {
 	if(!shared)

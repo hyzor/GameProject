@@ -42,6 +42,7 @@ class Player
 		float yaw;
 		int alive;
 		float health;
+		int score;
 
 	private:
 		int id;

@@ -35,9 +35,20 @@ Package::Package(Package::Header header, Package::Body body)
 	*h = header;
 	for(int i = 0; i < h->contentsize; i++)
 		*(data+sizeof(Package::Header)+i) = *(body.data+i);
-	delete [] body.data;
+	if(!body.data) delete [] body.data;
 
 	setHeader();
+	setBody();
+}
+
+Package::Package(Package *p)
+{
+	this->shared = false;
+	this->data = new char[p->Size()];
+	for(int i = 0; i < p->Size(); i++)
+		this->data[i] = p->GetData()[i];
+	setHeader();
+	this->size = sizeof(Package::Header)+header.contentsize;
 	setBody();
 }
 
@@ -90,7 +101,7 @@ void Package::SetId(int id)
 }
 
 
-Package::Body::Body(){From(0);}
+Package::Body::Body(){From(0); this->data = 0;}
 Package::Body::Body(char* data)
 {
 	this->data = data;

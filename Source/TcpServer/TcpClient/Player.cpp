@@ -47,6 +47,7 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 	yaw = 0;
 	alive = 1;
 	health = 100;
+	score = 0;
 }
 
 void Player::HandlePackage(Package* p)
@@ -66,12 +67,20 @@ void Player::HandlePackage(Package* p)
 		this->pitch = *(float*)b.Read(4);
 		this->roll = *(float*)b.Read(4);
 		this->yaw = *(float*)b.Read(4);
-		int a = *(int*)b.Read(4);
-		if(this->alive == 1) //sync problem vänta en stund efter senaste spawn
-			this->alive = a;
-		this->health = *(float*)b.Read(4);
+		//int a = *(int*)b.Read(4);
+		//if(this->alive == 1) //sync problem vänta en stund efter senaste spawn
+			//this->alive = a;
+		//this->health = *(float*)b.Read(4);
 		//for(int i = 0; i < 64; i++)
 			//this->joint[i] = *(char*)b.Read(1);
+	}
+	else if(p->GetHeader().operation == 11)
+	{
+		//player shoot
+		this->health -= 100;
+		if(this->health <= 0)
+			this->alive = false;
+		this->updated = true;
 	}
 }
 
@@ -165,11 +174,15 @@ Package* Player::GetSelfUpdate()
 	{
 		struct PlayerSelf
 		{
+			int alive;
 			float health;
+			int score;
 		};
 
-		PlayerSelf* ps;
+		PlayerSelf* ps = new PlayerSelf();
+		ps->alive = this->alive;
 		ps->health = this->health;
+		ps->score = this->score;
 
 		this->updated = false;
 

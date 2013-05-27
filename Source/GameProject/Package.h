@@ -29,6 +29,7 @@ class Package
 		};
 
 		Package();
+		Package(Package *p);
 		Package(char* data);
 		Package(char* data, bool shared);
 		Package(Header header, Body body);

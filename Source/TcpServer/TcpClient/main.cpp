@@ -61,14 +61,13 @@ void addSockets()
 
 void disconect(tcp::socket *s)
 {
-	/*int at = 0;
+	int at = 0;
 	for(unsigned int i = 1; i < sockets.size(); i++)
 		if(sockets[i] == s)
 		{
 			at = i;
 			break;
-		};*/
-	int at = (int)(((char*)&s-(char*)&sockets)>>2);
+		};
 	std::cout << s << " disconnected\n";
 	boost::system::error_code error;
 	(*s).shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
@@ -142,11 +141,17 @@ void sendPackage()
 
 				delete [] buf;
 			}
+
+			char* buf = new char();
+			(*sockets[i]).read_some(boost::asio::buffer(buf, 0), error2);
 			if(error2)
 			{
 				disconect(sockets[i]);
 				break;
 			}
+			delete buf;
+
+
 
 		}
 
@@ -173,7 +178,7 @@ void sendPackage()
 					{
 						boost::system::error_code error;
 						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), error);
-						if (error == boost::asio::error::eof)
+						if (error)
 							disconect(sockets[i]);
 					}
 				}
@@ -186,7 +191,7 @@ void sendPackage()
 					{
 						boost::system::error_code error;
 						boost::asio::write(*sockets[i], boost::asio::buffer(p->GetData(), p->Size()), boost::asio::transfer_all(), error);
-						if (error == boost::asio::error::eof)
+						if (error)
 							disconect(sockets[i]);
 					}
 				}
