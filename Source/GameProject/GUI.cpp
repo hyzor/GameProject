@@ -17,6 +17,7 @@ GUI::GUI()
 	tabDown = false;
 	menuIndex = 0;
 	fontSize = 0;
+	state = 0;
 }
 GUI::~GUI()
 {
@@ -39,7 +40,7 @@ bool GUI::Update(DirectInput* di, float dt)
 {
 	if(fontSize < 50.0f)
 	{
-		fontSize += 70.0f*dt;
+		fontSize += 100.0f*dt;
 	}
 
 	if(di->GetKeyboardState()[DIK_ESCAPE] & 0x80 && !escapeDown)
@@ -50,6 +51,7 @@ bool GUI::Update(DirectInput* di, float dt)
 		if(menuActive)
 		{
 			menuActive = false;
+			fontSize = 0;
 		}
 		else
 		{
@@ -128,17 +130,24 @@ bool GUI::Update(DirectInput* di, float dt)
 
 void GUI::Render(ID3D11DeviceContext *pContext, XMFLOAT3 playerPos)
 {
-	if(menuActive)
+	if(state == Game)
 	{
-		DrawMenu(pContext);
-	}
-	else if(tabDown)
-	{
-		drawScoreBoard(pContext);
+		if(tabDown)
+		{
+			drawScoreBoard(pContext);
+		}
+		else
+		{
+			drawCrossHair(pContext);
+		}
 	}
 	else
 	{
-		drawCrossHair(pContext);
+		drawScoreBoard(pContext);
+	}
+	if(menuActive)
+	{
+		DrawMenu(pContext);
 	}
 	wstringstream wss;
 	wss<< "Player Pos: X: " << playerPos.x << " Y: " << playerPos.y << " Z: " << playerPos.z;
@@ -156,7 +165,7 @@ void GUI::drawCrossHair(ID3D11DeviceContext *context)
 	width = Settings::GetInstance()->GetData().Width;
 	heigth = Settings::GetInstance()->GetData().Height;
 	
-	drawText(context, L"-o-", XMFLOAT2(width/2.0f-offset, heigth/2.0f), 25.0f, 0xff0000ff);
+	drawText(context, L"-o-", XMFLOAT2(width/2.0f-offset, heigth/2.0f), 25.0f, 0x550000ff);
 }
 
 void GUI::drawScoreBoard(ID3D11DeviceContext *context)
@@ -256,4 +265,9 @@ GUI* GUI::GetInstance()
 		mInstance = new GUI();
 	}
 	return mInstance;
+}
+
+void GUI::setState(int state)
+{
+	this->state = state;
 }

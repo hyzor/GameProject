@@ -10,7 +10,7 @@
 #include <typeinfo>
 
 #include "Entity.h"
-
+#include "GUI.h"
 #include "PlayerLocal.h"
 #include "PlayerMulti.h"
 
@@ -41,6 +41,10 @@ class Game
 		World* world;
 		Player* player;
 		std::vector<Player*>* multiplayers;
+
+		int timeLeft;
+		int pauseTimeLeft;
+		bool gameActive;
 
 		Pickup* mPickup;
 

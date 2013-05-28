@@ -26,11 +26,17 @@ class Game
 		std::vector<Pickup*> pickups;
 		GameTimer mTimer;
 
+		int gameLength;
+		int pauseLength;
+		bool gameActive;
+
 		std::queue<PackageTo*>* send;
 
 		Player* findPlayer(int id);
 
 		void CheckPickups();
+		Package* TimeLeft();
+		Package* GameState();
 
 		float t;
 };

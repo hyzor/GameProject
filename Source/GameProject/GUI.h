@@ -18,12 +18,19 @@ class GUI
 {
 public:
 	
+	static enum state
+	{
+		Game,
+		Pause
+	};
+
 	static GUI* GetInstance();
 	void Init(ID3D11Device *device);
 	void Render(ID3D11DeviceContext *context, XMFLOAT3 playerPos);
 	bool InMenu() const;
 	bool Update(DirectInput* di, float dt);
 	void drawText(ID3D11DeviceContext *context, WCHAR* text, XMFLOAT2 pos, float fontSize, int color) const;
+	void setState(int state);
 	void Release();
 
 private:
@@ -39,6 +46,7 @@ private:
 	IFW1Factory* mFW1Factory;
 	IFW1FontWrapper* mFontWrapper;
 
+	int state;
 	int menuIndex;
 	bool menuActive;
 	wchar_t **menuItems;

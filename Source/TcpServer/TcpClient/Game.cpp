@@ -3,6 +3,9 @@
 Game::Game(std::queue<PackageTo*>* send)
 {
 	this->send = send;
+	gameActive = false;
+	gameLength = 30;
+	pauseLength = 10;
 
 	Python->LoadModule("platform_script");
 	Python->CallFunction(
@@ -64,12 +67,18 @@ Game::~Game()
 
 void Game::Update()
 {
+	mTimer.tick();
 	float dt = this->mTimer.getDeltaTime();
-
-	//t += dt;
-	//if(t > 1)
-	//{
-	//	t = 0;
+	for(unsigned int i = 0; i < players.size(); i++)
+	{
+		Package* p = players[i]->GetSelfUpdate();
+		if(p != NULL)
+			send->push(new PackageTo(p, (char*)players[i]->GetId()));
+	}
+	t += dt;
+	if(t > 1)
+	{
+		t = 0;
 		/*for(unsigned int i = 0; i < platforms.size(); i++)
 		{
 			platforms[i]->Update(dt);
@@ -77,12 +86,7 @@ void Game::Update()
 			if(p != NULL)
 				send->push(new PackageTo(p, 0));
 		}*/
-		for(unsigned int i = 0; i < players.size(); i++)
-		{
-			Package* p = players[i]->GetSelfUpdate();
-			if(p != NULL)
-				send->push(new PackageTo(p, (char*)players[i]->GetId()));
-		}
+		
 		/*for(unsigned int i = 0; i < pickups.size(); i++)
 		{
 			Package* p = pickups[i]->GetDestroy();
@@ -93,8 +97,36 @@ void Game::Update()
 				break;
 			}
 		}*/
-	//}
 
+		if(gameActive)
+		{
+			if(mTimer.getTimeElapsedS() > gameLength)
+			{
+				gameActive = false;
+				mTimer.reset();
+				mTimer.start();
+				Package* p = GameState();
+				if(p != NULL)
+					send->push(new PackageTo(p, 0));
+			}
+		}
+
+		else
+		{
+			if( mTimer.getTimeElapsedS() > pauseLength)
+			{
+				gameActive = true;
+				mTimer.reset();
+				mTimer.start();
+				Package* p = GameState();
+				if(p != NULL)
+					send->push(new PackageTo(p, 0));
+			}
+		}
+		Package* p = TimeLeft();
+		if(p != NULL)
+			send->push(new PackageTo(p, 0));
+	}
 }
 
 void Game::HandelPackage(Package* p, char* socket)
@@ -195,4 +227,38 @@ void Game::CheckPickups()
 	/*
 	Funktionen här bör kallas varje update för att kolla scriptet och skapa pickups
 	*/
+}
+
+Package* Game::TimeLeft()
+{
+	struct timeLeft
+	{
+		int time;
+	};
+	
+	timeLeft* time = new timeLeft();
+	if(gameActive)
+		time->time = gameLength - mTimer.getTimeElapsedS();
+	else
+		time->time = pauseLength - mTimer.getTimeElapsedS();
+
+	return new Package(Package::Header(12, 0, sizeof(timeLeft)), Package::Body((char*)time));
+}
+
+Package* Game::GameState()
+{
+	struct gameState
+	{
+		int state;
+	};
+	
+	gameState* state = new gameState();
+	
+	if(gameActive)
+		state->state = 1;
+	else
+		state->state = 0;
+		
+
+	return new Package(Package::Header(13, 0, sizeof(gameState)), Package::Body((char*)state));
 }

@@ -8,7 +8,9 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 	player->InitWeapons(device, dc);
 	this->device = device;
 	this->dc = dc;
-
+	gameActive = true;
+	timeLeft = 0;
+	pauseTimeLeft = 0;
 	multiplayers = new std::vector<Player*>();
 
 	this->mPickup = new Pickup();
@@ -82,6 +84,31 @@ void Game::HandlePackage(Package* p)
 	else if(o == 5 || o == 6)
 		world->HandlePackage(p);
 
+	else if(o == 12)
+	{
+		Package::Body b = p->GetBody();
+		if(gameActive)
+			timeLeft = *(int*)b.Read(4);
+		else
+			pauseTimeLeft = *(int*)b.Read(4);
+	}
+	
+	else if(o == 13)
+	{
+		Package::Body b = p->GetBody();
+		int result = *(int*)b.Read(4);
+		
+		if(result == 1)
+		{
+			gameActive = true;
+			Gui->setState(GUI::Game);
+		}
+		else 
+		{
+			gameActive = false;
+			Gui->setState(GUI::Pause);
+		}	
+	}
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
@@ -97,6 +124,18 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
  	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+
+	wstringstream wss;
+	if(gameActive)
+	{
+		wss<< "Time Left: " << timeLeft;
+		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(20,20), 25, 0xff0000ff);
+	}
+	else
+	{
+		wss<<"Time to next game: " << pauseTimeLeft;
+		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(20,20), 25, 0xff0000ff);
+	}
 	
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
