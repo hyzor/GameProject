@@ -68,7 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 	// Used to find memory leaks
-	//_CrtSetBreakAlloc(4953584);
+	//_CrtSetBreakAlloc(1585977);
 	
 	//Also create a debug console window
 	/*if(AllocConsole()) 

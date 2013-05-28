@@ -55,6 +55,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 			//*((char*)&data->joint+i) = *((char*)&cJoint+i);
 
 		Network::GetInstance()->Push(new Package(Package::Header(1, 1, sizeof(Data)), Package::Body((char*)(data))));
+		delete data;
 	}
 
 	/*if(OutOfMap() && mIsAlive) //flytta till server
@@ -186,7 +187,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 			CollisionModel::Hit h = world->Intersect(v, dir, 100000);
 			int hitId = 0;
 			//enemy test
-			for(int i = 0; i < multiplayers->size(); i++)
+			for(UINT i = 0; i < multiplayers->size(); i++)
 			{
 				if(multiplayers->at(i)->IsAlive())
 				{
@@ -217,6 +218,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 				data->hitId = hitId;
 
 				Network::GetInstance()->Push(new Package(Package::Header(11, 1, sizeof(Data)), Package::Body((char*)(data))));
+				delete data;
 			}
 		}
 	}

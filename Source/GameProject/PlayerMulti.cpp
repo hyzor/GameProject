@@ -13,8 +13,6 @@ PlayerMulti::~PlayerMulti()
 void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
 {
 	mModel->Update(dt);
-	
-	
 
 	this->Player::Update(dt, gameTime, dInput, sm, world, multiplayers);
 	mModel->SetPosition(this->mPosition);
@@ -52,9 +50,9 @@ void PlayerMulti::HandelPackage(Package *p)
 		int hitId = *(int*)b.Read(4);
 		XMFLOAT3 hitPoint = *(XMFLOAT3*)b.Read(4*3);
 
-		XMMATRIX cJoint = *Joint;
+		//XMMATRIX cJoint = *Joint;
 
-		XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), cJoint);
+		XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), *Joint);
 		XMFLOAT3 p;
 		XMStoreFloat3(&p,v);
 

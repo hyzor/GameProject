@@ -212,11 +212,9 @@ bool Player::OutOfMap() //flytta till server
 
 XNA::AxisAlignedBox Player::GetBounding()
 {
-	XMMATRIX cJoint = *Joint;
-
 	XNA::AxisAlignedBox box;
-	XMStoreFloat3(&box.Center, XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), cJoint));
-	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(7,20,7)), cJoint));
+	XMStoreFloat3(&box.Center, XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), *Joint));
+	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(7,20,7)), *Joint));
 
 	return box;
 }

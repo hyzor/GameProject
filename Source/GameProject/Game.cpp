@@ -13,10 +13,6 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 	pauseTimeLeft = 0;
 	multiplayers = new std::vector<Player*>();
 
-	this->mPickup = new Pickup();
-	XMFLOAT3 pickupPos(player->GetPosition().x, player->GetPosition().y+150, player->GetPosition().z);
-	this->mPickup->Initialize(0, EXTRA_HEALTH, pickupPos);
-
  	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
 }
 
@@ -28,8 +24,6 @@ Game::~Game()
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		SafeDelete(multiplayers->at(i));
 	SafeDelete(multiplayers);
-
-	SafeDelete(this->mPickup);
 }
 
 void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule* sm)
@@ -40,12 +34,6 @@ void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule*
 
 	animatedEntity->Update(deltaTime);
 	world->Update(deltaTime);
-
-	mPickup->Update(deltaTime);
-	if(mPickup->Intersect(player->GetPosition()))
-	{
-		// Saker som ska hända när pickupen kolliderar med spelaren
-	}
 }
 
 void Game::HandlePackage(Package* p)
@@ -119,7 +107,6 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	// Draw world and player with dir lights and point lights
 	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
-	mPickup->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 	player->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
