@@ -76,9 +76,6 @@ def CreatePlatforms():
                 pass
         f.close()
 
-##CreatePlatforms()
-##PrintPlatforms()
-
 
 
 

@@ -34,7 +34,6 @@ class Game
 
 		Player* findPlayer(int id);
 
-		void CheckPickups();
 		Package* TimeLeft();
 		Package* GameState();
 

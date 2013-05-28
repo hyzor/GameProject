@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-# Koden ovan låter oss använda svenska tecken i python, den måste ligga först
-
-import PyEngine # Ladda in vår c++ modul GameEngine
+import PyEngine
 
 class PlayerStats(object):
 
@@ -25,9 +22,6 @@ sb = ScoreBoard()
 def CreatePlayerStats(id, name):
         global sb
         sb.ps.append(PlayerStats(id, name))
-##        PyEngine.Print(FindByIndex(id).GetString())
-##        sp.ps.append(PlayerStats(id+1, "Gnidleif"))
-##        sp.ps[id+1].kills = 4
 
 def GetDesc():
         return sb.desc;
@@ -38,7 +32,7 @@ def GetStats(id):
 def AddKill(id):
         global sb
         FindByIndex(id).kills += 1
-##        Sort()
+        Sort()
 
 def AddDeath(id):
         global sb
@@ -73,3 +67,7 @@ def Sort():
                                 done = False
                                 Swap(i)
 
+def ResetStats():
+        for PlayerStats in sb.ps:
+                PlayerStats.kills = 0
+                PlayerStats.deaths = 0

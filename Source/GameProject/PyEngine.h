@@ -59,13 +59,13 @@ public:
 	PyObject* GetFunction(const char* funcName); // Returerar en PyObject* med funktionen i givet namnet på funktionen
 	PyObject* GetModule() const { return this->mModule; }
 
-	void Print(std::string msg); // Används av funktionen som wrappar pythons print
+	void Print(std::string msg); // Aldrig använt denna, men den är rätt självförklarande
 
 	void Update(float dt); // Update för timerevents
 
 	HRESULT LoadModule(std::string scriptName); // Måste kallas på med rätt namn på scriptet som ska köras innan ett nytt script ska köras
 	bool CheckReturns() const; // Används för att se om det ligger något i returvektorn
-	void ClearReturns() { this->mFuncReturns.clear(); } // Rensar ur tidigare nämnda vektor, ska kallas på när alla argument hämtats ur den
+	void ClearReturns(); // Rensar ur tidigare nämnda vektor, ska kallas på när alla argument hämtats ur den
 
 	// De tre funktionerna här ska kallas på för att fylla upp eventuella vektorer med saker som C++ förstår ifrån returvektorn
 	void ConvertInts(std::vector<int> &r_vec);
@@ -110,7 +110,7 @@ PyObject* PyEngine::CreateArg(A arg1)
 	// 1
 	if(typeid(arg1) == typeid(int))
 		types += "i";
-	else if(typeid(arg1) == typeid(const char*))
+	else if(typeid(arg1) == typeid(const char*) || typeid(arg1) == typeid(std::string))
 		types += "s";
 	else if(typeid(arg1) == typeid(double))
 		types += "d";
@@ -170,19 +170,19 @@ PyObject* PyEngine::CreateArg(A arg1, B arg2, C arg3)
 
 /* 
 Exempel för att kalla på funktion i Python utanför motorn:
-Python->CallFunction(
-	Python->GetFunction("FunktionsNamn"),
-	Python->CreateArg(var1, var2));
+PyEngine::GetInstance()->CallFunction(
+	PyEngine::GetInstance()->GetFunction("FunktionsNamn"),
+	PyEngine::GetInstance()->CreateArg(var1, var2));
 
 Exempel för att få tillbaka returer i en loop ifrån Python:
 std::vector<std::string> vNames;
 std::vector<int> vPositions;
-Python->Tick( dt ); <- Viktigt att kalla på denna innan man tror att man ska få returer eftersom de skapas i Tick av NotifyWhen
-if(Python->CheckReturns())
+PyEngine::GetInstance()->Tick( dt ); <- Viktigt att kalla på denna innan man tror att man ska få returer eftersom de skapas i Tick av NotifyWhen
+if(PyEngine::GetInstance()->CheckReturns())
 {
-	Python->ConvertInts(vPositions);
-	Python->ConvertStrings(vNames);
-	Python->ClearReturns();
+	PyEngine::GetInstance()->ConvertInts(vPositions);
+	PyEngine::GetInstance()->ConvertStrings(vNames);
+	PyEngine::GetInstance()->ClearReturns();
 	this->mName = vNames[0];
 	XMFLOAT3 Pos = XMFLOAT3(vPositions[0], vPositions[1], vPositions[2]);
 	vNames.clear();

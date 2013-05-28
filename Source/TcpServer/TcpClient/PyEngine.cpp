@@ -12,14 +12,14 @@ static PyObject* WrapPyEnginePrint(PyObject* self, PyObject* args)
 	if(!lpPyEngine)
 	{
 		std::cout << "Failed to get the game pointer" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	const char* lpSrc;
 	if(!PyArg_ParseTuple(args, "s", &lpSrc))
 	{
 		PyErr_SetString(PyExc_RuntimeError, "PyEngine.Print wants a single string argument");
-		return NULL;
+		return nullptr;
 	}
 
 	lpPyEngine->Print(std::string(lpSrc));
@@ -35,7 +35,7 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 	if(!lpPyEngine)
 	{
 		std::cout << "Failed to get the game pointer" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	float lTime;
@@ -43,15 +43,17 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 	PyObject* PyArgs;
 	if(!PyArg_ParseTuple(args, "fOO", &lTime, &lpFunc, &PyArgs))
 	{
-		return NULL;
+		return nullptr;
 	}
 	
 	if(!PyCallable_Check(lpFunc))
 	{
-		return NULL;
+		return nullptr;
 	}
 
-	PyObject* lpArgs = NULL;
+	Py_INCREF(lpFunc);
+
+	PyObject* lpArgs = nullptr;
 	if(PyArgs != Py_None)
 	{
 		lpArgs = PyList_New(1);
@@ -59,6 +61,8 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 	}
 
 	lpPyEngine->AddTimerEvent(TimerEvent(float(lTime), lpFunc, lpArgs));
+
+	if(PyArgs) Py_DECREF(PyArgs);
 	
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -70,7 +74,7 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 	if(!lpPyEngine)
 	{
 		std::cout << "Failed to get the game pointer" << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
 	const char* status;
@@ -80,19 +84,19 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 	{
 		if(PyErr_Occurred())
 			PyErr_Print();
-		return NULL;
+		return nullptr;
 	}
 
 	if(!PyCallable_Check(lpFunc))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	std::string s_copy = status;
 
 	Py_INCREF(lpFunc);
 
-	PyObject* lpArgs = NULL;
+	PyObject* lpArgs = nullptr;
 	if(PyArgs != Py_None)
 	{
 		lpArgs = PyList_New(1);
@@ -100,6 +104,8 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 	}
 
 	lpPyEngine->AddStatusEvent(StatusEvent(s_copy, lpFunc, lpArgs));
+
+	if(PyArgs) Py_DECREF(PyArgs);
 	
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -110,13 +116,13 @@ static PyMethodDef PyEngineMethods[] =
 	{ "Print",			WrapPyEnginePrint,		METH_VARARGS,	"Use PyEngine to print a message" },
 	{ "NotifyAfter",	PyEngineNotifyAfter,	METH_VARARGS,	"Notify after a specific amount of time" },
 	{ "NotifyWhen",		PyEngineNotifyWhen,		METH_VARARGS,	"Notify when a specific trigger has been met" },
-	{ NULL,				NULL,					0,				NULL },
+	{ nullptr,				nullptr,					0,				nullptr },
 };
 
 PyEngine* PyEngine::mInstance = 0;
 
 PyEngine::PyEngine()
-	: mModule(NULL)
+	: mModule(nullptr)
 {
 }
 
@@ -166,8 +172,8 @@ HRESULT PyEngine::InitScriptInterface()
 
 	mModule = Py_InitModule("PyEngine", PyEngineMethods);
 
-	PyObject* capsule = PyCapsule_New((void*) this, "PyEngine._C_API", NULL);
-	if (NULL == capsule)
+	PyObject* capsule = PyCapsule_New((void*) this, "PyEngine._C_API", nullptr);
+	if (nullptr == capsule)
 	{
 		std::cout << "Failed to capsule PyEngine module" << std::endl;
 		return E_FAIL;
@@ -211,7 +217,7 @@ PyObject* PyEngine::GetFunction(const char* funcName)
 
 		std::cout << "Can not find " << funcName << " or its not a callable function" << std::endl;
 		Py_XDECREF(lpFunction);
-		lpFunction = NULL;
+		lpFunction = nullptr;
 	}
 
 	return lpFunction;
@@ -249,7 +255,9 @@ void PyEngine::Update(float dt)
 			if(mTimer[i].mArgs)
 				CallFunction(mTimer[i].mFunc, PyList_AsTuple(mTimer[i].mArgs));
 			else
-				CallFunction(mTimer[i].mFunc, NULL);
+				CallFunction(mTimer[i].mFunc, nullptr);
+
+			if(mTimer[i].mFunc) Py_DECREF(mTimer[i].mFunc);
 			mTimer.erase(mTimer.begin()+i);
 		}
 	}
@@ -262,10 +270,13 @@ void PyEngine::Update(float dt)
 			if(mStatus[i].mArgs)
 				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, PyList_AsTuple(mStatus[i].mArgs));
 			else
-				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, NULL);
+				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, nullptr);
 
-			if(mStatus[i].mReturns != Py_None && mStatus[i].mReturns != NULL)
+			if(mStatus[i].mReturns != Py_None && mStatus[i].mReturns != nullptr)
+			{
 				mFuncReturns.push_back(mStatus[i].mReturns);
+				if(mStatus[i].mFunc) Py_DECREF(mStatus[i].mFunc);
+			}
 		}
 		mStatus.clear();
 	}
@@ -290,20 +301,20 @@ void PyEngine::MakeTuple(PyObject* &args)
 
 PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 {
-	if(args != NULL && !PyTuple_Check(args))
+	if(args != nullptr && !PyTuple_Check(args))
 		this->MakeTuple(args);
 
 	PyObject* lpReturns;
 	if(args)
 		lpReturns = PyObject_CallObject(func, args);
 	else
-		lpReturns = PyObject_CallObject(func, NULL);
+		lpReturns = PyObject_CallObject(func, nullptr);
 
 	if(!lpReturns)
 	{
 		std::cout << "Something went wrong with calling the function!" << std::endl;
 		PyErr_Print();
-		return NULL;
+		return nullptr;
 	}
 
 	return lpReturns;
@@ -391,4 +402,13 @@ void PyEngine::ConvertDoubles(std::vector<double> &r_vec)
 			}
 		}
 	}
+}
+
+void PyEngine::ClearReturns()
+{
+	for(auto it(mFuncReturns.begin()); it != mFuncReturns.end(); ++it)
+	{
+		if(*it) Py_DECREF(*it);
+	}
+	mFuncReturns.clear();
 }

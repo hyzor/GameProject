@@ -6,7 +6,7 @@ Game::Game(std::queue<PackageTo*>* send)
 	gameActive = false;
 	gameLength = 30;
 	pauseLength = 10;
-
+	
 	Python->LoadModule("platform_script");
 	Python->CallFunction(
 		Python->GetFunction("CreatePlatforms"),
@@ -182,7 +182,7 @@ void Game::HandelPackage(Package* p, char* socket)
 	}
 	else if(p->GetHeader().operation == 9)
 	{
-		for(int i = 0; i < pickups.size(); i++)
+		for(unsigned int i = 0; i < pickups.size(); i++)
 		{
 			if(p->GetHeader().id == pickups[i]->GetId())
 			{
@@ -222,13 +222,6 @@ Player* Game::findPlayer(int id)
 	return nullptr;
 }
 
-void Game::CheckPickups()
-{
-	/*
-	Funktionen här bör kallas varje update för att kolla scriptet och skapa pickups
-	*/
-}
-
 Package* Game::TimeLeft()
 {
 	struct timeLeft
@@ -238,9 +231,9 @@ Package* Game::TimeLeft()
 	
 	timeLeft* time = new timeLeft();
 	if(gameActive)
-		time->time = gameLength - mTimer.getTimeElapsedS();
+		time->time = gameLength - (int)mTimer.getTimeElapsedS();
 	else
-		time->time = pauseLength - mTimer.getTimeElapsedS();
+		time->time = pauseLength - (int)mTimer.getTimeElapsedS();
 
 	return new Package(Package::Header(12, 0, sizeof(timeLeft)), Package::Body((char*)time));
 }

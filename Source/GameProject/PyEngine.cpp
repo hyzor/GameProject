@@ -51,6 +51,8 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 		return nullptr;
 	}
 
+	Py_INCREF(lpFunc);
+
 	PyObject* lpArgs = nullptr;
 	if(PyArgs != Py_None)
 	{
@@ -59,6 +61,8 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 	}
 
 	lpPyEngine->AddTimerEvent(TimerEvent(float(lTime), lpFunc, lpArgs));
+
+	if(PyArgs) Py_DECREF(PyArgs);
 	
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -100,6 +104,8 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 	}
 
 	lpPyEngine->AddStatusEvent(StatusEvent(s_copy, lpFunc, lpArgs));
+
+	if(PyArgs) Py_DECREF(PyArgs);
 	
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -167,7 +173,7 @@ HRESULT PyEngine::InitScriptInterface()
 	mModule = Py_InitModule("PyEngine", PyEngineMethods);
 
 	PyObject* capsule = PyCapsule_New((void*) this, "PyEngine._C_API", nullptr);
-	if (!capsule)
+	if (nullptr == capsule)
 	{
 		std::cout << "Failed to capsule PyEngine module" << std::endl;
 		return E_FAIL;
@@ -184,7 +190,7 @@ HRESULT PyEngine::LoadModule(std::string scriptName)
 	{
 		mCurrScript = scriptName;
 		PyObject* lScriptName = PyString_FromString(mCurrScript.c_str());
-		if(!lScriptName)
+		if(!lScriptName) // Standard koll för null, så att vårt program inte kraschar
 		{
 			return E_FAIL;
 		}
@@ -195,7 +201,7 @@ HRESULT PyEngine::LoadModule(std::string scriptName)
 			PyErr_Print();
 			return E_FAIL;
 		}
-		Py_DECREF(lScriptName);
+		Py_DECREF(lScriptName); // Plocka bort referensen av vår python string
 	}
 	return S_OK;
 }
@@ -240,33 +246,37 @@ bool PyEngine::CheckReturns() const
 void PyEngine::Update(float dt)
 {
 	//NotifyAfter
-	for(auto& i(mTimer.begin()); i != mTimer.end(); ++i)
+	for(UINT i(0); i != mTimer.size(); ++i)
 	{
-		i->mTime -= dt;
+		mTimer[i].mTime -= dt;
 
-		if(i->mTime <= 0)
+		if(mTimer[i].mTime <= 0) //Om tiden har gått ut, så anropa funktionen och plocka bort från vectorn
 		{
-			if(i->mArgs)
-				CallFunction(i->mFunc, PyList_AsTuple(i->mArgs));
+			if(mTimer[i].mArgs)
+				CallFunction(mTimer[i].mFunc, PyList_AsTuple(mTimer[i].mArgs));
 			else
-				CallFunction(i->mFunc, nullptr);
+				CallFunction(mTimer[i].mFunc, nullptr);
 
-			mTimer.erase(i);
+			if(mTimer[i].mFunc) Py_DECREF(mTimer[i].mFunc);
+			mTimer.erase(mTimer.begin()+i);
 		}
 	}
 
 	//NotifyWhen
 	if(mStatus.size() > 0)
 	{
-		for(auto& i(mStatus.begin()); i != mStatus.end(); ++i)
+		for(UINT i(0); i != mStatus.size(); ++i)
 		{
-			if(i->mArgs)
-				i->mReturns = CallFunction(i->mFunc, PyList_AsTuple(i->mArgs));
+			if(mStatus[i].mArgs)
+				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, PyList_AsTuple(mStatus[i].mArgs));
 			else
-				i->mReturns = CallFunction(i->mFunc, nullptr);
+				mStatus[i].mReturns = CallFunction(mStatus[i].mFunc, nullptr);
 
-			if(i->mReturns != Py_None && i->mReturns != nullptr)
-				mFuncReturns.push_back(i->mReturns);
+			if(mStatus[i].mReturns != Py_None && mStatus[i].mReturns != nullptr)
+			{
+				mFuncReturns.push_back(mStatus[i].mReturns);
+				if(mStatus[i].mFunc) Py_DECREF(mStatus[i].mFunc);
+			}
 		}
 		mStatus.clear();
 	}
@@ -303,8 +313,7 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 	if(!lpReturns)
 	{
 		std::cout << "Something went wrong with calling the function!" << std::endl;
-		if(PyErr_Occurred())
-			PyErr_Print();
+		PyErr_Print();
 		return nullptr;
 	}
 
@@ -313,13 +322,13 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 
 void PyEngine::ConvertInts(std::vector<int> &r_vec)
 {
-	for(auto& currReturn(mFuncReturns.begin()); currReturn != mFuncReturns.end(); ++currReturn)
+	for(int i(0); i != mFuncReturns.size(); ++i)
 	{
-		int lNumReturns = PyTuple_Size(*currReturn);
+		int lNumReturns = PyTuple_Size(mFuncReturns[i]);
 
-		if(PyInt_Check(*currReturn))
+		if(PyInt_Check(mFuncReturns[i]))
 		{
-			r_vec.push_back(PyInt_AsLong(*currReturn));
+			r_vec.push_back(PyInt_AsLong(mFuncReturns[i]));
 			continue;
 		}
 
@@ -327,7 +336,7 @@ void PyEngine::ConvertInts(std::vector<int> &r_vec)
 		{
 			for(int j(0); j != lNumReturns; ++j)
 			{
-				PyObject* item = PyTuple_GetItem(*currReturn, j);
+				PyObject* item = PyTuple_GetItem(mFuncReturns[i], j);
 				if(!PyInt_Check(item))
 				{
 					PyErr_Print();
@@ -341,13 +350,13 @@ void PyEngine::ConvertInts(std::vector<int> &r_vec)
 
 void PyEngine::ConvertStrings(std::vector<std::string> &r_vec)
 {
-	for(auto& currReturn(mFuncReturns.begin()); currReturn != mFuncReturns.end(); ++currReturn)
+	for(int i(0); i != mFuncReturns.size(); ++i)
 	{
-		int lNumReturns = PyTuple_Size(*currReturn);
+		int lNumReturns = PyTuple_Size(mFuncReturns[i]);
 
-		if(PyString_Check(*currReturn))
+		if(PyString_Check(mFuncReturns[i])) 
 		{
-			r_vec.push_back(PyString_AsString(*currReturn));
+			r_vec.push_back(PyString_AsString(mFuncReturns[i]));
 			continue;
 		}
 
@@ -355,7 +364,7 @@ void PyEngine::ConvertStrings(std::vector<std::string> &r_vec)
 		{
 			for(int j(0); j != lNumReturns; ++j)
 			{
-				PyObject* item = PyTuple_GetItem(*currReturn, j);
+				PyObject* item = PyTuple_GetItem(mFuncReturns[i], j);
 				if(!PyString_Check(item))
 				{
 					PyErr_Print();
@@ -369,13 +378,13 @@ void PyEngine::ConvertStrings(std::vector<std::string> &r_vec)
 
 void PyEngine::ConvertDoubles(std::vector<double> &r_vec)
 {
-	for(auto& currReturn(mFuncReturns.begin()); currReturn != mFuncReturns.end(); ++currReturn)
+	for(int i(0); i != mFuncReturns.size(); ++i)
 	{
-		int lNumReturns = PyTuple_Size(*currReturn);
+		int lNumReturns = PyTuple_Size(mFuncReturns[i]);
 
-		if(PyFloat_Check(*currReturn))
+		if(PyFloat_Check(mFuncReturns[i]))
 		{
-			r_vec.push_back(PyFloat_AsDouble(*currReturn));
+			r_vec.push_back(PyFloat_AsDouble(mFuncReturns[i]));
 			continue;
 		}
 
@@ -383,7 +392,7 @@ void PyEngine::ConvertDoubles(std::vector<double> &r_vec)
 		{
 			for(int j(0); j != lNumReturns; ++j)
 			{
-				PyObject* item = PyTuple_GetItem(*currReturn, j);
+				PyObject* item = PyTuple_GetItem(mFuncReturns[i], j);
 				if(!PyFloat_Check(item))
 				{
 					PyErr_Print();
@@ -393,4 +402,13 @@ void PyEngine::ConvertDoubles(std::vector<double> &r_vec)
 			}
 		}
 	}
+}
+
+void PyEngine::ClearReturns()
+{
+	for(auto it(mFuncReturns.begin()); it != mFuncReturns.end(); ++it)
+	{
+		if(*it) Py_DECREF(*it);
+	}
+	mFuncReturns.clear();
 }

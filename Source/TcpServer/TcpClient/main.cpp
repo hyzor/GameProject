@@ -111,7 +111,7 @@ void sendPackage()
 			addsocket = NULL;
 		}
 
-		for(int i = 0; i < sockets.size(); i++)
+		for(unsigned int i = 0; i < sockets.size(); i++)
 		{
 			boost::system::error_code error2;
 			size_t len = (*sockets[i]).available(error2);

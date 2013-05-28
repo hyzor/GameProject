@@ -65,7 +65,7 @@ public:
 
 	HRESULT LoadModule(std::string scriptName); // Måste kallas på med rätt namn på scriptet som ska köras innan ett nytt script ska köras
 	bool CheckReturns() const; // Används för att se om det ligger något i returvektorn
-	void ClearReturns() { this->mFuncReturns.clear(); } // Rensar ur tidigare nämnda vektor, ska kallas på när alla argument hämtats ur den
+	void ClearReturns(); // Rensar ur tidigare nämnda vektor, ska kallas på när alla argument hämtats ur den
 
 	// De tre funktionerna här ska kallas på för att fylla upp eventuella vektorer med saker som C++ förstår ifrån returvektorn
 	void ConvertInts(std::vector<int> &r_vec);
@@ -110,7 +110,7 @@ PyObject* PyEngine::CreateArg(A arg1)
 	// 1
 	if(typeid(arg1) == typeid(int))
 		types += "i";
-	else if(typeid(arg1) == typeid(const char*))
+	else if(typeid(arg1) == typeid(const char*) || typeid(arg1) == typeid(std::string))
 		types += "s";
 	else if(typeid(arg1) == typeid(double))
 		types += "d";

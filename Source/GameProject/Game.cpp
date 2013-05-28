@@ -88,6 +88,7 @@ void Game::HandlePackage(Package* p)
 		
 		if(result == 1)
 		{
+			this->ResetGame();
 			gameActive = true;
 			Gui->setState(GUI::Game);
 		}
@@ -136,4 +137,12 @@ Camera* Game::GetCamera()
 Player* Game::GetPlayer() const
 {
 	return player;
+}
+
+void Game::ResetGame()
+{
+	Python->LoadModule("scoreboard_script");
+	Python->CallFunction(
+		Python->GetFunction("ResetStats"),
+		nullptr);
 }
