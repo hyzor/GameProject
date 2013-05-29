@@ -64,12 +64,6 @@ void Player::HandlePackage(Package* p)
 		this->pitch = *(float*)b.Read(4);
 		this->roll = *(float*)b.Read(4);
 		this->yaw = *(float*)b.Read(4);
-		//int a = *(int*)b.Read(4);
-		//if(this->alive == 1) //sync problem vänta en stund efter senaste spawn
-			//this->alive = a;
-		//this->health = *(float*)b.Read(4);
-		//for(int i = 0; i < 64; i++)
-			//this->joint[i] = *(char*)b.Read(1);
 	}
 	else if(p->GetHeader().operation == 11)
 	{
@@ -90,6 +84,7 @@ void Player::HandlePickup(Pickup* p)
 
 void Player::Update()
 {
+	this->mTimer.tick();
 	float dt = this->mTimer.getDeltaTime();
 
 	////respawn player if dead
@@ -99,7 +94,6 @@ void Player::Update()
 	//alive = true;
 	//send->push(new PackageTo(this->GetSpawn(), (char*)id));
 
-	this->mTimer.tick();
 }
 
 Package* Player::GetConnect()

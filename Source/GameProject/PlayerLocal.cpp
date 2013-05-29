@@ -172,7 +172,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 
 			XMVECTOR dir = XMVector3Normalize(mCamera->GetLookXM());
 			//platform test
-			CollisionModel::Hit h = world->Intersect(v, dir, 100000);
+			World::Hit h = world->Intersect(v, dir, 100000);
 			int hitId = 0;
 			//enemy test
 			for(UINT i = 0; i < multiplayers->size(); i++)
@@ -180,13 +180,13 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 				if(multiplayers->at(i)->IsAlive())
 				{
 					float t = 0;
-					XNA::IntersectRayAxisAlignedBox(v,dir,&multiplayers->at(i)->GetBounding(), &t);
-					if(t < h.t)
-					{
-						h.t = t;
-						h.hit = true;
-						hitId = multiplayers->at(i)->GetID();
-					}
+					if(XNA::IntersectRayAxisAlignedBox(v,dir,&multiplayers->at(i)->GetBounding(), &t))
+						if(t < h.hit.t)
+						{
+							h.hit.t = t;
+							h.hit.hit = true;
+							hitId = multiplayers->at(i)->GetID();
+						}
 				}
 			}
 
@@ -202,7 +202,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 				};
 
 				Data* data = new Data();
-				XMStoreFloat3(&data->hitAt, v+dir*h.t);
+				XMStoreFloat3(&data->hitAt, v+dir*h.hit.t);
 				data->hitId = hitId;
 
 				Network::GetInstance()->Push(new Package(Package::Header(11, 1, sizeof(Data)), Package::Body((char*)(data))));
@@ -348,6 +348,9 @@ void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 		wss << TimeToSpawn;
 		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(SCREEN_WIDTH/2-50.0f,SCREEN_HEIGHT/2-50.0f), 70, 0xff0000ff);
 	}
+
+	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
+	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap);
 
 	this->Player::Draw(dc, activeTech, mCamera, shadowMap);
 }

@@ -20,7 +20,8 @@ public:
 	
 	void HandlePackage(Package* p);
 	int mID;
-
+	
+	XMFLOAT3 move;
 	std::vector<PointLight> mPointLights;
 
 protected:
@@ -32,7 +33,6 @@ private:
 	CollisionModel* mCollision;
 	Entity* mEntity;
 
-	XMFLOAT3 move;
 	XMFLOAT3 pos;
 };
 #endif

@@ -36,20 +36,22 @@ void World::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* ca
 		mPlatforms.at(i)->Draw(dc, at, camera, shadowMap);
 }
 
-CollisionModel::Hit World::Intersect(XMVECTOR origin, XMVECTOR dir, float length)
+World::Hit World::Intersect(XMVECTOR origin, XMVECTOR dir, float length)
 {
-	CollisionModel::Hit hit;
-	hit.hit = false;
-	hit.t = MathHelper::infinity;
+	Hit hit;
+	hit.hit.hit = false;
+	hit.hit.t = MathHelper::infinity;
+	hit.platform = NULL;
 
 	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
 	{
 		CollisionModel::Hit hit2 = mPlatforms.at(i)->getCollision()->Intersect(origin, dir, length);
 		if(hit2.hit)
 		{
-			if(hit2.t < hit.t)
+			if(hit2.t < hit.hit.t)
 			{
-				hit = hit2;
+				hit.platform = mPlatforms[i];
+				hit.hit = hit2;
 				return hit;
 			}
 		}
@@ -75,6 +77,7 @@ void World::HandlePackage(Package* p)
 		Package::Body b = p->GetBody();
 		int type = *(int*)b.Read(4);
 		XMFLOAT3 pos = *(XMFLOAT3*)b.Read(4*3);
+		XMFLOAT3 mov = *(XMFLOAT3*)b.Read(4*3);
 
 		switch(type)
 		{
@@ -92,6 +95,7 @@ void World::HandlePackage(Package* p)
 				break;
 		}
 		mPlatforms[mPlatforms.size()-1]->Initialize(p->GetHeader().id, pos);
+		mPlatforms[mPlatforms.size()-1]->move = mov;
 	}
 	else if(p->GetHeader().operation == 6)
 	{

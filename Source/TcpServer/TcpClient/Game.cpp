@@ -75,7 +75,12 @@ void Game::Update()
 	float dt = this->mTimer.getDeltaTime();
 	
 	for(unsigned int i = 0; i < platforms.size(); i++)
+	{
 		platforms[i]->Update(dt);
+		Package* p = platforms[i]->GetUpdate();
+		if(p != NULL)
+			send->push(new PackageTo(p, 0));
+	}
 	
 	for(unsigned int i = 0; i < pickups.size(); i++)
 	{
@@ -232,6 +237,7 @@ void Game::Disconnect(char* socket)
 		if(players[i]->GetId() == (int)socket)
 		{
 			send->push(new PackageTo(new Package(Package::Header(4, (int)socket, 0), Package::Body(new char())), 0));
+			delete players[i];
 			players.erase(players.begin() + i);
 			return;
 		}

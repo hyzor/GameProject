@@ -12,11 +12,17 @@
 class World
 {
 public:
+	struct Hit
+	{
+		CollisionModel::Hit hit;
+		Platform* platform;
+	};
+
 	World();
 	~World(void);
 	void Update(float dt);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
-	CollisionModel::Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
+	Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
 
 	void HandlePackage(Package *p);

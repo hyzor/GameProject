@@ -25,6 +25,9 @@ Package* Platform::GetConnect()
 		float posX;
 		float posY;
 		float posZ;
+		float movX;
+		float movY;
+		float movZ;
 	};
 
 	PlatformConnect* pc = new PlatformConnect();
@@ -32,6 +35,9 @@ Package* Platform::GetConnect()
 	pc->posX = posX;
 	pc->posY = posY;
 	pc->posZ = posZ;
+	pc->movX = movX;
+	pc->movY = movY;
+	pc->movZ = movZ;
 
 	return new Package(Package::Header(5, id, sizeof(PlatformConnect)), Package::Body((char*)pc));
 }
@@ -84,11 +90,16 @@ void Platform::Update(float dt)
 			this->posX = (float)dReturns[index];
 			this->posY = (float)dReturns[index+1];
 			this->posZ = (float)dReturns[index+2];
-			this->movX = (float)dReturns[index+3];
-			this->movY = (float)dReturns[index+4];
-			this->movZ = (float)dReturns[index+5];
+			float movX = (float)dReturns[index+3];
+			float movY = (float)dReturns[index+4];
+			float movZ = (float)dReturns[index+5];
 
-			this->update = true;
+			if(!(movX == this->movX && movY == this->movY && movZ == this->movZ))
+				this->update = true;
+			
+			this->movX = movX;
+			this->movY = movY;
+			this->movZ = movZ;
 		}
 	}
 	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;

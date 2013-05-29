@@ -18,6 +18,7 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 	OnGround = false;
 	rotating = false;
 	move = XMFLOAT3(0, 0, 0);
+	relativeMotion = XMFLOAT3(0,0,0);
 	aliveTime = 0;
 	score = 0;
 
@@ -73,9 +74,9 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	// Health lower than or equal 0, die
 	if (mHealth <= 0.0f)
 		Die();
-
+	
 	// Move
-	pos += XMLoadFloat3(&move);	
+	pos += XMLoadFloat3(&move)+XMLoadFloat3(&relativeMotion)*dt;	
 
 
 	// Gravity
@@ -90,29 +91,33 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	this->OnGround = false;
 	XMVECTOR dir;
 	CollisionModel::Hit hit;
+	World::Hit groundHit;
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,-1,0)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,30,0)), cJoint), dir, 30); 
+	groundHit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,36,0)), cJoint), dir, 36);
+	hit = groundHit.hit;
 	if(hit.hit)
 	{
 		//feet
-		if(hit.t > 15)
+		if(hit.t > 18)
 		{
 			OnGround = true;
 			ySpeed = 0;
-			pos -= dir*30-dir*hit.t;
+			pos -= dir*36-dir*hit.t;
+			relativeMotion = groundHit.platform->move; 
 		}
 		//head
-		if(hit.t < 15)
+		if(hit.t < 18)
 		{
 			OnGround = false;
 			ySpeed = 0;
 			pos += dir*hit.t;
 		}
 	}
+	
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,1)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,2.5f,-3)), cJoint), dir, 6); 
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,2.5f,-3)), cJoint), dir, 6).hit; 
 	if(hit.hit)
 	{
 		//front
@@ -124,7 +129,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	}
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-1,0,0)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-3,2.5f,0)), cJoint), dir, 6); 
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-3,2.5f,0)), cJoint), dir, 6).hit; 
 	if(hit.hit)
 	{
 		//left
@@ -147,7 +152,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	XMStoreFloat3(&mPosition, pos);
 
 	XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,20,0)), cJoint));
+	XMStoreFloat3(&camPos, pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,25,0)), cJoint));
 	mCamera->SetPosition(camPos);
 	mCamera->UpdateViewMatrix(XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 1, 0)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0, 0, 1)), cJoint), XMVector3Transform(XMLoadFloat3(&XMFLOAT3(1, 0, 0)), cJoint));
 
@@ -163,8 +168,6 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
-	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
-	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap);
 }
 
 void Player::HandelPackage(Package *p)
@@ -214,7 +217,7 @@ XNA::AxisAlignedBox Player::GetBounding()
 {
 	XNA::AxisAlignedBox box;
 	XMStoreFloat3(&box.Center, XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), *Joint));
-	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(7,20,7)), *Joint));
+	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(4,30,4)), *Joint));
 
 	return box;
 }

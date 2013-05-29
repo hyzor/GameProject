@@ -2,10 +2,9 @@
 
 
 Package::Package()
-	: data(nullptr)
 {
 	this->size = sizeof(Package::Header);
-	//this->data = new char();
+	this->data = new char();
 }
 
 Package::Package(char* data)
