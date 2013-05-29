@@ -1,0 +1,8 @@
+1 - 24 //Runing
+30 - 49 //Jumping
+51 - 74 // Sidestep Right
+81 - 104 // Sidestep Left
+
+24 - 1 // Back (Blev bra för bakåt animation med.)
+
+Kan behöva tweaka keyframe speeded på vissa av animationerna, beroende på hur snabbt vi vill ha det.
