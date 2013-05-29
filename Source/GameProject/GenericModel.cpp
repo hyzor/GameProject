@@ -90,7 +90,7 @@ GenericModel::~GenericModel(void)
 {
 }
 
-Vertex::Basic32* GenericModel::GetVertex(int index)
+Vertex::PosNormalTexTan* GenericModel::GetVertex(int index)
 {
 	for (UINT i = 0; i < meshCount; ++i)
 	{

@@ -123,7 +123,7 @@ void StreamOutGS(point Particle gIn[1], inout PointStream<Particle> ptStream)
 
 			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
-			p.InitialVelW = gEmitDirW;
+			p.InitialVelW = gEmitDirW * 1000.0f;
 			p.SizeW = float2(2.0f, 2.0f);
 			p.Age = 0.0f;
 			p.Type = PT_FLARE;
@@ -179,7 +179,7 @@ VertexOut DrawVS(Particle vIn)
 	float t = vIn.Age;
 
     // Constant acceleration equation
-	vOut.PosW = 0.5f*t*t*(vIn.InitialVelW*6000.0f) + t*vIn.InitialVelW + vIn.InitialPosW;
+	vOut.PosW = 0.5f*t*t*vIn.InitialVelW + t*vIn.InitialVelW + vIn.InitialPosW;
 
 	// fade color with time
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t/1.0f);

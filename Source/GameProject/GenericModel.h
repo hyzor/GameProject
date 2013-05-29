@@ -34,7 +34,7 @@ public:
 	// Bounding box
 	XNA::AxisAlignedBox boundingBox;
 
-	Vertex::Basic32* GetVertex(int index);
+	Vertex::PosNormalTexTan* GetVertex(int index);
 	int GetVertexCount();
 
 	//
