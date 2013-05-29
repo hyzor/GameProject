@@ -10,7 +10,7 @@ AnimatedEntity::AnimatedEntity(GenericSkinnedModel* model, XMFLOAT3 position)
 	mInstance.model = model;
 	mInstance.isVisible = true;
 	mInstance.TimePos = 0.0f;
-	mInstance.ClipName = "animation";
+	mInstance.ClipName = "combinedAnim_0";
 	mInstance.FinalTransforms.resize(mInstance.model->skinnedData.Bones.size());
 	this->Position = position;
 	this->Scale = XMFLOAT3(1, 1, 1);
