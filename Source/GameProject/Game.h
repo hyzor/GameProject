@@ -46,7 +46,7 @@ class Game
 		int pauseTimeLeft;
 		bool gameActive;
 
-		Pickup* mPickup;
+		std::vector<Pickup*> pickups;
 
 		AnimatedEntity* animatedEntity;
 

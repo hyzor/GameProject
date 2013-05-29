@@ -21,11 +21,10 @@ public:
 	Pickup(void);
 	~Pickup(void);
 	void Initialize(int id, int type, XMFLOAT3 pos);
-	void Update(float dt);
+	void Update(float dt, XNA::AxisAlignedBox *player);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
-	bool Intersect(XMFLOAT3 pos);
-	void HandlePackage(Package* package);
-	
+	int GetId(){return mID;}
+
 private:
 
 	int mID;

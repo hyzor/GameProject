@@ -20,8 +20,6 @@ void Platform::Initialize(int id, XMFLOAT3 pos)
 	this->mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel(mModelName), pos);
 	this->mCollision = new CollisionModel();
 	*this->mCollision = *GenericHandler::GetInstance()->GetCollisionModel(mModelName);
-	//std::string finalPath = mFilePath + mModelName + ".obj";
-	//this->mCollision->LoadObj(finalPath);
 	this->pos = pos;
 }
 
@@ -29,12 +27,12 @@ void Platform::Update(float dt)
 {
 	XMVECTOR pos = XMLoadFloat3(&this->pos);
 
-	//pos += XMLoadFloat3(&move)*dt;
+	pos += XMLoadFloat3(&move)*dt;
 
 	HandleScript();
 
 	XMStoreFloat3(&this->pos, pos);
-	mEntity->Position = this->pos;
+	mEntity->SetPosition(this->pos);
 	mCollision->SetPosition(this->pos);
 }
 

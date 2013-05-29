@@ -40,17 +40,12 @@ void PlayerMulti::HandelPackage(Package *p)
 		this->mCamera->Yaw = *(float*)b.Read(4);
 		this->mIsAlive = (*(int*)b.Read(4))==1;
 		this->mHealth = *(float*)b.Read(4);
-		//XMFLOAT4X4 cJoint = *(XMFLOAT4X4*)b.Read(64);
-		//delete this->Joint;
-		//this->Joint = new XMMATRIX(XMLoadFloat4x4(&cJoint));
 	}
 	else if(p->GetHeader().operation == 11)
 	{
 		Package::Body b = p->GetBody();
 		int hitId = *(int*)b.Read(4);
 		XMFLOAT3 hitPoint = *(XMFLOAT3*)b.Read(4*3);
-
-		//XMMATRIX cJoint = *Joint;
 
 		XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), *Joint);
 		XMFLOAT3 p;

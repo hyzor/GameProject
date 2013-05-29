@@ -24,6 +24,8 @@ Game::~Game()
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		SafeDelete(multiplayers->at(i));
 	SafeDelete(multiplayers);
+	for(UINT i = 0; i < pickups.size(); i++)
+		SafeDelete(this->pickups[i]);
 }
 
 void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule* sm)
@@ -34,6 +36,9 @@ void Game::Update(float deltaTime, float gameTime, DirectInput* di, SoundModule*
 
 	animatedEntity->Update(deltaTime);
 	world->Update(deltaTime);
+
+	for(UINT i = 0; i < pickups.size(); i++)
+		pickups[i]->Update(deltaTime, &player->GetBounding());
 }
 
 void Game::HandlePackage(Package* p)
@@ -71,7 +76,25 @@ void Game::HandlePackage(Package* p)
 	}
 	else if(o == 5 || o == 6)
 		world->HandlePackage(p);
-
+	else if(o == 7)
+	{
+		Package::Body b = p->GetBody();
+		int type = *(int*)b.Read(4);
+		XMFLOAT3 p = *(XMFLOAT3*)b.Read(3*4);
+		Pickup* pickup = new Pickup();
+		pickup->Initialize(0, type, p);
+		pickups.push_back(pickup);
+	}
+	else if(o == 8)
+	{
+		for(int i = 0; i < pickups.size(); i++)
+			if(p->GetHeader().id == pickups[i]->GetId())
+			{
+				delete pickups[i];
+				pickups.erase(pickups.begin()+i);
+				break;
+			};
+	}
 	else if(o == 12)
 	{
 		Package::Body b = p->GetBody();
@@ -108,6 +131,8 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	// Draw world and player with dir lights and point lights
 	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+	for(UINT i = 0; i < pickups.size(); i++)
+		pickups[i]->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 	player->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
  	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;

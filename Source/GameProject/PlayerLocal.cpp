@@ -10,8 +10,6 @@ PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal:
 		name[i] = Nickname[i];
 	Network::GetInstance()->Push(new Package(Package::Header(2, 0, 50), Package::Body(name)));
 
-	delete name;
-
 	t = 0;
 	rotateTo = XMFLOAT3(0,0,0);
 	TimeToSpawn = 0;
@@ -40,8 +38,6 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 			float pitch;
 			float roll;
 			float yaw;
-			//int alive;
-			//float health;
 		};
 
 		Data* data = new Data();
@@ -51,20 +47,10 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		data->pitch = this->mCamera->Pitch;
 		data->roll = this->mCamera->Roll;
 		data->yaw = this->mCamera->Yaw;
-		//data->alive = (this->mIsAlive || aliveTime < 2)?1:0; //sync problem se till att man har levt minst 2 sec innan man kan skicka att man är död
-		//data->health = this->mHealth;
-		//for(int i = 0; i < 64; i++) 
-			//*((char*)&data->joint+i) = *((char*)&cJoint+i);
 
 		Network::GetInstance()->Push(new Package(Package::Header(1, 1, sizeof(Data)), Package::Body((char*)(data))));
-		delete data;
 	}
 
-	/*if(OutOfMap() && mIsAlive) //flytta till server
-	{
-		//Spawn(1,300,50, 0);
-		Die();
-	}*/
 
 	
 	XMVECTOR m = XMLoadFloat3(&XMFLOAT3(0,0,0));
@@ -220,7 +206,6 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 				data->hitId = hitId;
 
 				Network::GetInstance()->Push(new Package(Package::Header(11, 1, sizeof(Data)), Package::Body((char*)(data))));
-				delete data;
 			}
 		}
 	}
