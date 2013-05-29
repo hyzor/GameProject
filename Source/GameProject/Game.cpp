@@ -137,13 +137,16 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	// --- Remove ---
+	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
 	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	// Draw multiplayers
+	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	// Draw pickups
+	activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	for(UINT i = 0; i < pickups.size(); i++)
 		pickups[i]->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 	
