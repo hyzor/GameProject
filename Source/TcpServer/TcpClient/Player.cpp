@@ -30,9 +30,6 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 
 	this->send = send;
 
-	posX = 0;
-	posY = 0;
-	posZ = 0;
 	movX = 0;
 	movY = 0;
 	movZ = 0;

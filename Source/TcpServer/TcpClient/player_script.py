@@ -28,7 +28,7 @@ class Player(object):
 
         def GetSelf(self):
                 return self.id, self.name, self.pos.GetSelf()
-                
+
 spawnpoints = []
 players = []
 
@@ -42,7 +42,7 @@ def RandomizeSpawn():
         x = spawnpoints[index].x
         y = spawnpoints[index].y
         z = spawnpoints[index].z
-        return Position(x, y, z)
+        return x, y, z
 
 def FindByID(id):
         for i in range(len(players)):
@@ -54,5 +54,15 @@ def GetPos(id):
 
 def CreatePlayer(id, name):
         global players
-        players.append(Player(id, name, RandomizeSpawn()))
+        global spawnpoints
+        index = random.randint(0, len(spawnpoints)-1)
+        x = spawnpoints[index].x
+        y = spawnpoints[index].y
+        z = spawnpoints[index].z
+        players.append(Player(id, name, Position(x, y, z)))
         PyEngine.NotifyWhen("Create player", GetPos, id)
+
+def Solution():
+        PyEngine.NotifyWhen("ToTheProblem", RandomizeSpawn, None)
+
+##        192.168.0.17

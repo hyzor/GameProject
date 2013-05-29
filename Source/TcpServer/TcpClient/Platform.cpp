@@ -13,7 +13,7 @@ Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, f
 	this->movZ = 0;
 
 	update = false;
-	std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
+	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
 	this->send = send;
 }
 

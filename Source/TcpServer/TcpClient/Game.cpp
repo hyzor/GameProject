@@ -156,7 +156,21 @@ void Game::HandelPackage(Package* p, char* socket)
 		for(unsigned int i = 0; i < players.size() - 1; i++)
 			send->push(new PackageTo(players[i]->GetConnect(), socket));
 
-		//first player spawn
+		std::vector<double> dReturns;
+		Python->LoadModule("player_script");
+		Python->CallFunction(
+			Python->GetFunction("Solution"),
+			nullptr);
+		Python->Update(0.0f);
+		if(Python->CheckReturns())
+		{
+			Python->ConvertDoubles(dReturns);
+			Python->ClearReturns();
+			player->posX = (float)dReturns[0];
+			player->posY = (float)dReturns[1];
+			player->posZ = (float)dReturns[2];
+		}
+
 		player->posX = 1;
 		player->posY = 500;
 		player->posZ = 50;
