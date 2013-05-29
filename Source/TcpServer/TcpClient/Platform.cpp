@@ -13,7 +13,7 @@ Platform::Platform(std::queue<PackageTo*>* send, int id, int type, float posX, f
 	this->movZ = 0;
 
 	update = false;
-	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
+	std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
 	this->send = send;
 }
 
@@ -68,10 +68,10 @@ Package* Platform::GetUpdate()
 
 void Platform::Update(float dt)
 {
-	/*Python->LoadModule("platform_script");
+	Python->LoadModule("platform_script");
 	Python->CallFunction(
 		Python->GetFunction("MovePlatform"),
-		Python->CreateArg<int>(this->id));
+		Python->CreateArg<int, double>(this->id, (double)dt));
 	Python->Update(dt);
 	if(Python->CheckReturns())
 	{
@@ -79,20 +79,17 @@ void Platform::Update(float dt)
 		Python->ConvertDoubles(dReturns);
 		Python->ClearReturns();
 		int index = 0;
-		//for(unsigned int i(0); i < mdReturns.size()/6; ++i)
-		//{
 		if(!dReturns.empty())
 		{
-			this->posX = (float)mdReturns[index];
-			this->posY = (float)mdReturns[index+1];
-			this->posZ = (float)mdReturns[index+2];
-			this->movX = (float)mdReturns[index+3];
-			this->movY = (float)mdReturns[index+4];
-			this->movZ = (float)mdReturns[index+5];
-			//index += 6;
+			this->posX = (float)dReturns[index];
+			this->posY = (float)dReturns[index+1];
+			this->posZ = (float)dReturns[index+2];
+			this->movX = (float)dReturns[index+3];
+			this->movY = (float)dReturns[index+4];
+			this->movZ = (float)dReturns[index+5];
 
 			this->update = true;
 		}
-	}*/
+	}
 	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
 }

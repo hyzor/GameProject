@@ -42,10 +42,10 @@ class Platform(object):
                 self.pos.y += self.mov.y*dt
 				
         def GetSelfMove(self):
-                return self.pos.x, self.pos.y, self.pos.z, self.mov.x, self.mov.y, self.mov.z
+                return float(self.pos.x), float(self.pos.y), float(self.pos.z), float(self.mov.x), float(self.mov.y), float(self.mov.z)
 
         def GetSelf(self):
-                return self.id, self.type, self.pos.x, self.pos.y, self.pos.z
+                return self.id, self.type, float(self.pos.x), float(self.pos.y), float(self.pos.z)
 
 platforms = []
 
@@ -56,18 +56,16 @@ def GetPos(index):
         return platforms[index].pos.GetSelf()
 
 def GetMove(index):
-        print platforms[index].GetSelfMove()
         return platforms[index].GetSelfMove()
 
 def PrintPlatforms():
         for Platform in platforms:
                 print Platform.GetSelf()
 
-def MovePlatform(index):
+def MovePlatform(index, dt):
         global platforms
-        platforms[index].Move(0.1)
+        platforms[index].Move(dt)
         PyEngine.NotifyWhen("Moved", GetMove, index)
-        #PyEngine.NotifyAfter(0.1, MovePlatform, index)
 
 def Solution(index):
         PyEngine.NotifyWhen("ToTheProblem", GetPos, index)
@@ -84,10 +82,6 @@ def CreatePlatforms():
                 i += 1
                 pass
         f.close()
-
-##CreatePlatforms()
-##PrintPlatforms()
-
 
 
 

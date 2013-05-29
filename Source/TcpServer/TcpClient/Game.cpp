@@ -15,13 +15,17 @@ Game::Game(std::queue<PackageTo*>* send)
 	if(Python->CheckReturns())
 	{
 		std::vector<int> iReturns;
+		std::vector<double> dReturns;
 		Python->ConvertInts(iReturns);
+		Python->ConvertDoubles(dReturns);
 		Python->ClearReturns();
-		int index = 0;
-		for(unsigned int i(0); i < iReturns.size()/5; ++i)
+		int iIndex = 0;
+		int dIndex = 0;
+		for(unsigned int i(0); i < (iReturns.size()+dReturns.size())/5; ++i)
 		{
-			platforms.push_back(new Platform(send, iReturns[index], iReturns[index+1], (float)iReturns[index+2], (float)iReturns[index+3], (float)iReturns[index+4]));
-			index += 5;
+			platforms.push_back(new Platform(send, iReturns[iIndex], iReturns[iIndex+1], (float)dReturns[dIndex], (float)dReturns[dIndex+1], (float)dReturns[dIndex+2]));
+			iIndex += 2;
+			dIndex += 3;
 		}
 		iReturns.clear();
 	}
