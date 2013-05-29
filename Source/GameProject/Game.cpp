@@ -135,12 +135,20 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	// Draw world and player with dir lights and point lights
 	ID3DX11EffectTechnique* activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+
+	// --- Remove ---
+	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+
+	// Draw multiplayers
+	for(UINT i = 0; i < multiplayers->size(); i++)
+		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+
+	// Draw pickups
 	for(UINT i = 0; i < pickups.size(); i++)
 		pickups[i]->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+	
+	// Draw local player
 	player->Draw(dc, activeTech, player->GetCamera(), shadowMap);
-
- 	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
- 	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	wstringstream wss;
 	if(gameActive)
@@ -153,9 +161,6 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 		wss<<"Time to next game: " << pauseTimeLeft;
 		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(20,20), 25, 0xff0000ff);
 	}
-	
-	for(UINT i = 0; i < multiplayers->size(); i++)
-		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 }
 
 Camera* Game::GetCamera()
