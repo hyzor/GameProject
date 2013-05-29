@@ -1,4 +1,5 @@
 #include "Network.h"
+#include "Settings.h"
 
 Network* Network::instance = 0;
 
@@ -25,14 +26,13 @@ void Network::Initialize()
 {
 }
 
-
 void Network::Start()
 {
 	this->Run = true;
 
 	resolver = new tcp::resolver(io_service);
 
-	tcp::resolver::query query("localhost", "13");
+	tcp::resolver::query query(Settings::GetInstance()->GetData().IP, "13");
 	
 	endpoint_iterator = resolver->resolve(query);
 	tcp::resolver::iterator end;
