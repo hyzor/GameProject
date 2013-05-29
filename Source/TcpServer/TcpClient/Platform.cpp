@@ -68,25 +68,31 @@ Package* Platform::GetUpdate()
 
 void Platform::Update(float dt)
 {
-	this->update = true;
-	Python->LoadModule("platform_script");
+	/*Python->LoadModule("platform_script");
 	Python->CallFunction(
 		Python->GetFunction("MovePlatform"),
-		Python->CreateArg(this->id));
+		Python->CreateArg<int>(this->id));
 	Python->Update(dt);
 	if(Python->CheckReturns())
 	{
-		Python->ConvertDoubles(mdReturns);
+		std::vector<double> dReturns;
+		Python->ConvertDoubles(dReturns);
 		Python->ClearReturns();
 		int index = 0;
-		for(unsigned int i(0); i < mdReturns.size()/3; ++i)
+		//for(unsigned int i(0); i < mdReturns.size()/6; ++i)
+		//{
+		if(!dReturns.empty())
 		{
 			this->posX = (float)mdReturns[index];
 			this->posY = (float)mdReturns[index+1];
 			this->posZ = (float)mdReturns[index+2];
-			index += 3;
+			this->movX = (float)mdReturns[index+3];
+			this->movY = (float)mdReturns[index+4];
+			this->movZ = (float)mdReturns[index+5];
+			//index += 6;
+
+			this->update = true;
 		}
-		mdReturns.clear();
-	}
+	}*/
 	//std::cout << this->id << ": " << this->type << ", " << " ( " << this->posX << ", " << this->posY << ", " << this->posZ << " ) " << std::endl;
 }

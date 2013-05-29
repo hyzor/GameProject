@@ -17,12 +17,13 @@ class Position(object):
                 return float(self.x), float(self.y), float(self.z)
 
 class Platform(object):
-        __speed = 0.5
+        __speed = 5
         
         def __init__(self, id, type, pos):
                 self.id = id
                 self.type = type
                 self.pos = pos
+                self.mov = Position(0,0,0)
                 self.__limit = random.randint(10, 100)
                 if random.randint(0, 1) is 0:
                         self.__dir = -1
@@ -35,9 +36,13 @@ class Platform(object):
                 if self.pos.y >= self.__upper or self.pos.y <= self.__lower:
                         self.__dir *= -1
         
-        def Move(self):
+        def Move(self, dt):
                 self.CheckDir()
-                self.pos.y += self.__speed * self.__dir
+                self.mov.y = self.__speed * self.__dir
+                self.pos.y += self.mov.y*dt
+				
+        def GetSelfMove(self):
+                return self.pos.x, self.pos.y, self.pos.z, self.mov.x, self.mov.y, self.mov.z
 
         def GetSelf(self):
                 return self.id, self.type, self.pos.x, self.pos.y, self.pos.z
@@ -50,15 +55,19 @@ def GetPlatform(index):
 def GetPos(index):
         return platforms[index].pos.GetSelf()
 
+def GetMove(index):
+        print platforms[index].GetSelfMove()
+        return platforms[index].GetSelfMove()
+
 def PrintPlatforms():
         for Platform in platforms:
                 print Platform.GetSelf()
 
 def MovePlatform(index):
         global platforms
-        platforms[index].Move()
-        PyEngine.NotifyWhen("Moved", GetPos, index)
-        PyEngine.NotifyAfter(0.1, MovePlatform, index)
+        platforms[index].Move(0.1)
+        PyEngine.NotifyWhen("Moved", GetMove, index)
+        #PyEngine.NotifyAfter(0.1, MovePlatform, index)
 
 def Solution(index):
         PyEngine.NotifyWhen("ToTheProblem", GetPos, index)
@@ -75,6 +84,9 @@ def CreatePlatforms():
                 i += 1
                 pass
         f.close()
+
+##CreatePlatforms()
+##PrintPlatforms()
 
 
 

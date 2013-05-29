@@ -13,6 +13,7 @@ public:
 	Package* GetConnect();
 	Package* GetDestroy();
 	void HandlePackage(Package* p);
+	void Update(float dt);
 	int GetId(){return id;}
 	
 	int type;

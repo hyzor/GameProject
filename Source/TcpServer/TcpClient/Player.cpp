@@ -30,9 +30,6 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 
 	this->send = send;
 
-	this->mTimer.start();
-	this->mTimer.reset();
-
 	posX = 0;
 	posY = 0;
 	posZ = 0;
@@ -48,6 +45,9 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 	alive = 1;
 	health = 100;
 	score = 0;
+
+	this->mTimer.start();
+	this->mTimer.reset();
 }
 
 void Player::HandlePackage(Package* p)
@@ -102,7 +102,7 @@ void Player::Update()
 	//alive = true;
 	//send->push(new PackageTo(this->GetSpawn(), (char*)id));
 
-	
+	this->mTimer.tick();
 }
 
 Package* Player::GetConnect()

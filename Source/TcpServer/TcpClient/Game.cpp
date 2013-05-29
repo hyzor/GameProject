@@ -69,34 +69,40 @@ void Game::Update()
 {
 	mTimer.tick();
 	float dt = this->mTimer.getDeltaTime();
+	
+	for(unsigned int i = 0; i < platforms.size(); i++)
+		platforms[i]->Update(dt);
+	
+	for(unsigned int i = 0; i < pickups.size(); i++)
+	{
+		pickups[i]->Update(dt);
+		Package* p = pickups[i]->GetDestroy();
+		if(p != NULL)
+		{
+			send->push(new PackageTo(p, 0));
+			delete pickups[i];
+			pickups.erase(pickups.begin()+i);
+			break;
+		}
+	}
+
 	for(unsigned int i = 0; i < players.size(); i++)
 	{
 		Package* p = players[i]->GetSelfUpdate();
 		if(p != NULL)
 			send->push(new PackageTo(p, (char*)players[i]->GetId()));
 	}
+
 	t += dt;
 	if(t > 1)
 	{
 		t = 0;
-		/*for(unsigned int i = 0; i < platforms.size(); i++)
+		for(unsigned int i = 0; i < platforms.size(); i++)
 		{
-			platforms[i]->Update(dt);
 			Package* p = platforms[i]->GetUpdate();
 			if(p != NULL)
 				send->push(new PackageTo(p, 0));
-		}*/
-		
-		/*for(unsigned int i = 0; i < pickups.size(); i++)
-		{
-			Package* p = pickups[i]->GetDestroy();
-			if(p != NULL)
-			{
-				send->push(new PackageTo(p, 0));
-				pickups.erase(pickups.begin()+i);
-				break;
-			}
-		}*/
+		}
 
 		if(gameActive)
 		{
@@ -110,7 +116,6 @@ void Game::Update()
 					send->push(new PackageTo(p, 0));
 			}
 		}
-
 		else
 		{
 			if( mTimer.getTimeElapsedS() > pauseLength)
@@ -182,17 +187,18 @@ void Game::HandelPackage(Package* p, char* socket)
 	}
 	else if(p->GetHeader().operation == 9)
 	{
-		for(unsigned int i = 0; i < pickups.size(); i++)
+		for(int i = 0; i < pickups.size(); i++)
 		{
 			if(p->GetHeader().id == pickups[i]->GetId())
 			{
 				pickups[i]->HandlePackage(p);
 
 				Package::Body b = p->GetBody();
-				Player* player = findPlayer(*(int*)b.Read(4));
+				Player* player = findPlayer((int)socket);
 				if(player != NULL)
 					player->HandlePickup(pickups[i]);
-
+				
+				send->push(new PackageTo(pickups[i]->GetDestroy(), 0));
 				delete pickups[i];
 				pickups.erase(pickups.begin()+i);
 				break;

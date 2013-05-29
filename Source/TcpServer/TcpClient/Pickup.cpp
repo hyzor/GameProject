@@ -15,6 +15,10 @@ Pickup::Pickup(std::queue<PackageTo*>* send, int id, int type, float posX, float
 	this->remove = false;
 }
 
+void Pickup::Update(float dt)
+{
+}
+
 Package* Pickup::GetConnect()
 {
 	struct PickupConnect
