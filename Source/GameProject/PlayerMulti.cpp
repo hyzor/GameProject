@@ -16,13 +16,15 @@ void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 
 	this->Player::Update(dt, gameTime, dInput, sm, world, multiplayers);
 	mModel->SetPosition(this->mPosition);
-	mModel->RotateXYZ(rotation);
 }
 
 void PlayerMulti::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
 {
 	if(mIsAlive)
+	{
+		mModel->RotateXYZ(rotation, this->mCamera->Yaw-XM_PI, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), *Joint));
 		mModel->Draw(dc, activeTech, mCamera, shadowMap);
+	}
 
 	this->Player::Draw(dc, activeTech, mCamera, shadowMap);
 }

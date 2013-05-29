@@ -26,7 +26,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 
 	//send package
 	t += dt;
-	if(t > 1)
+	if(t > 0.1f)
 	{
 		t = 0;
 
