@@ -10,6 +10,8 @@ PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal:
 		name[i] = Nickname[i];
 	Network::GetInstance()->Push(new Package(Package::Header(2, 0, 50), Package::Body(name)));
 
+	delete name;
+
 	t = 0;
 	rotateTo = XMFLOAT3(0,0,0);
 	TimeToSpawn = 0;
