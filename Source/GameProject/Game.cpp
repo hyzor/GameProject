@@ -72,7 +72,11 @@ void Game::HandlePackage(Package* p)
 	{
 		for(UINT i = 0; i< multiplayers->size(); i++)
 			if(multiplayers->at(i)->GetID() == p->GetHeader().id)
+			{
+				SafeDelete(multiplayers->at(i));
 				multiplayers->erase(multiplayers->begin() + i);
+				break;
+			}
 	}
 	else if(o == 5 || o == 6)
 		world->HandlePackage(p);
