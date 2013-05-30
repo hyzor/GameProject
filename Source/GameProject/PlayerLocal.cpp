@@ -2,12 +2,13 @@
 #include <math.h>
 #include "GUI.h"
 
-PlayerLocal::PlayerLocal(SoundModule* sm, std::string Nickname, XMFLOAT3 Position) : PlayerLocal::Player(sm, 0, Nickname, Position, 0)
+PlayerLocal::PlayerLocal(SoundModule* sm, std::string Nickname, XMFLOAT3 Position, std::vector<Player*>* multiplayers) : PlayerLocal::Player(sm, 0, Nickname, Position, multiplayers, 0)
 {
 	//send connect package
 	char* name = new char[50];
 	for(UINT i = 0; i < Nickname.length(); i++)
 		name[i] = Nickname[i];
+	name[Nickname.length()] = 0;
 	Network::GetInstance()->Push(new Package(Package::Header(2, 0, 50), Package::Body(name)));
 
 	t = 0;
@@ -360,15 +361,35 @@ void PlayerLocal::HandelPackage(Package *p)
 	if (p->GetHeader().operation == 10)
 	{
 		Package::Body b = p->GetBody();
-		this->mIsAlive = (*(int*)b.Read(4))==1;
+		bool alive = (*(int*)b.Read(4))==1;
 		float health = *(float*)b.Read(4);
 		this->kills = *(int*)b.Read(4);
 		this->deaths = *(int*)b.Read(4);
 		this->respawntime = *(float*)b.Read(4);
+		this->deathBy = *(int*)b.Read(4);
 
 		if(mHealth > health) //player hurt
 			sm->playSFX(mPosition, PlayerGrunt, false);
 		mHealth = health;
+
+		if(this->mIsAlive && !alive) //killed gui text
+		{
+			wstringstream wss;
+			if(this->deathBy == 0)
+				wss << "You died from falling!";
+			else
+			{
+				for(int i = 0; i < this->multiplayers->size(); i++)
+					if(multiplayers->at(i)->GetID() == deathBy)
+					{
+						wss << multiplayers->at(i)->mNickname.c_str();
+						break;
+					};
+				wss << " killed you!";
+			}
+			GUI::GetInstance()->AddEventText(wss.str(), 4);
+		}
+		this->mIsAlive = alive;
 	}
 
 	Player::HandelPackage(p);

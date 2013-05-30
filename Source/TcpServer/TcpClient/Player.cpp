@@ -31,6 +31,7 @@ Player::Player(std::queue<PackageTo*>* send, std::vector<Player*>* players, int 
 	kills = 0;
 	deaths = 0;
 	respawntime = 10;
+	deathBy = 0;
 
 	this->mTimer.start();
 	this->mTimer.reset();
@@ -64,7 +65,12 @@ void Player::HandlePackage(Package* p)
 			this->alive = false;
 			Player* enemy = findPlayer(players, p->GetHeader().id);
 			if(enemy != NULL)
+			{
+				this->deathBy = enemy->GetId();
 				enemy->kills++;
+			}
+			else
+				this->deathBy = 0;
 		}
 		this->updated = true;
 	}
@@ -91,6 +97,7 @@ void Player::Update()
 			this->health = 0;
 			this->deaths++;
 			this->alive = false;
+			this->deathBy = 0;
 			updated = true;
 		}
 	}
@@ -122,8 +129,9 @@ Package* Player::GetConnect()
 	pc->posZ = posZ;
 	pc->health = health;
  	pc->alive = alive;
-	for(int i = 0; i < 50; i++)
+	for(int i = 0; i < name.length(); i++)
 		pc->name[i] = name[i];
+	pc->name[name.length()] = 0;
 
 	return new Package(Package::Header(2, id, sizeof(PlayerConnect)), Package::Body((char*)pc));
 }
@@ -148,6 +156,7 @@ Package* Player::GetUpdate()
 		float health;
 		int kills;
 		int deaths;
+		int deathBy;
 	};
 
 	PlayerUpdate* pu = new PlayerUpdate();
@@ -167,6 +176,7 @@ Package* Player::GetUpdate()
 	pu->health = health;
 	pu->kills = kills;
 	pu->deaths = deaths;
+	pu->deathBy = deathBy;
 
 	return new Package(Package::Header(1, id, sizeof(PlayerUpdate)), Package::Body((char*)pu));
 }
@@ -182,6 +192,7 @@ Package* Player::GetSelfUpdate()
 			int kills;
 			int deaths;
 			float respawntime;
+			int deathBy;
 		};
 
 		PlayerSelf* ps = new PlayerSelf();
@@ -190,6 +201,7 @@ Package* Player::GetSelfUpdate()
 		ps->kills = this->kills;
 		ps->deaths = this->deaths;
 		ps->respawntime = this->respawntime;
+		ps->deathBy = this->deathBy;
 
 		this->updated = false;
 

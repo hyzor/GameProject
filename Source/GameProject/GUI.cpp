@@ -21,7 +21,9 @@ GUI::GUI()
 }
 GUI::~GUI()
 {
-	delete[]menuItems;
+	delete [] menuItems;
+	for(int i = 0; i < eventTexts.size(); i++)
+		free(eventTexts[i].text);
 }
 void GUI::Init(ID3D11Device *device)
 {
@@ -38,6 +40,17 @@ void GUI::Init(ID3D11Device *device)
 
 bool GUI::Update(DirectInput* di, float dt)
 {
+	for(int i = 0; i < eventTexts.size(); i++) //update event text
+	{
+		eventTexts[i].timeToLive -= dt;
+		if(eventTexts[i].timeToLive < 0)
+		{
+			free(eventTexts[i].text);
+			eventTexts.erase(eventTexts.begin()+i);
+			break;
+		}
+	}
+
 	if(fontSize < 50.0f)
 	{
 		fontSize += 100.0f*dt;
@@ -139,6 +152,8 @@ void GUI::Render(ID3D11DeviceContext *pContext, XMFLOAT3 playerPos)
 		else
 		{
 			drawCrossHair(pContext);
+			for(int i = 0; i < eventTexts.size(); i++) //draw event text
+				drawText(pContext, eventTexts[i].text, XMFLOAT2(100, 100+15*i), 15, 0xff0000ff);
 		}
 	}
 	else
@@ -270,4 +285,15 @@ GUI* GUI::GetInstance()
 void GUI::setState(int state)
 {
 	this->state = state;
+}
+
+void GUI::AddEventText(std::wstring text, float timeToLive)
+{
+	GUI::EventText et;
+	et.text = new wchar_t[text.length() + 1];
+	for(int i = 0; i < text.length(); i++)
+		et.text[i] = text[i];
+	et.text[text.length()] = 0;
+	et.timeToLive = timeToLive;
+	eventTexts.push_back(et);
 }

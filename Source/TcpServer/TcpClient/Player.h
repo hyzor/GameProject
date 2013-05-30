@@ -45,6 +45,7 @@ class Player
 		int kills;
 		int deaths;
 		float respawntime;
+		int deathBy;
 
 	private:
 		int id;

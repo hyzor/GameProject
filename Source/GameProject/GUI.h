@@ -4,6 +4,7 @@
 #include <FW1FontWrapper.h>
 #include <d3dUtilities.h>
 #include <D3DX10math.h>
+#include <string>
 #include "Common\Camera.h"
 #include "Settings.h"
 #include "Game.h"
@@ -32,6 +33,7 @@ public:
 	void drawText(ID3D11DeviceContext *context, WCHAR* text, XMFLOAT2 pos, float fontSize, int color) const;
 	void setState(int state);
 	void Release();
+	void AddEventText(std::wstring text, float timeToLive);
 
 private:
 	static GUI* mInstance;
@@ -57,6 +59,15 @@ private:
 	bool downArrowDown;
 	bool enterDown;
 	bool tabDown;
+
+
+
+	struct EventText
+	{
+		wchar_t* text;
+		float timeToLive;
+	};	
+	std::vector<EventText> eventTexts;
 };
 
 #endif

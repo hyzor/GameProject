@@ -7,7 +7,7 @@
 class PlayerLocal : public Player
 {
 	public:
-		PlayerLocal(SoundModule* sm, std::string Nickname, XMFLOAT3 Position);
+		PlayerLocal(SoundModule* sm, std::string Nickname, XMFLOAT3 Position, std::vector<Player*>* multiplayers);
 		~PlayerLocal();
 
 		void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);

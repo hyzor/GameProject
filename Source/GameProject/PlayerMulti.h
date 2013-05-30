@@ -8,7 +8,7 @@
 class PlayerMulti : public Player
 {
 	public:
-		PlayerMulti(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
+		PlayerMulti(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, std::vector<Player*>* multiplayers, int index);
 		~PlayerMulti();
 		
 		void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);

@@ -1,8 +1,10 @@
 #include "Player.h"
 
-Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index)
+Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, std::vector<Player*>* multiplayers, int index)
 	: mPlayerID(PlayerID), mNickname(Nickname), mPosition(Position)
 {
+	
+	this->multiplayers = multiplayers;
 	Python->LoadModule("scoreboard_script");
 	Python->CallFunction(
 		Python->GetFunction("CreatePlayerStats"),
@@ -173,6 +175,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 
 	aliveTime += dt;
 	respawntime = 0;
+	deathBy = 0;
 }
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)

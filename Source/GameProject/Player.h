@@ -21,7 +21,7 @@ class Weapon;
 class Player
 {
 	public:
-		Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
+		Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, std::vector<Player*>* multiplayers, int index);
 		virtual ~Player();
 
 		virtual void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);
@@ -44,12 +44,13 @@ class Player
 		int kills;
 		int deaths;
 		float respawntime;
+		int deathBy;
 
 		int index;
+		std::string mNickname;
 
 	protected:
 		int mPlayerID;
-		std::string mNickname;
 		float mSpeed;
 		bool OnGround;
 		bool rotating;
@@ -68,6 +69,7 @@ class Player
 		std::vector<Weapon*> mWeapons;
 
 		SoundModule* sm;
+		std::vector<Player*>* multiplayers;
 
 };
 #endif

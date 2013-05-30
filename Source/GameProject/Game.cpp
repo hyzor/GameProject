@@ -4,15 +4,15 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 {
 	world = new World();
 	this->sm = sm;
+	multiplayers = new std::vector<Player*>();
 
-	player = new PlayerLocal(sm, Settings::GetInstance()->GetData().PlayerName, XMFLOAT3(1,300,50));
+	player = new PlayerLocal(sm, Settings::GetInstance()->GetData().PlayerName, XMFLOAT3(1,300,50), multiplayers);
 	player->InitWeapons(device, dc);
 	this->device = device;
 	this->dc = dc;
 	gameActive = true;
 	timeLeft = 0;
 	pauseTimeLeft = 0;
-	multiplayers = new std::vector<Player*>();
 
  	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
 }
@@ -51,7 +51,7 @@ void Game::HandlePackage(Package* p)
 		XMFLOAT3 pos = *(XMFLOAT3*)b.Read(4*3);
 		float h = *(float*)b.Read(4);
 		int a = *(int*)b.Read(4);
-		PlayerMulti* pm = new PlayerMulti(sm, p->GetHeader().id, std::string(b.Read(50)), pos, multiplayers->size());
+		PlayerMulti* pm = new PlayerMulti(sm, p->GetHeader().id, std::string(b.Read(50)), pos, multiplayers, multiplayers->size());
 		sm->addEnemy(pm->index);
 		pm->mHealth = h;
 		pm->mIsAlive = a==1;

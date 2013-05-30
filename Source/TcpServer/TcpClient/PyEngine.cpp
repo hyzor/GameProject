@@ -305,10 +305,18 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 		this->MakeTuple(args);
 
 	PyObject* lpReturns;
-	if(args)
-		lpReturns = PyObject_CallObject(func, args);
+	if(func != NULL)
+	{
+		if(args)
+			lpReturns = PyObject_CallObject(func, args);
+		else
+			lpReturns = PyObject_CallObject(func, nullptr);
+	}
 	else
-		lpReturns = PyObject_CallObject(func, nullptr);
+	{
+		std::cout << "Something went wrong with calling the function!" << std::endl;
+		return nullptr;
+	}
 
 	if(!lpReturns)
 	{

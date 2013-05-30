@@ -1,6 +1,7 @@
 #include "PlayerMulti.h"
+#include "GUI.h"
 
-PlayerMulti::PlayerMulti(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index) : PlayerMulti::Player(sm, PlayerID, Nickname, Position, index)
+PlayerMulti::PlayerMulti(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, std::vector<Player*>* multiplayers, int index) : PlayerMulti::Player(sm, PlayerID, Nickname, Position, multiplayers, index)
 {
 	mModel = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), Position);
 }
@@ -40,14 +41,39 @@ void PlayerMulti::HandelPackage(Package *p)
 		this->mCamera->Pitch = *(float*)b.Read(4);
 		this->mCamera->Roll = *(float*)b.Read(4);
 		this->mCamera->Yaw = *(float*)b.Read(4);
-		this->mIsAlive = (*(int*)b.Read(4))==1;
+		bool alive = (*(int*)b.Read(4))==1;
 		float health = *(float*)b.Read(4);
 		this->kills = *(int*)b.Read(4);
 		this->deaths = *(int*)b.Read(4);
+		this->deathBy = *(int*)b.Read(4);
 
 		if(mHealth > health) //hurt sound
 			sm->playEnemySFX(EnemyGrunt,this->index, mPosition, false);
 		mHealth = health;
+
+		if(this->mIsAlive && !alive) //killed gui text
+		{
+			wstringstream wss;
+			if(this->deathBy == 0)
+				wss << this->mNickname.c_str() << " died from falling!";
+			else
+			{
+				bool found = false;
+				for(int i = 0; i < this->multiplayers->size(); i++)
+					if(multiplayers->at(i)->GetID() == deathBy)
+					{
+						wss << multiplayers->at(i)->mNickname.c_str();
+						found = true;
+						break;
+					};
+				if(!found)
+					wss << "You killed " << this->mNickname.c_str() << "!";
+				else
+					wss << " killed " << this->mNickname.c_str();
+			}
+			GUI::GetInstance()->AddEventText(wss.str(), 4);
+		}
+		this->mIsAlive = alive;
 	}
 	else if(p->GetHeader().operation == 11)
 	{
