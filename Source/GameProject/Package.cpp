@@ -35,7 +35,7 @@ Package::Package(Package::Header header, Package::Body body)
 	*h = header;
 	for(int i = 0; i < h->contentsize; i++)
 		*(data+sizeof(Package::Header)+i) = *(body.data+i);
-	if(!body.data) delete [] body.data;
+	delete [] body.data;
 
 	setHeader();
 	setBody();
