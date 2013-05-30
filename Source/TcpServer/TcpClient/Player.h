@@ -13,6 +13,7 @@ class Player
 	public:
 		
 		Player(std::queue<PackageTo*>* send, std::vector<Player*>* players, int id, std::string name);
+		void Reset();
 		
 		void HandlePackage(Package* p);
 		void HandlePickup(Pickup* p);

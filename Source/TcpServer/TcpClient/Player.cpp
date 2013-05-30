@@ -14,6 +14,14 @@ Player::Player(std::queue<PackageTo*>* send, std::vector<Player*>* players, int 
 
 	this->send = send;
 
+	Reset();
+
+	this->mTimer.start();
+	this->mTimer.reset();
+}
+
+void Player::Reset()
+{
 	posX = 0;
 	posY = 0;
 	posZ = 0;
@@ -32,9 +40,6 @@ Player::Player(std::queue<PackageTo*>* send, std::vector<Player*>* players, int 
 	deaths = 0;
 	respawntime = 10;
 	deathBy = 0;
-
-	this->mTimer.start();
-	this->mTimer.reset();
 }
 
 void Player::HandlePackage(Package* p)

@@ -138,6 +138,35 @@ void Game::Update()
 				Package* p = GameState();
 				if(p != NULL)
 					send->push(new PackageTo(p, 0));
+
+				//respawn all players
+				for(int i = 0; i < players->size(); i++)
+				{
+					Player* player = players->at(i);
+					player->Reset();
+
+					std::vector<double> dReturns;
+					Python->LoadModule("player_script");
+					Python->CallFunction(
+						Python->GetFunction("Solution"),
+						nullptr);
+					Python->Update(0.0f);
+					if(Python->CheckReturns())
+					{
+						Python->ConvertDoubles(dReturns);
+						Python->ClearReturns();
+						player->posX = (float)dReturns[0];
+						player->posY = (float)dReturns[1];
+						player->posZ = (float)dReturns[2];
+					}
+
+					player->alive = true;
+					player->health = 100;
+					send->push(new PackageTo(player->GetSpawn(), 0));
+					Package* spawnP = player->GetSpawn();
+					spawnP->SetId(0);
+					send->push(new PackageTo(spawnP, (char*)player->GetId()));
+				}
 			}
 		}
 		Package* p = TimeLeft();
