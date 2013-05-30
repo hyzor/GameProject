@@ -61,6 +61,7 @@ class Player
 		XMFLOAT3 rotation;
 		XMFLOAT3 move;
 		XMFLOAT3 relativeMotion;
+		XMFLOAT3 rotateTo;
 		
 		Camera* mCamera;
 		XMFLOAT4X4 Joint;

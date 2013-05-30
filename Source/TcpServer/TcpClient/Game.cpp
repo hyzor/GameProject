@@ -5,7 +5,7 @@ Game::Game(std::queue<PackageTo*>* send)
 	this->send = send;
 	gameActive = false;
 	gameLength = 30;
-	pauseLength = 10;
+	pauseLength = 3;
 	
 	Python->LoadModule("platform_script");
 	Python->CallFunction(
@@ -148,7 +148,7 @@ void Game::Update()
 					std::vector<double> dReturns;
 					Python->LoadModule("player_script");
 					Python->CallFunction(
-						Python->GetFunction("Solution"),
+						Python->GetFunction("GetRandomSpawn"),
 						nullptr);
 					Python->Update(0.0f);
 					if(Python->CheckReturns())
@@ -198,7 +198,7 @@ void Game::HandelPackage(Package* p, char* socket)
 		std::vector<double> dReturns;
 		Python->LoadModule("player_script");
 		Python->CallFunction(
-			Python->GetFunction("Solution"),
+			Python->GetFunction("GetRandomSpawn"),
 			nullptr);
 		Python->Update(0.0f);
 		if(Python->CheckReturns())

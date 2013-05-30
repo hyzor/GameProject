@@ -195,6 +195,14 @@ void Player::HandelPackage(Package *p)
 		this->mPosition = *(XMFLOAT3*)b.Read(4*3);
 		this->mIsAlive = (*(int*)b.Read(4))==1;
 		this->mHealth = *(float*)b.Read(4);
+
+
+		this->ySpeed = 0;
+		this->rotating = false;
+		this->rotation = XMFLOAT3(0,0,0);
+		this->rotateTo = XMFLOAT3(0,0,0);
+		this->move = XMFLOAT3(0, 0, 0);
+		this->relativeMotion = XMFLOAT3(0,0,0);
 		this->aliveTime = 0;
 	}
 }

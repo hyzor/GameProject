@@ -97,14 +97,14 @@ void Player::Update()
 	if(this->alive)
 	{
 		//out of boundes
-		if(posX > 1000 || posX < -1000 || posY > 1000 || posY < -1000 || posZ > 1000 || posZ < -1000)
+		/*if(posX > 1000 || posX < -1000 || posY > 1000 || posY < -1000 || posZ > 1000 || posZ < -1000)
 		{
 			this->health = 0;
 			this->deaths++;
 			this->alive = false;
 			this->deathBy = 0;
 			updated = true;
-		}
+		}*/
 	}
 
 	////respawn player if dead

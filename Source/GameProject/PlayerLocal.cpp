@@ -396,33 +396,3 @@ void PlayerLocal::HandelPackage(Package *p)
 
 	Player::HandelPackage(p);
 }
-
-void PlayerLocal::Spawn(float x, float y, float z, int rotation) //flytta till servern
-{
-	std::vector<double> dReturns(0);
-	std::vector<int> iReturns(0);
-	XMFLOAT3 pos;
-	Python->LoadModule("respawn");
-	Python->CallFunction(
-		Python->GetFunction("getSpawnPos"),
-		nullptr);
-
-		Python->Update(0.0f);
-
-		if(Python->CheckReturns())
-		{
-			Python->ConvertDoubles(dReturns);
-			Python->ConvertInts(iReturns);
-			Python->ClearReturns();
-			
-			pos.x = (float)dReturns[0];
-			pos.y = (float)dReturns[1];
-			pos.z = (float)dReturns[2];
-
-			rotation = iReturns[0];
-		}
-	
-	this->mPosition = pos;
-	//this->mIsAlive = true;
-	XMStoreFloat4x4(&this->Joint, XMMatrixIdentity());
-}

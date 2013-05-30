@@ -1,5 +1,4 @@
 Tim
-Scoreboard script
 
 Mathias
 Respawn på servern
@@ -7,7 +6,6 @@ Ronder
 
 Emrik
 Pickup script
-Fiendeljud
 
 Jesper
 Karaktären in i spelet
