@@ -4,7 +4,7 @@ Game::Game(std::queue<PackageTo*>* send)
 {
 	this->send = send;
 	gameActive = false;
-	gameLength = 30;
+	gameLength = 360;
 	pauseLength = 3;
 	
 	Python->LoadModule("platform_script");

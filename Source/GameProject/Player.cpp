@@ -123,7 +123,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,0,1)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,2.5f,-3)), cJoint), dir, 6).hit; 
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,18,-3)), cJoint), dir, 6).hit; 
 	if(hit.hit)
 	{
 		//front
@@ -135,7 +135,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	}
 
 	dir = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-1,0,0)), cJoint);
-	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-3,2.5f,0)), cJoint), dir, 6).hit; 
+	hit = world->Intersect(pos+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(-3,18,0)), cJoint), dir, 6).hit; 
 	if(hit.hit)
 	{
 		//left
