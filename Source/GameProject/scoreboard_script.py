@@ -2,9 +2,9 @@ import PyEngine
 
 class PlayerStats(object):
 
-        def __init__(self, id, name):
+        def __init__(self, id, name, rank):
                 self.id = id
-                self.rank = id + 1
+                self.rank = rank
                 self.name = name
                 self.kills = 0
                 self.deaths = 0
@@ -20,54 +20,66 @@ class ScoreBoard(object):
 
 sb = ScoreBoard()
 def CreatePlayerStats(id, name):
-        global sb
-        sb.ps.append(PlayerStats(id, name))
+    global sb
+    rank = len(sb.ps)+1
+    sb.ps.append(PlayerStats(id, name, rank))
+    print str(id) + ": " + name + "\n"
 
 def GetDesc():
-        return sb.desc;
+    return sb.desc;
 
-def GetStats(id):
-        return FindByIndex(id).GetString();
+def GetStats(rank):
+    return FindByRank(rank).GetString();
 
-def AddKill(id):
-        global sb
-        FindByIndex(id).kills += 1
-        Sort()
+def AddKill(identity):
+    global sb
+    FindByID(identity).kills += 1
+    Sort()
 
-def AddDeath(id):
-        global sb
-        FindByIndex(id).deaths += 1
+def AddDeath(identity):
+    global sb
+    FindByID(identity).deaths += 1
 
 def TabDown():
-        PyEngine.NotifyWhen("Description", GetDesc, None)
-        for i in range(len(sb.ps)):
-                PyEngine.NotifyWhen("Stats", GetStats, i)
+    PyEngine.NotifyWhen("Description", GetDesc, None)
+    for i in range(len(sb.ps)):
+        PyEngine.NotifyWhen("Stats", GetStats, i+1)
 
+# For debugging
 def PrintPlayers():
-        print "/////////"
-        for PlayerStats in sb.ps:
-                print PlayerStats.GetString()
+    print "/////////"
+    for PlayerStats in sb.ps:
+            print PlayerStats.GetString()
 
-def FindByIndex(index):
-        for i in range(len(sb.ps)):
-                if sb.ps[i].id is index:
-                        return sb.ps[i]
-                
+def FindByRank(rank):
+    global sb
+    for PlayerStats in sb.ps:
+        if rank == PlayerStats.rank:
+            return PlayerStats
+
+def FindByID(identity):
+    global sb
+    for PlayerStats in sb.ps:
+        if identity == PlayerStats.id:
+            return PlayerStats
 
 def Swap(index):
-        sb.ps[index].rank, sb.ps[index+1].rank = sb.ps[index+1].rank, sb.ps[index].rank
-        sb.ps[index], sb.ps[index+1] = sb.ps[index+1], sb.ps[index]
+    sb.ps[index].rank, sb.ps[index+1].rank = sb.ps[index+1].rank, sb.ps[index].rank
+    sb.ps[index], sb.ps[index+1] = sb.ps[index+1], sb.ps[index]
 
 def Sort():
-        done = False
-        while done is False:
-                done = True
-                for i in range(len(sb.ps)-1):
-                        if sb.ps[i].kills < sb.ps[i+1].kills:
-                                done = False
-                                Swap(i)
+    global sb
+    done = False
+    while done is False:
+        done = True
+        i = 0
+        while i is not len(sb.ps)-1:
+            if sb.ps[i].kills < sb.ps[i+1].kills:
+                done = False
+                Swap(i)
+            i += 1
 
 def ResetStats():
-        for PlayerStats in sb.ps:
-                PlayerStats.kills = 0
-                PlayerStats.deaths = 0
+    for PlayerStats in sb.ps:
+            PlayerStats.kills = 0
+            PlayerStats.deaths = 0

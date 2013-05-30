@@ -179,9 +179,9 @@ void Game::HandelPackage(Package* p, char* socket)
 			player->posZ = (float)dReturns[2];
 		}
 
-		player->posX = 1;
-		player->posY = 500;
-		player->posZ = 50;
+		//player->posX = 1;
+		//player->posY = 500;
+		//player->posZ = 50;
 		player->alive = true;
 		player->health = 100;
 		send->push(new PackageTo(player->GetSpawn(), 0));
@@ -213,7 +213,7 @@ void Game::HandelPackage(Package* p, char* socket)
 	}
 	else if(p->GetHeader().operation == 9)
 	{
-		for(int i = 0; i < pickups.size(); i++)
+		for(unsigned int i = 0; i < pickups.size(); i++)
 		{
 			if(p->GetHeader().id == pickups[i]->GetId())
 			{

@@ -274,8 +274,8 @@ void PyEngine::Update(float dt)
 
 			if(mStatus[i].mReturns != Py_None && mStatus[i].mReturns != nullptr)
 			{
-				mFuncReturns.push_back(mStatus[i].mReturns);
 				if(mStatus[i].mFunc) Py_DECREF(mStatus[i].mFunc);
+				mFuncReturns.push_back(mStatus[i].mReturns);
 			}
 		}
 		mStatus.clear();
@@ -313,7 +313,7 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 	if(!lpReturns)
 	{
 		std::cout << "Something went wrong with calling the function!" << std::endl;
-		PyErr_Print();
+		if(PyErr_Occurred()) PyErr_Print();
 		return nullptr;
 	}
 

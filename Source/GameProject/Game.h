@@ -24,6 +24,7 @@
 #include "SoundHelp.h"
 
 #include "Pickup.h"
+#include "Settings.h"
 
 class Game
 {

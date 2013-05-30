@@ -5,7 +5,7 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 	world = new World();
 	this->sm = sm;
 
-	player = new PlayerLocal(sm,"Hyzor", XMFLOAT3(1,300,50));
+	player = new PlayerLocal(sm, Settings::GetInstance()->GetData().PlayerName, XMFLOAT3(1,300,50));
 	player->InitWeapons(device, dc);
 	this->device = device;
 	this->dc = dc;

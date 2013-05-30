@@ -179,7 +179,7 @@ void GUI::drawScoreBoard(ID3D11DeviceContext *context)
 	Python->CallFunction(
 		Python->GetFunction("TabDown"),
 		nullptr);
-	Python->Update(0.0f);
+ 	Python->Update(0.0f);
 	if(Python->CheckReturns())
 	{
 		Python->ConvertStrings(sReturns);
