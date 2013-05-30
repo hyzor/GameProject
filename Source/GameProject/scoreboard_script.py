@@ -30,14 +30,13 @@ def GetDesc():
 def GetStats(rank):
     return FindByRank(rank).GetString();
 
-def AddKill(identity):
-    global sb
-    FindByID(identity).kills += 1
-    Sort()
 
-def AddDeath(identity):
+def SetKillDeaths(identity, kills, deaths):
     global sb
-    FindByID(identity).deaths += 1
+    player = FindByID(identity)
+    player.kills = kills
+    player.deaths = deaths
+    Sort()
 
 def TabDown():
     PyEngine.NotifyWhen("Description", GetDesc, None)

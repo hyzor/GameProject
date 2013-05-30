@@ -222,3 +222,17 @@ XNA::AxisAlignedBox Player::GetBounding()
 
 	return box;
 }
+
+void Player::setKillsDeaths(int kills, int deaths)
+{
+	if(!(kills == this->kills && deaths == this->deaths))
+	{
+		this->kills = kills;
+		this->deaths = deaths;
+
+		Python->LoadModule("scoreboard_script");
+		Python->CallFunction(
+		Python->GetFunction("SetKillDeaths"),
+		Python->CreateArg<int, int, int>(this->mPlayerID, kills, deaths));
+	}
+}

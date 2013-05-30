@@ -162,10 +162,12 @@ void Game::Update()
 
 					player->alive = true;
 					player->health = 100;
+					player->updated = true;
 					send->push(new PackageTo(player->GetSpawn(), 0));
 					Package* spawnP = player->GetSpawn();
 					spawnP->SetId(0);
 					send->push(new PackageTo(spawnP, (char*)player->GetId()));
+					send->push(new PackageTo(player->GetSelfUpdate(), (char*)player->GetId()));
 				}
 			}
 		}

@@ -43,9 +43,11 @@ void PlayerMulti::HandelPackage(Package *p)
 		this->mCamera->Yaw = *(float*)b.Read(4);
 		bool alive = (*(int*)b.Read(4))==1;
 		float health = *(float*)b.Read(4);
-		this->kills = *(int*)b.Read(4);
-		this->deaths = *(int*)b.Read(4);
+		int kills = *(int*)b.Read(4);
+		int deaths = *(int*)b.Read(4);
 		this->deathBy = *(int*)b.Read(4);
+
+		this->setKillsDeaths(kills, deaths);
 
 		if(mHealth > health) //hurt sound
 			sm->playEnemySFX(EnemyGrunt,this->index, mPosition, false);

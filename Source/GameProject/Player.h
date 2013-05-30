@@ -71,5 +71,7 @@ class Player
 		SoundModule* sm;
 		std::vector<Player*>* multiplayers;
 
+		void setKillsDeaths(int kills, int deaths);
+
 };
 #endif
