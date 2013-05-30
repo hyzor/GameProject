@@ -5,7 +5,7 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 	world = new World();
 	this->sm = sm;
 
-	player = new PlayerLocal("Hyzor", XMFLOAT3(1,300,50));
+	player = new PlayerLocal(sm,"Hyzor", XMFLOAT3(1,300,50));
 	player->InitWeapons(device, dc);
 	this->device = device;
 	this->dc = dc;
@@ -31,9 +31,9 @@ Game::~Game()
 
 void Game::Update(float deltaTime, float gameTime, DirectInput* di)
 {
-	player->Update(deltaTime, gameTime, di, sm, world, multiplayers);
+	player->Update(deltaTime, gameTime, di, world, multiplayers);
 	for(UINT i = 0; i < multiplayers->size(); i++)
-		multiplayers->at(i)->Update(deltaTime, gameTime, di, sm, world, multiplayers);
+		multiplayers->at(i)->Update(deltaTime, gameTime, di, world, multiplayers);
 
 	animatedEntity->Update(deltaTime);
 	world->Update(deltaTime);
@@ -51,7 +51,7 @@ void Game::HandlePackage(Package* p)
 		XMFLOAT3 pos = *(XMFLOAT3*)b.Read(4*3);
 		float h = *(float*)b.Read(4);
 		int a = *(int*)b.Read(4);
-		PlayerMulti* pm = new PlayerMulti(p->GetHeader().id, std::string(b.Read(50)), pos, multiplayers->size());
+		PlayerMulti* pm = new PlayerMulti(sm, p->GetHeader().id, std::string(b.Read(50)), pos, multiplayers->size());
 		sm->addEnemy(pm->index);
 		pm->mHealth = h;
 		pm->mIsAlive = a==1;

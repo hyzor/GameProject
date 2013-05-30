@@ -1,6 +1,6 @@
 #include "PlayerMulti.h"
 
-PlayerMulti::PlayerMulti(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index) : PlayerMulti::Player(PlayerID, Nickname, Position, index)
+PlayerMulti::PlayerMulti(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index) : PlayerMulti::Player(sm, PlayerID, Nickname, Position, index)
 {
 	mModel = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), Position);
 }
@@ -10,11 +10,11 @@ PlayerMulti::~PlayerMulti()
 	delete mModel;
 }
 
-void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
+void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers)
 {
 	mModel->Update(dt);
 
-	this->Player::Update(dt, gameTime, dInput, sm, world, multiplayers);
+	this->Player::Update(dt, gameTime, dInput, world, multiplayers);
 	mModel->SetPosition(this->mPosition);
 }
 
@@ -41,9 +41,13 @@ void PlayerMulti::HandelPackage(Package *p)
 		this->mCamera->Roll = *(float*)b.Read(4);
 		this->mCamera->Yaw = *(float*)b.Read(4);
 		this->mIsAlive = (*(int*)b.Read(4))==1;
-		this->mHealth = *(float*)b.Read(4);
+		float health = *(float*)b.Read(4);
 		this->kills = *(int*)b.Read(4);
 		this->deaths = *(int*)b.Read(4);
+
+		if(mHealth > health) //hurt sound
+			sm->playEnemySFX(EnemyGrunt,this->index, mPosition, false);
+		mHealth = health;
 	}
 	else if(p->GetHeader().operation == 11)
 	{
@@ -61,7 +65,7 @@ void PlayerMulti::HandelPackage(Package *p)
 
 		if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, d))
 		{
-			//sm->playSFX(p, FireWeapon, false);
+			sm->playEnemySFX(FireWeapon,this->index, p, false);
 		}
 	}
 

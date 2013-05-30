@@ -2,7 +2,7 @@
 #include <math.h>
 #include "GUI.h"
 
-PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal::Player(0, Nickname, Position, 0)
+PlayerLocal::PlayerLocal(SoundModule* sm, std::string Nickname, XMFLOAT3 Position) : PlayerLocal::Player(sm, 0, Nickname, Position, 0)
 {
 	//send connect package
 	char* name = new char[50];
@@ -19,7 +19,7 @@ PlayerLocal::~PlayerLocal()
 {
 }
 
-void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
+void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers)
 {
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
 	XMMATRIX cJoint = XMLoadFloat4x4(&Joint);
@@ -334,7 +334,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 	XMStoreFloat3(&move, m);
 	XMStoreFloat3(&mPosition, pos);
 
-	this->Player::Update(dt, gameTime, dInput, sm, world, multiplayers);
+	this->Player::Update(dt, gameTime, dInput, world, multiplayers);
 
 }
 
@@ -348,6 +348,7 @@ void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(SCREEN_WIDTH/2-50.0f,SCREEN_HEIGHT/2-50.0f), 70, 0xff0000ff);
 	}
 
+	
 	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
 	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap);
 
@@ -360,10 +361,14 @@ void PlayerLocal::HandelPackage(Package *p)
 	{
 		Package::Body b = p->GetBody();
 		this->mIsAlive = (*(int*)b.Read(4))==1;
-		this->mHealth = *(float*)b.Read(4);
+		float health = *(float*)b.Read(4);
 		this->kills = *(int*)b.Read(4);
 		this->deaths = *(int*)b.Read(4);
 		this->respawntime = *(float*)b.Read(4);
+
+		if(mHealth > health) //player hurt
+			sm->playSFX(mPosition, PlayerGrunt, false);
+		mHealth = health;
 	}
 
 	Player::HandelPackage(p);

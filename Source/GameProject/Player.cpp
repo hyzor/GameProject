@@ -1,12 +1,14 @@
 #include "Player.h"
 
-Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index)
+Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index)
 	: mPlayerID(PlayerID), mNickname(Nickname), mPosition(Position)
 {
 	Python->LoadModule("scoreboard_script");
 	Python->CallFunction(
 		Python->GetFunction("CreatePlayerStats"),
 		Python->CreateArg(PlayerID, Nickname.c_str()));
+
+	this->sm = sm;
 
 	mHealth = 0;
 	mNickname = Nickname;
@@ -67,7 +69,7 @@ void Player::Die()
 	mIsAlive = false;
 }*/
 
-void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
+void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers)
 {
 	XMMATRIX cJoint = XMLoadFloat4x4(&Joint);
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
@@ -143,14 +145,14 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 		if(this->GetID() == 0)
 			sm->playSFX(mPosition, Running, false);
 		else
-			sm->playEnemySFX(Running, index, mPosition, false);
+			sm->playEnemySFX(Running, this->index, mPosition, false);
 	}
 	else
 	{
 		if(this->GetID() == 0)
 			sm->stopSound(Running);
 		else
-			sm->stopEnemySound(index);
+			sm->stopEnemySound(Running, this->index);
 	}
 
 

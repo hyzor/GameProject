@@ -21,10 +21,10 @@ class Weapon;
 class Player
 {
 	public:
-		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
+		Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
 		virtual ~Player();
 
-		virtual void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers);
+		virtual void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);
 		virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 
 		virtual void HandelPackage(Package *p);
@@ -66,6 +66,8 @@ class Player
 
 		int mCurWeaponIndex;
 		std::vector<Weapon*> mWeapons;
+
+		SoundModule* sm;
 
 };
 #endif

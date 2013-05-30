@@ -937,28 +937,28 @@ bool SoundModule::playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool loop
 	DWORD status;
 	int index = enemyID;
 
-	for(unsigned int i = 0; i < this->sEnemyBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->IDIndices.size(); i++)
 	{
 		if(soundID == this->IDIndices.at(i))
 		{
-			sEnemyBuffers.at(i * index)->GetStatus(&status);
+			sEnemyBuffers.at(index*this->sBuffers.size()+i)->GetStatus(&status);
 
 			if(!(status == DSBSTATUS_PLAYING))
 			{
 
-				result = sEnemyBuffers.at(i * index)->SetCurrentPosition(0);
+				result = sEnemyBuffers.at(index*this->sBuffers.size()+i)->SetCurrentPosition(0);
 				if(FAILED(result))
 				{
 					return false;
 				}
 
-				result = s3DEnemyBuffers.at(i * index)->SetMinDistance(20.0f, DS3D_DEFERRED);
+				result = s3DEnemyBuffers.at(index*this->sBuffers.size()+i)->SetMinDistance(20.0f, DS3D_DEFERRED);
 				if(FAILED(result))
 				{
 					return false;
 				}
 				
-				result = s3DEnemyBuffers.at(i * index)->SetPosition(pos.x, pos.y, pos.z, DS3D_DEFERRED);
+				result = s3DEnemyBuffers.at(index*this->sBuffers.size()+i)->SetPosition(pos.x, pos.y, pos.z, DS3D_DEFERRED);
 				if(FAILED(result))
 				{
 					return false;
@@ -968,7 +968,7 @@ bool SoundModule::playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool loop
 
 				if(!looping)
 				{
-					result = sEnemyBuffers.at(i * index)->Play(0, 0, 0);
+					result = sEnemyBuffers.at(index*this->sBuffers.size()+i)->Play(0, 0, 0);
 					if(FAILED(result))
 					{
 						return false;
@@ -976,44 +976,46 @@ bool SoundModule::playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool loop
 				}
 				else if(looping)
 				{
-					result = sEnemyBuffers.at(i * index)->Play(0, 0, DSBPLAY_LOOPING);
+					result = sEnemyBuffers.at(index*this->sBuffers.size()+i)->Play(0, 0, DSBPLAY_LOOPING);
 					if(FAILED(result))
 					{
 						return false;
 					}
 				}
 			}
+			break;
 		}
 	}
 
 	return true;
 }
 
-bool SoundModule::stopEnemySound(int sID)
+bool SoundModule::stopEnemySound(int soundID, int enemyID)
 {
 	HRESULT result;
 	DWORD status;
+	int index = enemyID;
 
-	for(unsigned int i = 0; i < this->sEnemyBuffers.size(); i++)
+	for(unsigned int i = 0; i < this->IDIndices.size(); i++)
 	{
-		if(sID == this->IDIndices.at(i))
+		if(soundID == this->IDIndices.at(i))
 		{
 			
-			result = this->sEnemyBuffers.at(i)->GetStatus(&status);
+			result = this->sEnemyBuffers.at(index*this->sBuffers.size()+i)->GetStatus(&status);
 			if(FAILED(result))
 				return false;
 
 			if((status == DSBSTATUS_PLAYING))
 			{
-				result = this->sEnemyBuffers.at(i)->Stop();
+				result = this->sEnemyBuffers.at(index*this->sBuffers.size()+i)->Stop();
 				if(FAILED(result))
 				return false;
 
-				result = this->sEnemyBuffers.at(i)->SetCurrentPosition(0);
+				result = this->sEnemyBuffers.at(index*this->sBuffers.size()+i)->SetCurrentPosition(0);
 				if(FAILED(result))
 				return false;
 			}
-			
+			break;
 		}
 	}
 

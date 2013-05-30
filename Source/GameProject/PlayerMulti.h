@@ -8,10 +8,10 @@
 class PlayerMulti : public Player
 {
 	public:
-		PlayerMulti(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
+		PlayerMulti(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
 		~PlayerMulti();
 		
-		void Update(float dt, float gameTime, DirectInput* dInput,SoundModule* sm, World* world, std::vector<Player*>* multiplayers);
+		void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);
 		void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 		
 		void HandelPackage(Package *p);
