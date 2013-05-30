@@ -23,7 +23,6 @@ def CreatePlayerStats(id, name):
     global sb
     rank = len(sb.ps)+1
     sb.ps.append(PlayerStats(id, name, rank))
-    print str(id) + ": " + name + "\n"
 
 def GetDesc():
     return sb.desc;
@@ -83,3 +82,17 @@ def ResetStats():
     for PlayerStats in sb.ps:
             PlayerStats.kills = 0
             PlayerStats.deaths = 0
+
+def RemovePlayer(identity):
+    global sb
+    i = 0
+    while i is not len(sb.ps):
+        if identity == sb.ps[i].id:
+            sb.ps.pop(i)
+            j = i
+            while j is not len(sb.ps):
+                if sb.ps[j].rank > j+1:
+                    sb.ps[j].rank -= 1
+                j += 1
+            break
+        i += 1

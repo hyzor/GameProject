@@ -44,6 +44,11 @@ Player::~Player()
 
 	for (UINT i = 0; i < mWeapons.size(); ++i)
 		delete mWeapons[i];
+
+	Python->LoadModule("scoreboard_script");
+	Python->CallFunction(
+		Python->GetFunction("RemovePlayer"),
+		Python->CreateArg(this->mPlayerID));
 }
 
 
