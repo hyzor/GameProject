@@ -20,7 +20,7 @@ spawnpoints = []
 
 def CreateSpawnPoint(x, y, z):
         global spawnpoints
-        spawnpoints.append(Position(x+1, y+150, z))
+        spawnpoints.append(Position(x+1, y+150, z+1))
 
 def RandomizeSpawn():
         global spawnpoints

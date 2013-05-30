@@ -93,7 +93,7 @@ void Game::HandlePackage(Package* p)
 	}
 	else if(o == 8)
 	{
-		for(int i = 0; i < pickups.size(); i++)
+		for(unsigned int i = 0; i < pickups.size(); i++)
 			if(p->GetHeader().id == pickups[i]->GetId())
 			{
 				delete pickups[i];

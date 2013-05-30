@@ -61,7 +61,7 @@ void PlayerMulti::HandelPackage(Package *p)
 			else
 			{
 				bool found = false;
-				for(int i = 0; i < this->multiplayers->size(); i++)
+				for(unsigned int i = 0; i < this->multiplayers->size(); i++)
 					if(multiplayers->at(i)->GetID() == deathBy)
 					{
 						wss << multiplayers->at(i)->mNickname.c_str();
