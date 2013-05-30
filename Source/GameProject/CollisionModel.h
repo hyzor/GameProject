@@ -38,6 +38,7 @@ class CollisionModel
 		int Size();
 		XMFLOAT3 *GetPosition(int index);
 		void SetPosition(XMFLOAT3 position);
+		void SetPosition(XMVECTOR position);
 		
 		Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 

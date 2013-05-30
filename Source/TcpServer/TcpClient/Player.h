@@ -12,7 +12,7 @@ class Player
 {
 	public:
 		
-		Player(std::queue<PackageTo*>* send, int id, std::string name);
+		Player(std::queue<PackageTo*>* send, std::vector<Player*>* players, int id, std::string name);
 		
 		void HandlePackage(Package* p);
 		void HandlePickup(Pickup* p);
@@ -42,7 +42,9 @@ class Player
 		float yaw;
 		int alive;
 		float health;
-		int score;
+		int kills;
+		int deaths;
+		float respawntime;
 
 	private:
 		int id;
@@ -52,6 +54,10 @@ class Player
 
 		GameTimer mTimer;
 
+		std::vector<Player*>* players;
+
 };
+
+Player* findPlayer(std::vector<Player*>* players, int id);
 
 #endif

@@ -11,37 +11,38 @@ PlatformSwitch::~PlatformSwitch(void)
 	SafeDelete(mEntity);
 }
 
-void PlatformSwitch::Initialize(XMFLOAT3 pos, int type, int rotType, XMFLOAT4X4 rot, XMFLOAT3 collisionOffset)
+void PlatformSwitch::Initialize(XMFLOAT3 pos, XMFLOAT3 offset, int type, int rotType, XMFLOAT4X4 rot, XMFLOAT3 collisionOffset)
 {
-	XMMATRIX rotM = XMLoadFloat4x4(&rot);
-	XMFLOAT3 colPos = pos;
-	colPos.x += collisionOffset.x;
-	colPos.y += collisionOffset.y;
-	colPos.z += collisionOffset.z;
+	this->offset = offset;
+	mCollision = new CollisionModel();
 	switch (type)
 	{
 	case 1:
 		mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("Switch"), pos);
-		mCollision = new CollisionModel();
 		*mCollision = *GenericHandler::GetInstance()->GetCollisionModel("Switch");
-		mCollision->SetPosition(colPos);
 		break;
 	case 2:
 		mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("SwitchY"), pos);
-		mCollision = new CollisionModel();
 		*mCollision = *GenericHandler::GetInstance()->GetCollisionModel("SwitchY");
-		mCollision->SetPosition(colPos);
 		break;
 	case 3:
 		mEntity = new Entity(GenericHandler::GetInstance()->GetGenericModel("SwitchZ"), pos);
-		mCollision = new CollisionModel();
 		*mCollision = *GenericHandler::GetInstance()->GetCollisionModel("SwitchZ");
-		mCollision->SetPosition(colPos);
 		break;
 	}
+	mCollision->SetPosition(XMLoadFloat3(&pos)+XMLoadFloat3(&offset));
 
 	this->rotationType = rotType;
 	
+}
+
+void PlatformSwitch::SetPosition(XMFLOAT3 pos)
+{
+	XMVECTOR p = XMLoadFloat3(&pos)+XMLoadFloat3(&this->offset);
+	XMFLOAT3 p2;
+	XMStoreFloat3(&p2, p);
+	mEntity->SetPosition(p2);
+	mCollision->SetPosition(p2);
 }
 
 void PlatformSwitch::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)
@@ -143,109 +144,6 @@ XMVECTOR PlatformSwitch::GetMoveTo(XMVECTOR up)
 	}
 
 	return XMLoadFloat3(&XMFLOAT3(0,0,0));
-}
-
-float PlatformSwitch::GetRotationX(XMVECTOR up)
-{
-	if(this->rotationType == 1)
-	{
-		if(XMVectorGetY(up) > 0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetZ(up) < 0.5f)
-			return +(float)XM_PI/2;
-	}
-	else if(this->rotationType == 2)
-	{
-		if(XMVectorGetY(up) > 0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetZ(up) > 0.5f)
-			return -(float)XM_PI/2;
-	}
-	else if(this->rotationType == 3)
-	{
-		if(XMVectorGetZ(up) > 0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetY(up) < -0.5f)
-			return -(float)XM_PI/2;
-	}
-	else if(this->rotationType == 4)
-	{
-		if(XMVectorGetZ(up) < -0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetY(up) < 0.5f)
-			return +(float)XM_PI/2;
-	}
-
-	return 0;
-}
-float PlatformSwitch::GetRotationZ(XMVECTOR up)
-{
-	if(this->rotationType == 5)
-	{
-		if(XMVectorGetY(up) > 0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) > 0.5f)
-			return +(float)XM_PI/2;
-	}
-	else if(this->rotationType == 6)
-	{
-		if(XMVectorGetY(up) > 0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return -(float)XM_PI/2;
-	}
-	else if(this->rotationType == 7)
-	{
-		if(XMVectorGetY(up) < -0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return +(float)XM_PI/2;
-	}
-	else if(this->rotationType == 12)
-	{
-		if(XMVectorGetY(up) < -0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetX(up) > 0.5f)
-			return -(float)XM_PI/2;
-	}
-
-
-	return 0;
-}
-
-float PlatformSwitch::GetRotationY(XMVECTOR up)
-{
-	if(this->rotationType == 8)
-	{
-		if(XMVectorGetZ(up) < -0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return -(float)XM_PI/2;
-	}
-	else if(this->rotationType == 9)
-	{
-		if(XMVectorGetZ(up) > 0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetX(up) > 0.5f)
-			return -(float)XM_PI/2;
-	}
-	else if(this->rotationType == 10)
-	{
-		if(XMVectorGetZ(up) > 0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return +(float)XM_PI/2;
-	}
-	else if(this->rotationType == 11)
-	{
-		if(XMVectorGetZ(up) < -0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) > 0.5f)
-			return +(float)XM_PI/2;
-	}
-
-
-	return 0;
 }
 
 SwitchRotations PlatformSwitch::GetRotations(XMVECTOR up)
@@ -395,12 +293,6 @@ SwitchRotations PlatformSwitch::GetRotations(XMVECTOR up)
 	}
 	else if(this->rotationType == 7)
 	{
-		/*
-		if(XMVectorGetY(up) < -0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return +(float)XM_PI/2;//z*/
-
 		if(XMVectorGetY(up) < -0.5f)
 		{
 			sr.start.x = 0;
@@ -424,11 +316,6 @@ SwitchRotations PlatformSwitch::GetRotations(XMVECTOR up)
 	}
 	else if(this->rotationType == 8)
 	{
-		/*if(XMVectorGetZ(up) < -0.5f)
-			return +(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return -(float)XM_PI/2;//y*/
-
 		if(XMVectorGetZ(up) < -0.5f)
 		{
 			sr.start.x = 0;
@@ -475,11 +362,6 @@ SwitchRotations PlatformSwitch::GetRotations(XMVECTOR up)
 	}
 	else if(this->rotationType == 10)
 	{
-		/*if(XMVectorGetZ(up) > 0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) < -0.5f)
-			return +(float)XM_PI/2;//y*/
-
 		if(XMVectorGetZ(up) > 0.5f)
 		{
 			sr.start.x = +(float)XM_PI/2;
@@ -503,11 +385,6 @@ SwitchRotations PlatformSwitch::GetRotations(XMVECTOR up)
 	}
 	else if(this->rotationType == 11)
 	{
-		/*if(XMVectorGetZ(up) < -0.5f)
-			return -(float)XM_PI/2;
-		else if(XMVectorGetX(up) > 0.5f)
-			return +(float)XM_PI/2;//y*/
-
 		if(XMVectorGetZ(up) < -0.5f)
 		{
 			sr.start.x = -(float)XM_PI/2;

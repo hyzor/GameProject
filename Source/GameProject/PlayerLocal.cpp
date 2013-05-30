@@ -2,7 +2,7 @@
 #include <math.h>
 #include "GUI.h"
 
-PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal::Player(0, Nickname, Position)
+PlayerLocal::PlayerLocal(std::string Nickname, XMFLOAT3 Position) : PlayerLocal::Player(0, Nickname, Position, 0)
 {
 	//send connect package
 	char* name = new char[50];
@@ -22,7 +22,7 @@ PlayerLocal::~PlayerLocal()
 void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
 {
 	XMVECTOR pos = XMLoadFloat3(&mPosition);
-	XMMATRIX cJoint = *Joint;
+	XMMATRIX cJoint = XMLoadFloat4x4(&Joint);
 
 	//send package
 	t += dt;
@@ -330,8 +330,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, SoundMod
 		}
 	}*/
 
-	delete Joint;
-	this->Joint = new XMMATRIX(cJoint);
+	XMStoreFloat4x4(&this->Joint, cJoint);
 	XMStoreFloat3(&move, m);
 	XMStoreFloat3(&mPosition, pos);
 
@@ -362,7 +361,9 @@ void PlayerLocal::HandelPackage(Package *p)
 		Package::Body b = p->GetBody();
 		this->mIsAlive = (*(int*)b.Read(4))==1;
 		this->mHealth = *(float*)b.Read(4);
-		this->score = *(int*)b.Read(4);
+		this->kills = *(int*)b.Read(4);
+		this->deaths = *(int*)b.Read(4);
+		this->respawntime = *(float*)b.Read(4);
 	}
 
 	Player::HandelPackage(p);
@@ -395,6 +396,5 @@ void PlayerLocal::Spawn(float x, float y, float z, int rotation) //flytta till s
 	
 	this->mPosition = pos;
 	//this->mIsAlive = true;
-	delete Joint;
-	Joint = new XMMATRIX(XMMatrixIdentity());
+	XMStoreFloat4x4(&this->Joint, XMMatrixIdentity());
 }

@@ -1,7 +1,9 @@
 #include "Player.h"
 
-Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
+Player::Player(std::queue<PackageTo*>* send, std::vector<Player*>* players, int id, std::string name)
 {
+	this->players = players;
+
 	this->id = id;
 	this->name = name;
 
@@ -41,7 +43,9 @@ Player::Player(std::queue<PackageTo*>* send, int id, std::string name)
 	yaw = 0;
 	alive = 1;
 	health = 100;
-	score = 0;
+	kills = 0;
+	deaths = 0;
+	respawntime = 10;
 
 	this->mTimer.start();
 	this->mTimer.reset();
@@ -70,7 +74,13 @@ void Player::HandlePackage(Package* p)
 		//player shoot
 		this->health -= 100;
 		if(this->health <= 0)
+		{
+			this->deaths++;
 			this->alive = false;
+			Player* enemy = findPlayer(players, p->GetHeader().id);
+			if(enemy != NULL)
+				enemy->kills++;
+		}
 		this->updated = true;
 	}
 }
@@ -86,6 +96,19 @@ void Player::Update()
 {
 	this->mTimer.tick();
 	float dt = this->mTimer.getDeltaTime();
+
+
+	if(this->alive)
+	{
+		//out of boundes
+		if(posX > 1000 || posX < -1000 || posY > 1000 || posY < -1000 || posZ > 1000 || posZ < -1000)
+		{
+			this->health = 0;
+			this->deaths++;
+			this->alive = false;
+			updated = true;
+		}
+	}
 
 	////respawn player if dead
 	//posX = 0;
@@ -138,6 +161,8 @@ Package* Player::GetUpdate()
 		float yaw;
 		int alive;
 		float health;
+		int kills;
+		int deaths;
 	};
 
 	PlayerUpdate* pu = new PlayerUpdate();
@@ -155,6 +180,8 @@ Package* Player::GetUpdate()
 	pu->yaw = yaw;
 	pu->alive = alive;
 	pu->health = health;
+	pu->kills = kills;
+	pu->deaths = deaths;
 
 	return new Package(Package::Header(1, id, sizeof(PlayerUpdate)), Package::Body((char*)pu));
 }
@@ -167,13 +194,17 @@ Package* Player::GetSelfUpdate()
 		{
 			int alive;
 			float health;
-			int score;
+			int kills;
+			int deaths;
+			float respawntime;
 		};
 
 		PlayerSelf* ps = new PlayerSelf();
 		ps->alive = this->alive;
 		ps->health = this->health;
-		ps->score = this->score;
+		ps->kills = this->kills;
+		ps->deaths = this->deaths;
+		ps->respawntime = this->respawntime;
 
 		this->updated = false;
 
@@ -206,4 +237,13 @@ Package* Player::GetSpawn()
 int Player::GetId()
 {
 	return id;
+}
+
+
+Player* findPlayer(std::vector<Player*>* players, int id)
+{
+	for(unsigned int i = 0; i < players->size(); i++)
+		if(players->at(i)->GetId() == id)
+			return players->at(i);
+	return nullptr;
 }

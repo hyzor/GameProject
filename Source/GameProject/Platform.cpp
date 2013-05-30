@@ -34,6 +34,8 @@ void Platform::Update(float dt)
 	XMStoreFloat3(&this->pos, pos);
 	mEntity->SetPosition(this->pos);
 	mCollision->SetPosition(this->pos);
+	for(int i = 0; i < mSwitches.size(); i++)
+		mSwitches[i]->SetPosition(this->pos);
 }
 
 void Platform::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)

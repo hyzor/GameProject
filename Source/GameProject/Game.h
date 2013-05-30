@@ -28,10 +28,10 @@
 class Game
 {
 	public:
-		Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextureMgr);
+		Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextureMgr, SoundModule* sm);
 		~Game();
 
-		void Update(float deltaTime, float gameTime, DirectInput* di, SoundModule* sm);
+		void Update(float deltaTime, float gameTime, DirectInput* di);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
 		void HandlePackage(Package* p);
 
@@ -45,6 +45,8 @@ class Game
 		int timeLeft;
 		int pauseTimeLeft;
 		bool gameActive;
+
+		SoundModule* sm;
 
 		std::vector<Pickup*> pickups;
 

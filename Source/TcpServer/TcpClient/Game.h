@@ -21,7 +21,7 @@ class Game
 		void Disconnect(char* socket);
 
 	private:
-		std::vector<Player*> players;
+		std::vector<Player*>* players;
 		std::vector<Platform*> platforms;
 		std::vector<Pickup*> pickups;
 		GameTimer mTimer;
@@ -32,7 +32,6 @@ class Game
 
 		std::queue<PackageTo*>* send;
 
-		Player* findPlayer(int id);
 
 		Package* TimeLeft();
 		Package* GameState();

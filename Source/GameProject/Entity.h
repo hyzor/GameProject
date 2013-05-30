@@ -29,6 +29,7 @@ public:
 
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;
+	XMFLOAT4X4 rot;
 	float Rotation;
 
 	GenericModelInstance mInstance;

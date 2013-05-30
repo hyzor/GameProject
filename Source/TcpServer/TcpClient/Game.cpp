@@ -52,6 +52,8 @@ Game::Game(std::queue<PackageTo*>* send)
 		}
 	}
 
+	players = new std::vector<Player*>();
+
 	t = 0;
 	this->mTimer.start();
 	this->mTimer.reset();
@@ -59,8 +61,9 @@ Game::Game(std::queue<PackageTo*>* send)
 
 Game::~Game()
 {
-	for(auto it(players.begin()); it != players.end(); ++it)
+	for(auto it(players->begin()); it != players->end(); ++it)
 		if(*it) delete *it;
+	delete players;
 
 	for(auto it(platforms.begin()); it != platforms.end(); ++it)
 		if(*it) delete *it;
@@ -95,11 +98,11 @@ void Game::Update()
 		}
 	}
 
-	for(unsigned int i = 0; i < players.size(); i++)
+	for(unsigned int i = 0; i < players->size(); i++)
 	{
-		Package* p = players[i]->GetSelfUpdate();
+		Package* p = players->at(i)->GetSelfUpdate();
 		if(p != NULL)
-			send->push(new PackageTo(p, (char*)players[i]->GetId()));
+			send->push(new PackageTo(p, (char*)players->at(i)->GetId()));
 	}
 
 	t += dt;
@@ -147,9 +150,9 @@ void Game::HandelPackage(Package* p, char* socket)
 {
 	if(p->GetHeader().operation == 2) // new player connected
 	{
-		Player* player = new Player(send, (int)socket, std::string(p->GetBody().Read(50)));
-		players.push_back(player);
-		send->push(new PackageTo(players[players.size()-1]->GetConnect(), 0));
+		Player* player = new Player(send,players, (int)socket, std::string(p->GetBody().Read(50)));
+		players->push_back(player);
+		send->push(new PackageTo(players->at(players->size()-1)->GetConnect(), 0));
 
 		
 		for(unsigned int i = 0; i < platforms.size(); i++)
@@ -158,8 +161,8 @@ void Game::HandelPackage(Package* p, char* socket)
 		for(unsigned int i = 0; i < pickups.size(); i++)
 			send->push(new PackageTo(pickups[i]->GetConnect(), socket));
 
-		for(unsigned int i = 0; i < players.size() - 1; i++)
-			send->push(new PackageTo(players[i]->GetConnect(), socket));
+		for(unsigned int i = 0; i < players->size() - 1; i++)
+			send->push(new PackageTo(players->at(i)->GetConnect(), socket));
 
 		std::vector<double> dReturns;
 		Python->LoadModule("player_script");
@@ -189,7 +192,7 @@ void Game::HandelPackage(Package* p, char* socket)
 	else if(p->GetHeader().operation == 1)
 	{
 		p->SetId((int)socket);
-		Player* player = findPlayer(p->GetHeader().id);
+		Player* player = findPlayer(players, p->GetHeader().id);
 		if(player != NULL)
 		{
 			player->HandlePackage(p);
@@ -200,11 +203,11 @@ void Game::HandelPackage(Package* p, char* socket)
 	else if(p->GetHeader().operation == 11)
 	{
 		p->SetId((int)socket);
-		Player* player = findPlayer(*(int*)p->GetBody().Read(4));
+		Player* player = findPlayer(players, *(int*)p->GetBody().Read(4));
 		if(player != NULL)
 		{
 			player->HandlePackage(p);
-			player->Update();
+			send->push(new PackageTo(player->GetUpdate(), 0));
 		}
 		send->push(new PackageTo(new Package(p), 0));
 	}
@@ -217,7 +220,7 @@ void Game::HandelPackage(Package* p, char* socket)
 				pickups[i]->HandlePackage(p);
 
 				Package::Body b = p->GetBody();
-				Player* player = findPlayer((int)socket);
+				Player* player = findPlayer(players, (int)socket);
 				if(player != NULL)
 					player->HandlePickup(pickups[i]);
 				
@@ -232,25 +235,19 @@ void Game::HandelPackage(Package* p, char* socket)
 
 void Game::Disconnect(char* socket)
 {
-	for(unsigned int i = 0; i < players.size(); i++)
+	for(unsigned int i = 0; i < players->size(); i++)
 	{
-		if(players[i]->GetId() == (int)socket)
+		if(players->at(i)->GetId() == (int)socket)
 		{
 			send->push(new PackageTo(new Package(Package::Header(4, (int)socket, 0), Package::Body(new char())), 0));
-			delete players[i];
-			players.erase(players.begin() + i);
+			delete players->at(i);
+			players->erase(players->begin() + i);
 			return;
 		}
 	}
 }
 
-Player* Game::findPlayer(int id)
-{
-	for(unsigned int i = 0; i < players.size(); i++)
-		if(players[i]->GetId() == id)
-			return players[i];
-	return nullptr;
-}
+
 
 Package* Game::TimeLeft()
 {

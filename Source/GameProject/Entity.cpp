@@ -17,6 +17,8 @@ Entity::Entity(GenericModel* Model, XMFLOAT3 Position)
 	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+
+	XMStoreFloat4x4(&this->rot, XMMatrixIdentity());
 }
 
 
@@ -90,6 +92,7 @@ void Entity::RotateEntityX(float rot)
 {
 	this->Rotation = rot;
 	XMMATRIX modelRot = XMMatrixRotationX(rot);
+	XMStoreFloat4x4(&this->rot, modelRot);
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
@@ -99,6 +102,7 @@ void Entity::RotateEntityY(float rot)
 {
 	this->Rotation = rot;
 	XMMATRIX modelRot = XMMatrixRotationY(rot);
+	XMStoreFloat4x4(&this->rot, modelRot);
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
@@ -107,6 +111,7 @@ void Entity::RotateEntityZ(float rot)
 {
 	this->Rotation = rot;
 	XMMATRIX modelRot = XMMatrixRotationZ(rot);
+	XMStoreFloat4x4(&this->rot, modelRot);
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
@@ -115,10 +120,9 @@ void Entity::RotateEntityZ(float rot)
 void Entity::SetPosition(XMFLOAT3 pos)
 {
 	this->Position = pos;
-	XMMATRIX modelRot = XMMatrixIdentity();
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
-	XMStoreFloat4x4(&mInstance.world, modelScale*modelRot*modelOffset);
+	XMStoreFloat4x4(&mInstance.world, modelScale*XMLoadFloat4x4(&this->rot)*modelOffset);
 }
 
 void Entity::RotateRollPitchYaw(float yaw, float pitch, float roll)

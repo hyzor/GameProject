@@ -44,33 +44,19 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 
 	int index = 0;
 
-	XMFLOAT3 switchPos = pos;
 	XMFLOAT4X4 rot;
-	/*switchPos.y += 100.0;
-	switchPos.x += 50.0f;
-	switchPos.z += 72.5f;*/
-	switchPos.x += -47.3f;
-	switchPos.y += 16.8f;
-	switchPos.z += -78.8f;
-
 	//ok
 	PlatformSwitch* ps = new PlatformSwitch();
 	this->mSwitches.push_back(ps);
-	this->mSwitches.at(index)->Initialize(switchPos, 1, 1, rot, XMFLOAT3(0, 0, 0));
+	this->mSwitches.at(index)->Initialize(pos, XMFLOAT3(-47.3f, 16.8f, -78.8f), 1, 1, rot, XMFLOAT3(0, 0, 0));
 	index++;
 
 	////////////////////////////////////////////////////////////////////
 
 	//ok
 	PlatformSwitch* ps1 = new PlatformSwitch();
-	switchPos = pos;
-	switchPos.x += -87.9f;
-	switchPos.y += 100.4f;
-	switchPos.z += 70.8f;
-
-	
 	this->mSwitches.push_back(ps1);
-	this->mSwitches.at(index)->Initialize(switchPos, 1, 2, rot, XMFLOAT3(0, 5.0f, 10.0f));
+	this->mSwitches.at(index)->Initialize(pos, XMFLOAT3(-87.9f, 100.4f, 70.8f), 1, 2, rot, XMFLOAT3(0, 5.0f, 10.0f));
 	this->mSwitches.at(index)->getEntity()->RotateEntityY(XM_PI);
 	index++;
 
@@ -78,13 +64,8 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 
 	////ok
 	PlatformSwitch* ps2 = new PlatformSwitch();
-	switchPos = pos;
-	switchPos.x += -28.4f;
-	switchPos.y += -31.5f;
-	switchPos.z += 70.8f;
-
 	this->mSwitches.push_back(ps2);
-	this->mSwitches.at(index)->Initialize(switchPos, 1, 3, rot, XMFLOAT3(0, -10.0f, 5.0f));
+	this->mSwitches.at(index)->Initialize(pos, XMFLOAT3(-28.4f, -31.5f, 70.8f), 1, 3, rot, XMFLOAT3(0, -10.0f, 5.0f));
 	this->mSwitches.at(index)->getEntity()->RotateEntityX(XM_PI);
 	index++;
 
@@ -92,26 +73,16 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 
 	//ok
 	PlatformSwitch* ps3 = new PlatformSwitch();
-	switchPos = pos;
-	switchPos.x += 178.3f;
-	switchPos.y += 100.4f;
-	switchPos.z += 48.5f;
-
 	this->mSwitches.push_back(ps3);
-	this->mSwitches.at(index)->Initialize(switchPos, 2, 5, rot, XMFLOAT3(0, 0, 0));
+	this->mSwitches.at(index)->Initialize(pos, XMFLOAT3(178.3f, 100.4f, 48.5f), 2, 5, rot, XMFLOAT3(0, 0, 0));
 	index++;
 
 	//////////////////////////////////////////////////////
 
 	//ok, tack vare fullösning
 	PlatformSwitch* ps4 = new PlatformSwitch();
-	switchPos = pos;
-	switchPos.x += 178.3f;
-	switchPos.y += 5.8f;
-	switchPos.z += 70.6f;
-
 	this->mSwitches.push_back(ps4);
-	this->mSwitches.at(index)->Initialize(switchPos, 3, 9, rot, XMFLOAT3(5.0f, 0, 5.0f));
+	this->mSwitches.at(index)->Initialize(pos, XMFLOAT3(178.3f, 5.8f, 70.6f), 3, 9, rot, XMFLOAT3(5.0f, 0, 5.0f));
 	this->mSwitches.at(index)->getEntity()->RotateEntityY(XM_PI);
 	index++;
 
@@ -119,13 +90,8 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 
 	//ok
 	PlatformSwitch* ps5 = new PlatformSwitch();
-	switchPos = pos;
-	switchPos.x += 81.7f;
-	switchPos.y += -31.6f;
-	switchPos.z += -78.6f;
-
 	this->mSwitches.push_back(ps5);
-	this->mSwitches.at(index)->Initialize(switchPos, 1, 4, rot, XMFLOAT3(0, -5.0f, 0.0f));
+	this->mSwitches.at(index)->Initialize(pos, XMFLOAT3(81.7f, -31.6f, -78.6f), 1, 4, rot, XMFLOAT3(0, -5.0f, 0.0f));
 	this->mSwitches.at(index)->getEntity()->RotateEntityX(-XM_PI/2);
 	index++;
 }

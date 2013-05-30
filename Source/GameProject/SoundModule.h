@@ -98,6 +98,7 @@ class SoundModule
 		bool updateAndPlay(Camera* pCamera, XMFLOAT3 playerPos);
 		bool addEnemy(int ID);
 		bool playEnemySFX(int soundID, int enemyID, XMFLOAT3 pos, bool looping);
+		bool SoundModule::stopEnemySound(int sID);
 };
 
 

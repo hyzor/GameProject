@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
+Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index)
 	: mPlayerID(PlayerID), mNickname(Nickname), mPosition(Position)
 {
 	Python->LoadModule("scoreboard_script");
@@ -20,9 +20,11 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 	move = XMFLOAT3(0, 0, 0);
 	relativeMotion = XMFLOAT3(0,0,0);
 	aliveTime = 0;
-	score = 0;
+	kills = 0;
+	deaths = 0;
+	this->index = index;
 
-	this->Joint = new XMMATRIX(XMMatrixIdentity());
+	XMStoreFloat4x4(&this->Joint, XMMatrixIdentity());
 	
 	rotation = XMFLOAT3(0,0,0);
 	mCamera = new Camera();
@@ -35,14 +37,13 @@ Player::Player(int PlayerID, std::string Nickname, XMFLOAT3 Position)
 Player::~Player()
 {
 	SafeDelete(mCamera);
-	SafeDelete(Joint);
 
 	for (UINT i = 0; i < mWeapons.size(); ++i)
 		delete mWeapons[i];
 }
 
 
-void Player::Kill()
+/*void Player::Kill()
 {
 	Python->LoadModule("scoreboard_script");
 		Python->CallFunction(
@@ -64,16 +65,12 @@ void Player::Die()
 		Python->CreateArg(this->mPlayerID));
 
 	mIsAlive = false;
-}
+}*/
 
 void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers)
 {
-	XMMATRIX cJoint = *Joint;
+	XMMATRIX cJoint = XMLoadFloat4x4(&Joint);
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
-
-	// Health lower than or equal 0, die
-	if (mHealth <= 0.0f)
-		Die();
 	
 	// Move
 	pos += XMLoadFloat3(&move)+XMLoadFloat3(&relativeMotion)*dt;	
@@ -142,12 +139,22 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	
 	// Step sound
 	if(OnGround && XMVectorGetX(XMVector3Dot(XMLoadFloat3(&move), XMLoadFloat3(&XMFLOAT3(1,1,1)))) != 0)
-		sm->playSFX(mPosition, Running, false);
+	{
+		if(this->GetID() == 0)
+			sm->playSFX(mPosition, Running, false);
+		else
+			sm->playEnemySFX(Running, index, mPosition, false);
+	}
 	else
-		sm->stopSound(Running);		
+	{
+		if(this->GetID() == 0)
+			sm->stopSound(Running);
+		else
+			sm->stopEnemySound(index);
+	}
 
 
-	cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);//XMMatrixLookAtLH(XMLoadFloat3(&XMFLOAT3(0,0,0)), XMLoadFloat3(&XMFLOAT3(1,0,0)), XMLoadFloat3(&XMFLOAT3(0,1,0)));
+	cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);
 
 	XMStoreFloat3(&mPosition, pos);
 
@@ -160,10 +167,10 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, SoundModule* 
 	mWeapons[mCurWeaponIndex]->Update(dt, gameTime);
 	mWeapons[mCurWeaponIndex]->ViewMatrixRotation(mCamera->GetViewMatrix());
 
-	delete Joint;
-	this->Joint = new XMMATRIX(cJoint);
+	XMStoreFloat4x4(&this->Joint, cJoint);
 
 	aliveTime += dt;
+	respawntime = 0;
 }
 
 void Player::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
@@ -197,27 +204,11 @@ void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
 	this->mCurWeaponIndex = 0;
 }
 
-bool Player::OutOfMap() //flytta till server
-{
-	if( mPosition.x > 1000  ||
-		mPosition.x < -1000 ||
-		mPosition.y > 1000  ||
-		mPosition.y < -1000 ||
-		mPosition.z > 1000  ||
-		mPosition.z < -1000)
-	{
-			return true;
-	}
-
-	return false;
-
-}
-
 XNA::AxisAlignedBox Player::GetBounding()
 {
 	XNA::AxisAlignedBox box;
-	XMStoreFloat3(&box.Center, XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), *Joint));
-	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(4,30,4)), *Joint));
+	XMStoreFloat3(&box.Center, XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,10,0)), XMLoadFloat4x4(&Joint)));
+	XMStoreFloat3(&box.Extents, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(4,30,4)), XMLoadFloat4x4(&Joint)));
 
 	return box;
 }

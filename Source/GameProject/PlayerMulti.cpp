@@ -1,6 +1,6 @@
 #include "PlayerMulti.h"
 
-PlayerMulti::PlayerMulti(int PlayerID, std::string Nickname, XMFLOAT3 Position) : PlayerMulti::Player(PlayerID, Nickname, Position)
+PlayerMulti::PlayerMulti(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index) : PlayerMulti::Player(PlayerID, Nickname, Position, index)
 {
 	mModel = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), Position);
 }
@@ -22,7 +22,7 @@ void PlayerMulti::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 {
 	if(mIsAlive)
 	{
-		mModel->RotateXYZ(rotation, this->mCamera->Yaw-XM_PI, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), *Joint));
+		mModel->RotateXYZ(rotation, this->mCamera->Yaw-XM_PI, XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), XMLoadFloat4x4(&Joint)));
 		mModel->Draw(dc, activeTech, mCamera, shadowMap);
 	}
 
@@ -42,6 +42,8 @@ void PlayerMulti::HandelPackage(Package *p)
 		this->mCamera->Yaw = *(float*)b.Read(4);
 		this->mIsAlive = (*(int*)b.Read(4))==1;
 		this->mHealth = *(float*)b.Read(4);
+		this->kills = *(int*)b.Read(4);
+		this->deaths = *(int*)b.Read(4);
 	}
 	else if(p->GetHeader().operation == 11)
 	{
@@ -49,7 +51,7 @@ void PlayerMulti::HandelPackage(Package *p)
 		int hitId = *(int*)b.Read(4);
 		XMFLOAT3 hitPoint = *(XMFLOAT3*)b.Read(4*3);
 
-		XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), *Joint);
+		XMVECTOR v = XMLoadFloat3(&mPosition)+XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,15,0)), XMLoadFloat4x4(&this->Joint));
 		XMFLOAT3 p;
 		XMStoreFloat3(&p,v);
 

@@ -173,8 +173,6 @@ bool Projekt::Init()
 	GenericHandler::GetInstance()->Initialize(mDirect3D->GetDevice(), &mTextureMgr);
 	Python->Initialize();
 
-	// Create game
-	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr);
 
 	//Create and initialize the GUI
 	Gui->Init(mDirect3D->GetDevice());
@@ -185,6 +183,10 @@ bool Projekt::Init()
 	//init soundmodule
 	this->soundModule = new SoundModule();
 	this->soundModule->initialize(this->mhMainWnd, this->mDirectInput);
+
+	
+	// Create game
+	mGame = new Game(mDirect3D->GetDevice(), mDirect3D->GetImmediateContext(), &mTextureMgr, soundModule);
 
 	// Set if window is fullscreen or not
 	D3D11App::SetFullscreen(Settings::GetInstance()->GetData().IsFullscreen);
@@ -349,7 +351,7 @@ void Projekt::UpdateScene(float dt)
 	//-------------------------------------------------------------
 
 	// Update objects
-	mGame->Update(dt, mTimer.getTimeElapsedS(), mDirectInput, soundModule);
+	mGame->Update(dt, mTimer.getTimeElapsedS(), mDirectInput);
 
 	// Update shadow map
 	mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);

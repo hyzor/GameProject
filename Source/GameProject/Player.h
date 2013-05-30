@@ -21,7 +21,7 @@ class Weapon;
 class Player
 {
 	public:
-		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position);
+		Player(int PlayerID, std::string Nickname, XMFLOAT3 Position, int index);
 		virtual ~Player();
 
 		virtual void Update(float dt, float gameTime, DirectInput* dInput, SoundModule* sm, World* world, std::vector<Player*>* multiplayers);
@@ -36,15 +36,16 @@ class Player
 		void SetPosition(XMFLOAT3 position) { mPosition=position; }
 		Camera* GetCamera() { return mCamera; }
 		bool IsAlive() const { return mIsAlive; }
-		bool OutOfMap();
 		XNA::AxisAlignedBox GetBounding();
 
-		void Kill();
-		void Die();
 
 		bool mIsAlive;
 		float mHealth;
-		int score;
+		int kills;
+		int deaths;
+		float respawntime;
+
+		int index;
 
 	protected:
 		int mPlayerID;
@@ -61,7 +62,7 @@ class Player
 		XMFLOAT3 relativeMotion;
 		
 		Camera* mCamera;
-		XMMATRIX* Joint;
+		XMFLOAT4X4 Joint;
 
 		int mCurWeaponIndex;
 		std::vector<Weapon*> mWeapons;

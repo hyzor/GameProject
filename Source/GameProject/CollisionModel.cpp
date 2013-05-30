@@ -102,6 +102,13 @@ void CollisionModel::SetPosition(XMFLOAT3 position)
 	XMStoreFloat3(&boundingBox.Extents, 0.5f*(XMLoadFloat3(&vMax)-XMLoadFloat3(&vMin)));
 }
 
+void CollisionModel::SetPosition(XMVECTOR position)
+{
+	XMFLOAT3 p;
+	XMStoreFloat3(&p, position);
+	this->SetPosition(p);
+}
+
 
 CollisionModel::Hit CollisionModel::Intersect(XMVECTOR origin, XMVECTOR dir, float length)
 {
