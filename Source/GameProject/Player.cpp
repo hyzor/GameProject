@@ -37,8 +37,8 @@ Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Pos
 	mAnimations.push_back(Animation(IdleAnim, 1, 1));
 	mAnimations.push_back(Animation(RunningAnim, 1, 24));
 	mAnimations.push_back(Animation(JumpingAnim, 30, 49));
-	mAnimations.push_back(Animation(StrafingRightAnim, 51, 74));
-	mAnimations.push_back(Animation(StrafingLeftAnim, 81, 104));
+	mAnimations.push_back(Animation(StrafingRightAnim, 51, 75));
+	mAnimations.push_back(Animation(StrafingLeftAnim, 81, 105));
 
 
 	SetPosition(mPosition);
