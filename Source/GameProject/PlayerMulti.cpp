@@ -95,7 +95,7 @@ void PlayerMulti::HandelPackage(Package *p)
 		XMFLOAT3 d;
 		XMStoreFloat3(&d, dir);
 
-		if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, d))
+		if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, XMFLOAT3(-d.x, -d.y, -d.z)))
 		{
 			sm->playEnemySFX(FireWeapon,this->index, p, false);
 		}
