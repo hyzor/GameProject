@@ -17,7 +17,7 @@ class PlayerMulti : public Player
 		void HandelPackage(Package *p);
 
 	private:
-		AnimatedEntity* mModel;
+		AnimatedEntity* mEntity;
 };
 
 

@@ -42,8 +42,12 @@ struct GenericSkinnedModelInstance
 	XMFLOAT4X4 world;
 	bool isVisible;
 	std::vector<XMFLOAT4X4> FinalTransforms;
-	std::string ClipName;
+
+	std::string AnimationName;
+	UINT AnimationIndex;
 	float TimePos;
+
+	UINT frameStart, frameEnd;
 
 	void Update(float dt);
 };

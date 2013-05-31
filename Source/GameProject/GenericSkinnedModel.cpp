@@ -7,13 +7,10 @@ GenericSkinnedModel::GenericSkinnedModel(ID3D11Device* device, TextureManager& t
 
 	// Load all the meshes
 	GenericObjectLoader objectLoader;
-	//objectLoader.loadObject(fileName, mats, meshes, device);
-	//objectLoader.loadSkinnedObject(fileName, mats, meshes);
 	objectLoader.loadSkinnedObject(fileName, mats, meshes, skinnedData);
 
 	numMeshes = meshes.size();
 	numMaterials = mats.size();
-	//numBones = bones.size();
 
 	// Set vertices and indices for each mesh
 	for (UINT i = 0; i < numMeshes; ++i)
@@ -83,13 +80,6 @@ GenericSkinnedModel::~GenericSkinnedModel(void)
 void GenericSkinnedModelInstance::Update(float dt)
 {
 	TimePos += dt;
-	//TimePos += dt;
-	FinalTransforms = model->skinnedData.GetTransforms(TimePos);
-	//model->skinnedData.Animations[model->skinnedData.CurrentAnimIndex].GetTransforms(dt);
-// 	TimePos += dt;
-// 	model->skinnedData.getFinalTransforms(ClipName, TimePos, FinalTransforms);
-// 
-// 	// Loop animation
-// 	if (TimePos > model->skinnedData.getClipEndTime(ClipName))
-// 		TimePos = 0.0f;
+
+	FinalTransforms = model->skinnedData.GetTransforms(TimePos, AnimationIndex, frameStart, frameEnd);
 }

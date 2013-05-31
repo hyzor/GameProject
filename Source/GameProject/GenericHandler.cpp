@@ -38,8 +38,8 @@ void GenericHandler::Initialize(ID3D11Device* device, TextureManager* mTextureMg
 	mGModels["Gun"] = new GenericModel(device, mTextureMgr, "Data\\Models\\Collada\\Gun\\Gun.obj", L"Data\\Models\\Collada\\Gun\\");
 
 	// Initializing GenericSkinnedModel objects
-	//mGSModels["SkinnedModel"] = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.DAE", L"Data\\Models\\Collada\\AnimTest\\");
-	mGSModels["SkinnedModel"] = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\Character\\Character.dae", L"Data\\Models\\Collada\\Character\\");
+	mGSModels["SkinnedModel"] = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\AnimTest\\test_Collada_DAE.DAE", L"Data\\Models\\Collada\\AnimTest\\");
+	//mGSModels["SkinnedModel"] = new GenericSkinnedModel(device, *mTextureMgr, "Data\\Models\\Collada\\Character\\Character.dae", L"Data\\Models\\Collada\\Character\\");
 
 	CollisionModel* cm = new CollisionModel(true);
 	cm->LoadObj("Data\\Models\\Collada\\Platform1\\Platform1.obj");

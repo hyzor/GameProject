@@ -18,6 +18,8 @@ public:
 	void SetPosition(XMFLOAT3 pos);
 	void RotateXYZ(XMFLOAT3 rot, float yaw, XMVECTOR Up);
 
+	void SetKeyFrameInterval(UINT frameStart, UINT frameEnd) { mInstance.frameStart = frameStart; mInstance.frameEnd = frameEnd; }
+
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;
 	float Rotation;

@@ -250,7 +250,38 @@ UINT AnimEvaluator::GetFrameIndexAt(float time)
 	if (!PlayAnimationForward)
 		percent = (percent - 1.0f) * -1.0f;
 
-	return static_cast<UINT>((static_cast<float>(Transforms.size()) * percent));
+	UINT frameIndex = static_cast<UINT>((static_cast<float>(Transforms.size()) * percent));
+
+	return frameIndex;
+}
+
+UINT AnimEvaluator::GetFrameIndexAt( float time, UINT frameStart, UINT frameEnd )
+{
+	UINT nrOfFrames = (frameEnd - frameStart) + 1;
+	float framesDuration = nrOfFrames * (mDuration / static_cast<float>(Transforms.size()));
+
+	time *= mTicksPerSecond;
+
+	float _time = 0.0f;
+	if (mDuration > 0.0)
+		_time = fmod(time, framesDuration);
+
+	float percent = _time / framesDuration;
+
+	if (!PlayAnimationForward)
+		percent = (percent - 1.0f) * -1.0f;
+
+	UINT frameIndex = static_cast<UINT>((static_cast<float>(nrOfFrames) * percent));
+
+	frameIndex += (frameStart - 1);
+
+	if (frameIndex+1 > frameEnd)
+		int test = 0;
+
+	if (frameIndex+1 < frameStart)
+		int test = 0;
+
+	return frameIndex;
 }
 
 void AnimEvaluator::Evaluate( float pTime, std::map<std::string, SkinData::Bone*>& bones )
@@ -441,4 +472,15 @@ void SkinnedData::CalcBoneMatrices()
 		XMMATRIX globalTransform = XMLoadFloat4x4(&Bones[i]->GlobalTransform);
 		XMStoreFloat4x4(&Transforms[i], XMMatrixMultiply(offsetMatrix, globalTransform));
 	}
+}
+
+UINT SkinnedData::GetAnimationIndex( const std::string& name )
+{
+	std::map<std::string, UINT>::iterator itr = AnimationNameToId.find(name);
+	UINT animIndex = 0;
+
+	if (itr != AnimationNameToId.end())
+		animIndex = itr->second;
+
+	return animIndex;
 }

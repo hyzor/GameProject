@@ -49,6 +49,33 @@ class Player
 		int index;
 		std::string mNickname;
 
+		//-------------------------------------------
+		// Animations
+		//-------------------------------------------
+		enum AnimationTypes
+		{
+			IdleAnim = 0,
+			RunningAnim,
+			JumpingAnim,
+			StrafingRightAnim,
+			StrafingLeftAnim
+		};
+
+		struct Animation
+		{
+			Animation(UINT animationType, UINT frameStart, UINT frameEnd) 
+			{ 
+				this->AnimationType = animationType;
+				this->FrameStart = frameStart;
+				this->FrameEnd = frameEnd;
+			}
+
+			UINT FrameStart, FrameEnd;
+			UINT AnimationType;
+		};
+
+		std::vector<Animation> mAnimations;
+
 	protected:
 		int mPlayerID;
 		float mSpeed;

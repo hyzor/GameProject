@@ -10,8 +10,11 @@ AnimatedEntity::AnimatedEntity(GenericSkinnedModel* model, XMFLOAT3 position)
 	mInstance.model = model;
 	mInstance.isVisible = true;
 	mInstance.TimePos = 0.0f;
-	mInstance.ClipName = "combinedAnim_0";
+	mInstance.AnimationName = "animation";
+	mInstance.AnimationIndex = mInstance.model->skinnedData.GetAnimationIndex(mInstance.AnimationName);
 	mInstance.FinalTransforms.resize(mInstance.model->skinnedData.Bones.size());
+	mInstance.frameStart = 150;
+	mInstance.frameEnd = 180;
 	this->Position = position;
 	this->Scale = XMFLOAT3(1, 1, 1);
 	this->Rotation = 0.0f;
