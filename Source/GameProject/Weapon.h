@@ -29,7 +29,7 @@ public:
 	Weapon();
 	virtual ~Weapon();
 	virtual void Update(float dt, float gameTime);
-	virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap);
+	virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap, bool isVisible);
 
 	void SetPosition(XMFLOAT3 pos);
 	void SetPosition(float x, float y, float z);

@@ -33,10 +33,11 @@ void Weapon::Update(float dt, float gameTime)
 		mProperties.currCooldown -= dt;
 }
 
-void Weapon::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap)
+void Weapon::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap, bool isVisible)
 {
 	// Draw weapon model
-	mEntity->Draw(dc, tech, camera, shadowMap);
+	if (isVisible)
+		mEntity->Draw(dc, tech, camera, shadowMap);
 }
 
 void Weapon::ResetCooldown()

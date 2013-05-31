@@ -35,10 +35,11 @@ void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceCont
 	//mParticleSys->setEmitPos(XMFLOAT3(1.0f, 300.0f, 50.0f));
 }
 
-void Railgun::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap)
+void Railgun::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap, bool isVisible)
 {
 	// Draws the weapon model
-	Weapon::Draw(dc, tech, camera, shadowMap);
+	if (isVisible)
+		Weapon::Draw(dc, tech, camera, shadowMap, isVisible);
 
 	// Draw particle system
 	mParticleSys->setEyePos(camera->GetPosition());
