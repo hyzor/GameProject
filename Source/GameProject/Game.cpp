@@ -14,13 +14,13 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* dc, TextureManager* mTextu
 	timeLeft = 0;
 	pauseTimeLeft = 0;
 
- 	animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
+ 	//animatedEntity = new AnimatedEntity(GenericHandler::GetInstance()->GetGenericSkinnedModel("SkinnedModel"), XMFLOAT3(-10.0f, 60.0f, 100.0f));
 }
 
 Game::~Game()
 {
 	SafeDelete(player);
- 	SafeDelete(animatedEntity);
+ 	//SafeDelete(animatedEntity);
 	SafeDelete(world);
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		SafeDelete(multiplayers->at(i));
@@ -35,7 +35,7 @@ void Game::Update(float deltaTime, float gameTime, DirectInput* di)
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Update(deltaTime, gameTime, di, world, multiplayers);
 
-	animatedEntity->Update(deltaTime);
+	//animatedEntity->Update(deltaTime);
 	world->Update(deltaTime);
 
 	for(UINT i = 0; i < pickups.size(); i++)
@@ -140,8 +140,8 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 	world->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	// --- Remove ---
-	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
-	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+// 	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
+// 	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	// Draw pickups
 	activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
