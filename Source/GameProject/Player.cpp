@@ -91,7 +91,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
 	
 	// Move
-	pos += XMLoadFloat3(&move)+XMLoadFloat3(&relativeMotion)*dt;	
+	pos += XMLoadFloat3(&move)+XMLoadFloat3(&relativeMotion)*dt;
 
 	// Assume idle animation
 	mCurAnim = IdleAnim;
@@ -175,19 +175,21 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 
 	// Running forwards
 	if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) > 0)
-	{
-		// Running animation
+	// Running animation
 		mCurAnim = RunningAnim;
-	}
 	// Running backwards
 	else if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) < 0)
-	{
 		mCurAnim = RunningBackwardsAnim;
-	}
+	// Strafing left
+	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) < 0)
+		mCurAnim = StrafingLeftAnim;
+	// Strafing right
+	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) > 0)
+		mCurAnim = StrafingRightAnim;
 
-	// Player not on ground and ySpeed over 10
+	// Player not on ground and ySpeed over 50
 	// to avoid twitching between Idle and Jumping Anim
-	if (!OnGround && ySpeed > 10.0f)
+	if (!OnGround && ySpeed > 50.0f)
 		mCurAnim = JumpingAnim;
 
 
