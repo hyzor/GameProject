@@ -126,7 +126,11 @@ void Game::HandlePackage(Package* p)
 		{
 			gameActive = false;
 			Gui->setState(GUI::Pause);
-		}	
+		}
+	}
+	else if(o == 20)
+	{
+		player->HandelPackage(p);
 	}
 }
 

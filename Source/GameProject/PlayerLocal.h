@@ -13,6 +13,7 @@ class PlayerLocal : public Player
 		void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);
 		void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
 		void HandelPackage(Package *p);
+		void Spawn(float x, float y, float z);
 	private:
 		float t;
 

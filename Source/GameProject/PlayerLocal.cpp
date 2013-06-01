@@ -150,16 +150,6 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 		if (dInput->GetKeyboardState()[DIK_A] & 0x80)
 			m -= right*mSpeed*dt;
 
-		// Rotate camera
-		if (dInput->MouseHasMoved())
-		{
-			float dx = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lX));
-			float dy = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lY));
-
-			mCamera->Yaw += dx;;
-			mCamera->Pitch += dy;
-		}
-
 		//jump
 		if (this->OnGround && dInput->GetKeyboardState()[DIK_SPACE] & 0x80)
 			ySpeed = -200;
@@ -334,6 +324,16 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 		}
 	}*/
 
+	// Rotate camera
+	if (dInput->MouseHasMoved())
+	{
+		float dx = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lX));
+		float dy = XMConvertToRadians(0.25f*static_cast<float>(dInput->GetMouseState().lY));
+
+		mCamera->Yaw += dx;;
+		mCamera->Pitch += dy;
+	}
+
 	XMStoreFloat4x4(&this->Joint, cJoint);
 	XMStoreFloat3(&move, m);
 	XMStoreFloat3(&mPosition, pos);
@@ -368,7 +368,7 @@ void PlayerLocal::HandelPackage(Package *p)
 		float health = *(float*)b.Read(4);
 		int kills = *(int*)b.Read(4);
 		int deaths = *(int*)b.Read(4);
-		this->respawntime = *(float*)b.Read(4);
+		this->TimeToSpawn = *(int*)b.Read(4);
 		this->deathBy = *(int*)b.Read(4);
 
 		this->setKillsDeaths(kills, deaths);
@@ -397,5 +397,27 @@ void PlayerLocal::HandelPackage(Package *p)
 		this->mIsAlive = alive;
 	}
 
+	if(p->GetHeader().operation == 20)
+	{
+		float x,y,z,health;
+		Package::Body b = p->GetBody();
+		x = *(float*)b.Read(4);
+		y = *(float*)b.Read(4);
+		z = *(float*)b.Read(4);
+		this->mHealth =	*(float*)b.Read(4);
+		Spawn(x,y,z);
+	}
+
 	Player::HandelPackage(p);
+}
+
+void PlayerLocal::Spawn(float x, float y, float z)
+{
+	this->mPosition = XMFLOAT3(x,y,z);
+	this->mIsAlive = true;
+	XMStoreFloat4x4(&this->Joint, XMMatrixIdentity());
+	rotateTo = XMFLOAT3(0,0,0);
+	move = XMFLOAT3(0, 0, 0);
+	ySpeed = 0;
+
 }

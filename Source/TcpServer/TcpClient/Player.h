@@ -23,10 +23,11 @@ class Player
 		Package* GetUpdate();
 		Package* GetSelfUpdate();
 		Package* GetSpawn();
+		Package* SpawnPlayer();
 
 		int GetId();
 
-
+		bool playerSpawn;
 		bool updated;
 
 		float posX;
@@ -46,6 +47,7 @@ class Player
 		int kills;
 		int deaths;
 		float respawntime;
+		int timeToSpawn;
 		int deathBy;
 
 	private:
@@ -55,9 +57,11 @@ class Player
 		std::queue<PackageTo*>* send;
 
 		GameTimer mTimer;
+		GameTimer mRespawnTimer;
 
 		std::vector<Player*>* players;
 
+		void Die();
 };
 
 Player* findPlayer(std::vector<Player*>* players, int id);

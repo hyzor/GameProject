@@ -66,8 +66,7 @@ void Player::HandlePackage(Package* p)
 		this->health -= 100;
 		if(this->health <= 0)
 		{
-			this->deaths++;
-			this->alive = false;
+			Die();
 			Player* enemy = findPlayer(players, p->GetHeader().id);
 			if(enemy != NULL)
 			{
@@ -90,6 +89,7 @@ void Player::HandlePickup(Pickup* p)
 
 void Player::Update()
 {
+	this->mRespawnTimer.tick();
 	this->mTimer.tick();
 	float dt = this->mTimer.getDeltaTime();
 
@@ -97,14 +97,19 @@ void Player::Update()
 	if(this->alive)
 	{
 		//out of boundes
-		/*if(posX > 1000 || posX < -1000 || posY > 1000 || posY < -1000 || posZ > 1000 || posZ < -1000)
+		if(posX > 1000 || posX < -1000 || posY > 1000 || posY < -1000 || posZ > 1000 || posZ < -1000)
 		{
-			this->health = 0;
-			this->deaths++;
-			this->alive = false;
-			this->deathBy = 0;
-			updated = true;
-		}*/
+			Die();
+		}
+	}
+	else
+	{
+		timeToSpawn = respawntime - mRespawnTimer.getTimeElapsedS();
+		if(timeToSpawn <= 0)
+		{
+			playerSpawn = true;
+		}
+		updated = true;
 	}
 
 	////respawn player if dead
@@ -196,7 +201,7 @@ Package* Player::GetSelfUpdate()
 			float health;
 			int kills;
 			int deaths;
-			float respawntime;
+			int timeToSpawn;
 			int deathBy;
 		};
 
@@ -205,7 +210,7 @@ Package* Player::GetSelfUpdate()
 		ps->health = this->health;
 		ps->kills = this->kills;
 		ps->deaths = this->deaths;
-		ps->respawntime = this->respawntime;
+		ps->timeToSpawn = this->timeToSpawn;
 		ps->deathBy = this->deathBy;
 
 		this->updated = false;
@@ -248,4 +253,73 @@ Player* findPlayer(std::vector<Player*>* players, int id)
 		if(players->at(i)->GetId() == id)
 			return players->at(i);
 	return nullptr;
+}
+
+Package* Player::SpawnPlayer()
+{
+
+	std::vector<double> dReturns(0);
+	Python->LoadModule("respawn");
+	Python->CallFunction(
+		Python->GetFunction("getSpawnPos"),
+		nullptr);
+
+		Python->Update(0.0f);
+
+		if(Python->CheckReturns())
+		{
+			Python->ConvertDoubles(dReturns);
+			Python->ClearReturns();
+			
+			posX = (float)dReturns[0];
+			posY = (float)dReturns[1];
+			posZ = (float)dReturns[2];
+
+			alive = 1;
+			health = 100;
+		}
+
+	struct PlayerSpawn
+	{
+		float posX;
+		float posY;
+		float posZ;
+		float health;
+	};
+
+	PlayerSpawn* ps = new PlayerSpawn();
+	ps->posX = posX;
+	ps->posY = posY;
+	ps->posZ = posZ;
+	ps->health = health;
+
+	this->updated = true;
+	this->playerSpawn = false;
+
+	return new Package(Package::Header(20, id, sizeof(PlayerSpawn)), Package::Body((char*)ps));
+}
+
+void Player::Die()
+{
+	this->health = 0;
+	this->deaths++;
+	this->alive = false;
+	updated = true;
+	Python->LoadModule("respawn");
+	Python->CallFunction(
+		Python->GetFunction("PlayerDied"),
+		nullptr);
+	Python->Update(0.0f);
+
+	std::vector<int> iReturns(0);
+	if(Python->CheckReturns())
+	{
+		Python->ConvertInts(iReturns);
+		Python->ClearReturns();
+		respawntime = iReturns[0];
+	}
+
+	mRespawnTimer.start();
+	mRespawnTimer.reset();
+		
 }

@@ -47,9 +47,9 @@ Game::Game(std::queue<PackageTo*>* send)
 			Python->ConvertDoubles(dReturns);
 			Python->ClearReturns();
 			int index = 0;
-			Python->LoadModule("player_script");
+			Python->LoadModule("respawn");
 			Python->CallFunction(
-				Python->GetFunction("CreateSpawnPoint"),
+				Python->GetFunction("CreateSpawnPos"),
 				Python->CreateArg(dReturns[index], dReturns[index+1], dReturns[index+2]));
 			//std::cout << "( " << dReturns[index] << ", " << dReturns[index+1] << ", " << dReturns[index+2] << " )" << std::endl;
 			dReturns.clear();
@@ -299,6 +299,12 @@ void Game::Update()
 		Package* p = players->at(i)->GetSelfUpdate();
 		if(p != NULL)
 			send->push(new PackageTo(p, (char*)players->at(i)->GetId()));
+		if(players->at(i)->playerSpawn)
+		{
+			Package* p = players->at(i)->SpawnPlayer();
+			if(p != NULL)
+				send->push(new PackageTo(p, (char*)players->at(i)->GetId()));
+		}
 	}
 
 	t += dt;
