@@ -28,6 +28,8 @@ Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Pos
 	deaths = 0;
 	this->index = index;
 
+	mCurAnim = IdleAnim;
+
 	XMStoreFloat4x4(&this->Joint, XMMatrixIdentity());
 	
 	rotation = XMFLOAT3(0,0,0);
@@ -90,6 +92,8 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	// Move
 	pos += XMLoadFloat3(&move)+XMLoadFloat3(&relativeMotion)*dt;	
 
+	// Assume idle animation
+	mCurAnim = IdleAnim;
 
 	// Gravity
 	if(!rotating)
@@ -159,6 +163,9 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 			sm->playSFX(mPosition, Running, false);
 		else
 			sm->playEnemySFX(Running, this->index, mPosition, false);
+
+		// Running animation
+		mCurAnim = RunningAnim;
 	}
 	else
 	{
@@ -167,6 +174,10 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 		else
 			sm->stopEnemySound(Running, this->index);
 	}
+
+	// Player not on ground after testing
+	if (!OnGround)
+		mCurAnim = JumpingAnim;
 
 
 	cJoint = XMMatrixRotationX(rotation.x) * XMMatrixRotationY(rotation.y) * XMMatrixRotationZ(rotation.z);

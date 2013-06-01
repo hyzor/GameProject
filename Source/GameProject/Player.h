@@ -75,6 +75,7 @@ class Player
 		};
 
 		std::vector<Animation> mAnimations;
+		UINT mCurAnim;
 
 	protected:
 		int mPlayerID;
