@@ -174,11 +174,10 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	}
 
 	// Running forwards
-	if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) < 0)
-	// Running animation
+	if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) < -0.5f)
 		mCurAnim = RunningAnim;
 	// Running backwards
-	else if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) > 0)
+	else if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) > 0.5f)
 		mCurAnim = RunningBackwardsAnim;
 	// Strafing left
 	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) < 0)

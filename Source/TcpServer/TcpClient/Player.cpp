@@ -72,6 +72,7 @@ void Player::HandlePackage(Package* p)
 			{
 				this->deathBy = enemy->GetId();
 				enemy->kills++;
+				enemy->updated = true;
 			}
 			else
 				this->deathBy = 0;

@@ -120,7 +120,7 @@ void sendPackage()
 				char* buf = new char[len];
 
 				boost::system::error_code error;
-				len = (*sockets[i]).read_some(boost::asio::buffer(buf, len), error);
+				(*sockets[i]).read_some(boost::asio::buffer(buf, len), error);
 
 				if (error)
 				{
@@ -130,10 +130,12 @@ void sendPackage()
 				}
 				else
 				{
-					int offset = 0;
-					while(len-offset > 0)
+					int offset = (int)buf;
+					while((int)buf+len-offset > sizeof(Package::Header))
 					{
-						Package p = Package((char*)(buf+offset), true);
+						Package p = Package((char*)offset, true);
+						if(!(p.Size() > sizeof(Package::Header) && p.Size() < 256))
+							break;
 						game->HandelPackage(&p, (char*)sockets[i]);
 						offset += p.Size();
 					}

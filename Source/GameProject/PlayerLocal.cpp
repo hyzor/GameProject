@@ -88,7 +88,17 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 		{
 			if(!eDown)
 			{
-				rotateTo.x += (float)PI/2;
+				XMVECTOR up = XMVector3Transform(XMLoadFloat3(&XMFLOAT3(0,1,0)), cJoint);
+				if(XMVectorGetY(up) > 0.5f || XMVectorGetY(up) < -0.5f)
+					rotateTo.x += (float)PI;
+				else
+				{
+					rotation.x = 0;
+					rotation.z = 0;
+					rotateTo.x = 0;
+					rotateTo.z = 0;
+					rotateTo.y += (float)PI;
+				}
 				ySpeed = 0;
 				rotating = true;
 			}

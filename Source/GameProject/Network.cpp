@@ -57,8 +57,7 @@ std::queue<Package*> Network::GetPackage()
 		char* buf = new char[len];
 
 		boost::system::error_code error;
-		len = (*s).read_some(boost::asio::buffer(buf, len), error);
-
+		(*s).read_some(boost::asio::buffer(buf, len), error);
 
 		if (error == boost::asio::error::eof)
 		{
@@ -67,10 +66,12 @@ std::queue<Package*> Network::GetPackage()
 		}
 		else
 		{
-			int offset = 0;
-			while(len-offset > sizeof(Package::Header))
+			int offset = (int)buf;
+			while((int)buf+len-offset > sizeof(Package::Header))
 			{
-				Package* p = new Package((char*)(buf+offset), true);
+				Package* p = new Package((char*)offset, true);
+				if(!(p->Size() > sizeof(Package::Header) && p->Size() < 256))
+					break;
 				packs.push(p);
 				offset += p->Size();
 			}
