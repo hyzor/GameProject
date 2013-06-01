@@ -385,9 +385,6 @@ void Game::HandelPackage(Package* p, char* socket)
 			player->posZ = (float)dReturns[2];
 		}
 
-		//player->posX = 1;
-		//player->posY = 500;
-		//player->posZ = 50;
 		player->alive = true;
 		player->health = 100;
 		send->push(new PackageTo(player->GetSpawn(), 0));

@@ -207,7 +207,6 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	XMStoreFloat4x4(&this->Joint, cJoint);
 
 	aliveTime += dt;
-	respawntime = 0;
 	deathBy = 0;
 }
 
@@ -230,7 +229,7 @@ void Player::HandelPackage(Package *p)
 		this->rotation = XMFLOAT3(0,0,0);
 		this->rotateTo = XMFLOAT3(0,0,0);
 		this->move = XMFLOAT3(0, 0, 0);
-		this->relativeMotion = XMFLOAT3(0,0,0);
+		this->relativeMotion = XMFLOAT3(0.1f,0.1f,0.1f);
 		this->aliveTime = 0;
 	}
 }

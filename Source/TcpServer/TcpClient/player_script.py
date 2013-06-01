@@ -25,14 +25,11 @@ def RandomSpawn():
         y = platforms[index].pos.y
         z = platforms[index].pos.z
         y += 100
-        if(x == 0):
-            x+=1
-        if(z == 0):
-            z+=1
-        #if(platforms[index].type == 2):
-            #z+=100
-        elif(platforms[index].type == 3):
+        if(platforms[index].type == 3):
             z+=50
+        x += 0.01
+        y += 0.01
+        z += 0.01
 
         print x,y,z, len(platforms), index
         return float(x), float(y), float(z)

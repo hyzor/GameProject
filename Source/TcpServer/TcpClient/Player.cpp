@@ -271,25 +271,27 @@ Player* findPlayer(std::vector<Player*>* players, int id)
 
 void Player::Die()
 {
-	this->health = 0;
-	this->deaths++;
-	this->alive = false;
-	updated = true;
-	Python->LoadModule("respawn");
-	Python->CallFunction(
-		Python->GetFunction("PlayerDied"),
-		nullptr);
-	Python->Update(0.0f);
-
-	std::vector<int> iReturns(0);
-	if(Python->CheckReturns())
+	if(mRespawnTimer.getTimeElapsedS() > respawntime+3)
 	{
-		Python->ConvertInts(iReturns);
-		Python->ClearReturns();
-		respawntime = (float)iReturns[0];
-	}
+		this->health = 0;
+		this->deaths++;
+		this->alive = false;
+		updated = true;
+		Python->LoadModule("respawn");
+		Python->CallFunction(
+			Python->GetFunction("PlayerDied"),
+			nullptr);
+		Python->Update(0.0f);
 
-	mRespawnTimer.start();
-	mRespawnTimer.reset();
-		
+		std::vector<int> iReturns(0);
+		if(Python->CheckReturns())
+		{
+			Python->ConvertInts(iReturns);
+			Python->ClearReturns();
+			respawntime = iReturns[0];
+		}
+
+		mRespawnTimer.start();
+		mRespawnTimer.reset();
+	}
 }

@@ -366,6 +366,7 @@ void PlayerLocal::HandelPackage(Package *p)
 
 		if(this->mIsAlive && !alive) //killed gui text
 		{
+			aliveTime = 0;
 			wstringstream wss;
 			if(this->deathBy == 0)
 				wss << "You died from falling!";
