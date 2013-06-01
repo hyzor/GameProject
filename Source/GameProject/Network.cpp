@@ -68,7 +68,7 @@ std::queue<Package*> Network::GetPackage()
 		else
 		{
 			int offset = 0;
-			while(len-offset > 0)
+			while(len-offset > sizeof(Package::Header))
 			{
 				Package* p = new Package((char*)(buf+offset), true);
 				packs.push(p);
