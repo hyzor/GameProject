@@ -17,23 +17,6 @@ class Position(object):
         def GetSelf(self):
                 return float(self.x), float(self.y), float(self.z)
 
-spawnpoints = []
-
-def CreateSpawnPoint(x, y, z):
-        global spawnpoints
-        spawnpoints.append(Position(x+1, y+150, z+1))
-
-def RandomizeSpawn():
-        global spawnpoints
-        index = random.randint(0, len(spawnpoints)-1)
-        x = spawnpoints[index].x
-        y = spawnpoints[index].y
-        z = spawnpoints[index].z
-        return x, y, z
-
-def Solution():
-        PyEngine.NotifyWhen("ToTheProblem", RandomizeSpawn, None)
-
 
 def RandomSpawn():
         platforms = platform_script.platforms

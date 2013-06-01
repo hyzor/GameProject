@@ -23,11 +23,9 @@ class Player
 		Package* GetUpdate();
 		Package* GetSelfUpdate();
 		Package* GetSpawn();
-		Package* SpawnPlayer();
 
 		int GetId();
 
-		bool playerSpawn;
 		bool updated;
 
 		float posX;
@@ -47,7 +45,6 @@ class Player
 		int kills;
 		int deaths;
 		float respawntime;
-		int timeToSpawn;
 		int deathBy;
 
 	private:

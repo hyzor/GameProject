@@ -34,27 +34,6 @@ Game::Game(std::queue<PackageTo*>* send)
 		iReturns.clear();
 	}
 
-	for(unsigned int i(0); i < platforms.size(); ++i)
-	{
-		Python->LoadModule("platform_script");
-		Python->CallFunction(
-			Python->GetFunction("Solution"),
-			Python->CreateArg((int)i));
-		Python->Update(0.0f);
-		if(Python->CheckReturns())
-		{
-			std::vector<double> dReturns;
-			Python->ConvertDoubles(dReturns);
-			Python->ClearReturns();
-			int index = 0;
-			Python->LoadModule("respawn");
-			Python->CallFunction(
-				Python->GetFunction("CreateSpawnPos"),
-				Python->CreateArg(dReturns[index], dReturns[index+1], dReturns[index+2]));
-			//std::cout << "( " << dReturns[index] << ", " << dReturns[index+1] << ", " << dReturns[index+2] << " )" << std::endl;
-			dReturns.clear();
-		}
-	}
 
 	players = new std::vector<Player*>();
 
@@ -143,7 +122,7 @@ Game::Game(std::queue<PackageTo*>* send)
 		dReturns.clear();
 	}
 
-	std::cout << "x: " << pPosX << " y: " << pPosY << " z: " << pPosZ << std::endl;
+	//std::cout << "x: " << pPosX << " y: " << pPosY << " z: " << pPosZ << std::endl;
 	this->pickups.push_back( new Pickup(send, 0, pickupType, pPosX, pPosY, pPosZ, this->platforms.at(randomizedSpawnPos)->getID()) );
 	this->nrOfPickups++;
 
@@ -281,7 +260,7 @@ void Game::Update()
 					}
 				}
 			}
-			std::cout << "Returned value: " << iReturns.at(0) << std::endl;
+			//std::cout << "Returned value: " << iReturns.at(0) << std::endl;
 
 			iReturns.clear();
 		
@@ -299,12 +278,6 @@ void Game::Update()
 		Package* p = players->at(i)->GetSelfUpdate();
 		if(p != NULL)
 			send->push(new PackageTo(p, (char*)players->at(i)->GetId()));
-		if(players->at(i)->playerSpawn)
-		{
-			Package* p = players->at(i)->SpawnPlayer();
-			if(p != NULL)
-				send->push(new PackageTo(p, (char*)players->at(i)->GetId()));
-		}
 	}
 
 	t += dt;

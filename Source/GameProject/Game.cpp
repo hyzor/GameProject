@@ -128,10 +128,6 @@ void Game::HandlePackage(Package* p)
 			Gui->setState(GUI::Pause);
 		}
 	}
-	else if(o == 20)
-	{
-		player->HandelPackage(p);
-	}
 }
 
 void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)

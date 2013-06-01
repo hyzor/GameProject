@@ -82,9 +82,6 @@ def MovePlatform(index, dt):
         platforms[index].Move(dt)
         PyEngine.NotifyWhen("Moved", GetMove, index)
 
-def Solution(index):
-        PyEngine.NotifyWhen("ToTheProblem", GetPos, index)
-
 def CreatePlatforms():
         global platforms
         f = open("platform_info9.txt")

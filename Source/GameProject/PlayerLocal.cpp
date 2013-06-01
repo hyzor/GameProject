@@ -13,7 +13,6 @@ PlayerLocal::PlayerLocal(SoundModule* sm, std::string Nickname, XMFLOAT3 Positio
 
 	t = 0;
 	rotateTo = XMFLOAT3(0,0,0);
-	TimeToSpawn = 0;
 }
 
 PlayerLocal::~PlayerLocal()
@@ -27,7 +26,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 
 	//send package
 	t += dt;
-	if(t > 0.0f)
+	if(t > 0.1f)
 	{
 		t = 0;
 
@@ -137,6 +136,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 			removeDown = XMVectorSetZ(removeDown, 1);
 		else
 			removeDown = XMVectorSetZ(removeDown, 0);
+		XMStoreFloat3(&this->removeDown, removeDown);
 	
 		//move
 		XMVECTOR look = XMVector3Normalize(mCamera->GetLookXM()*removeDown);
@@ -304,25 +304,12 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 	}
 
 	
-	/*if(!mIsAlive) //flytta till servern
+	if(!mIsAlive)
 	{
-		std::vector<int> iReturns(0);
-		Python->LoadModule("respawn");
-		Python->CallFunction(
-			Python->GetFunction("CheckSpawnTimer"),
-			nullptr);
-		Python->Update(0.0f);
-		if(Python->CheckReturns())
-		{
-			Python->ConvertInts(iReturns);
-			Python->ClearReturns();
-			TimeToSpawn = iReturns[0];
-		}
-		if(TimeToSpawn <= 0)
-		{
-			Spawn(1,300,50, 0);
-		}
-	}*/
+		this->respawntime -= dt;
+		if(this->respawntime < 0)
+			respawntime = 0;
+	}
 
 	// Rotate camera
 	if (dInput->MouseHasMoved())
@@ -348,7 +335,7 @@ void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 	if(!mIsAlive)
 	{
 		wstringstream wss;
-		wss << TimeToSpawn;
+		wss << (int)(this->respawntime+0.99f);
 		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(SCREEN_WIDTH/2-50.0f,SCREEN_HEIGHT/2-50.0f), 70, 0xff0000ff);
 	}
 
@@ -368,7 +355,7 @@ void PlayerLocal::HandelPackage(Package *p)
 		float health = *(float*)b.Read(4);
 		int kills = *(int*)b.Read(4);
 		int deaths = *(int*)b.Read(4);
-		this->TimeToSpawn = *(int*)b.Read(4);
+		this->respawntime = *(float*)b.Read(4);
 		this->deathBy = *(int*)b.Read(4);
 
 		this->setKillsDeaths(kills, deaths);
@@ -397,27 +384,6 @@ void PlayerLocal::HandelPackage(Package *p)
 		this->mIsAlive = alive;
 	}
 
-	if(p->GetHeader().operation == 20)
-	{
-		float x,y,z,health;
-		Package::Body b = p->GetBody();
-		x = *(float*)b.Read(4);
-		y = *(float*)b.Read(4);
-		z = *(float*)b.Read(4);
-		this->mHealth =	*(float*)b.Read(4);
-		Spawn(x,y,z);
-	}
 
 	Player::HandelPackage(p);
-}
-
-void PlayerLocal::Spawn(float x, float y, float z)
-{
-	this->mPosition = XMFLOAT3(x,y,z);
-	this->mIsAlive = true;
-	XMStoreFloat4x4(&this->Joint, XMMatrixIdentity());
-	rotateTo = XMFLOAT3(0,0,0);
-	move = XMFLOAT3(0, 0, 0);
-	ySpeed = 0;
-
 }

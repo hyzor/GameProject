@@ -6,7 +6,7 @@ import PyEngine
 random.seed(time.time())
 
 class SpawnPoint():
-    
+
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
@@ -16,7 +16,7 @@ class SpawnPoint():
         return float(self.x), float(self.y), float(self.z)
 
 def GetSpawnTime():
-    SpawnTime = 10
+    SpawnTime = 3
     return SpawnTime
 
 def PlayerDied():
@@ -35,4 +35,4 @@ def getSpawnPos():
 def CreateSpawnPos(x, y, z):
     global spawnpoints
     spawnpoints.append(SpawnPoint(x+1,y+150,z+1))
-   
+

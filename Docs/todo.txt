@@ -2,7 +2,6 @@ Tim
 
 Mathias
 Respawn på servern
-Ronder
 
 Emrik
 Pickup script

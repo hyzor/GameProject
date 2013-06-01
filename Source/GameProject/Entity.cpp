@@ -120,7 +120,7 @@ void Entity::RotateEntityZ(float rot)
 void Entity::SetPosition(XMFLOAT3 pos)
 {
 	this->Position = pos;
-	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	XMMATRIX modelScale = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
 	XMMATRIX modelOffset = XMMatrixTranslation(Position.x, Position.y, Position.z);
 	XMStoreFloat4x4(&mInstance.world, modelScale*XMLoadFloat4x4(&this->rot)*modelOffset);
 }
