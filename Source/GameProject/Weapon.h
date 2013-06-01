@@ -37,7 +37,7 @@ public:
 	void RotateRollPitchYaw(float yaw, float pitch, float roll);
 	void ViewMatrixRotation( const XMMATRIX& view );
 
-	virtual bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir);
+	virtual bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir, XMFLOAT3 hitPos);
 
 	virtual void Init(Properties properties, std::string modelName, XMFLOAT3 pos);
 

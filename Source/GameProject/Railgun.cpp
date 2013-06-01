@@ -31,7 +31,7 @@ void Railgun::Init(Properties properties, ID3D11Device* device, ID3D11DeviceCont
 	flares.push_back(L"Data\\Textures\\particle.dds");
 	mLaserTexSRV = d3dHelper::CreateTexture2DArraySRV(device, dc, flares);
 
-	mParticleSys->init(device, Effects::LaserFX, mLaserTexSRV, mRandomTexSRV, 200);
+	mParticleSys->init(device, Effects::LaserFX, mLaserTexSRV, mRandomTexSRV, 100);
 	//mParticleSys->setEmitPos(XMFLOAT3(1.0f, 300.0f, 50.0f));
 }
 
@@ -45,7 +45,7 @@ void Railgun::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera
 	mParticleSys->setEyePos(camera->GetPosition());
 
 	// Dont draw particle system after specified time
-	if (mParticleSys->getAge() < 1.0f)
+	if (mParticleSys->getAge() < 0.6f)
 		mParticleSys->draw(dc, camera);
 
 	// Restore blend state
@@ -53,14 +53,15 @@ void Railgun::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera
 	dc->OMSetBlendState(0, blendFactor, 0xffffffff);
 }
 
-bool Railgun::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
+bool Railgun::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir, XMFLOAT3 hitPos)
 {
-	if (Weapon::FireProjectile(pos, dir))
+	if (Weapon::FireProjectile(pos, dir, hitPos))
 	{
 		// Shoot ray and emit particle system
 		mParticleSys->setEmitPos(XMFLOAT3(pos.x, pos.y, pos.z));
 		mParticleSys->setEmitDir(dir);
 		mParticleSys->reset();
+		mParticleSys->SetHitPos(hitPos);
 
 		return true;
 	}

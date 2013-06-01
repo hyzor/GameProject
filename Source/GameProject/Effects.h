@@ -241,6 +241,8 @@ public:
 	void SetEmitPosW(const XMFLOAT3& v) { EmitPosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 	void SetEmitDirW(const XMFLOAT3& v) { EmitDirW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 
+	void SetHitPosW(const XMFLOAT3& v) { HitPos->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
+
 	void SetTexArray(ID3D11ShaderResourceView* tex) { TexArray->SetResource(tex); }
 	void SetRandomTex(ID3D11ShaderResourceView* tex) { RandomTex->SetResource(tex); }
 
@@ -251,6 +253,8 @@ public:
 	ID3DX11EffectVectorVariable* EyePosW;
 	ID3DX11EffectVectorVariable* EmitPosW;
 	ID3DX11EffectVectorVariable* EmitDirW;
+
+	ID3DX11EffectVectorVariable* HitPos;
 
 	ID3DX11EffectShaderResourceVariable* TexArray;
 	ID3DX11EffectShaderResourceVariable* RandomTex;

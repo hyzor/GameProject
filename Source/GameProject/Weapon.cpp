@@ -45,7 +45,7 @@ void Weapon::ResetCooldown()
 	mProperties.currCooldown = mProperties.cooldown;
 }
 
-bool Weapon::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
+bool Weapon::FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir, XMFLOAT3 hitPos)
 {
 	if (mProperties.currCooldown <= 0.0f)
 	{

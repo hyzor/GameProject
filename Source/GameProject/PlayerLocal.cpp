@@ -191,8 +191,11 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 				}
 			}
 
+			XMFLOAT3 hitPos;
+			XMStoreFloat3(&hitPos, v+dir*h.hit.t);
+
 			//fire
-			if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook()))
+			if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook(), hitPos))
 			{
 				sm->playSFX(p, FireWeapon, false);
 

@@ -27,6 +27,8 @@ public:
 	void setEmitPos(const XMFLOAT3& emitPosW);
 	void setEmitDir(const XMFLOAT3& emitDirW);
 
+	void SetHitPos(const XMFLOAT3& hitPosW) { mHitPosW = hitPosW; }
+
 	void init(ID3D11Device* device, ParticleEffect* fx,
 		ID3D11ShaderResourceView* texArraySRV, ID3D11ShaderResourceView* randomTexSRV, UINT maxParticles);
 
@@ -46,6 +48,8 @@ private:
 	XMFLOAT3 mEyePosW;
 	XMFLOAT3 mEmitPosW;
 	XMFLOAT3 mEmitDirW;
+
+	XMFLOAT3 mHitPosW;
 
 	ParticleEffect* mFX;
 

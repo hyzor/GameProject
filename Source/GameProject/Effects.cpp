@@ -179,6 +179,8 @@ ParticleEffect::ParticleEffect(ID3D11Device* device, const std::wstring& filenam
 	TexArray = mFX->GetVariableByName("gTexArray")->AsShaderResource();
 	RandomTex = mFX->GetVariableByName("gRandomTex")->AsShaderResource();
 
+	HitPos = mFX->GetVariableByName("gHitPos")->AsVector();
+
 	GameTime = mFX->GetVariableByName("gGameTime")->AsScalar();
 	TimeStep = mFX->GetVariableByName("gTimeStep")->AsScalar();
 }

@@ -14,7 +14,7 @@ public:
 	void Init(Properties properties, ID3D11Device* device, ID3D11DeviceContext* dc, std::string modelName, XMFLOAT3 pos);
 	void Update(float dt, float gameTime);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera* camera, ShadowMap* shadowMap, bool isVisible);
-	bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir);
+	bool FireProjectile(XMFLOAT3 pos, XMFLOAT3 dir, XMFLOAT3 hitPos);
 
 private:
 

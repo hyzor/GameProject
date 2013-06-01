@@ -9,6 +9,8 @@ cbuffer cbPerFrame
 	// For when the emit position/direction is varying
 	float3 gEmitPosW;
 	float3 gEmitDirW;
+
+	float3 gHitPos;
 	
 	float gGameTime;
 	float gTimeStep;
@@ -115,7 +117,7 @@ void StreamOutGS(point Particle gIn[1], inout PointStream<Particle> ptStream)
 	if (gIn[0].Type == PT_EMITTER)
 	{
 		// If over certain age, emit new particle
-		if (gIn[0].Age > 0.001f)
+		if (gIn[0].Age > 0.0001f)
 		{
 			//float3 vRandom = RandUnitVec3(0.0f);
 			//vRandom.x *= 0.5f;
@@ -123,7 +125,7 @@ void StreamOutGS(point Particle gIn[1], inout PointStream<Particle> ptStream)
 
 			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
-			p.InitialVelW = gEmitDirW * 1000.0f;
+			p.InitialVelW = gEmitDirW * 2500.0f;
 			p.SizeW = float2(2.0f, 2.0f);
 			p.Age = 0.0f;
 			p.Type = PT_FLARE;
@@ -178,8 +180,32 @@ VertexOut DrawVS(Particle vIn)
 	VertexOut vOut;
 	float t = vIn.Age;
 
-    // Constant acceleration equation
+	// Constant acceleration equation
 	vOut.PosW = 0.5f*t*t*vIn.InitialVelW + t*vIn.InitialVelW + vIn.InitialPosW;
+
+	// Initial position was in front of hit position
+	if (vIn.InitialPosW.z < gHitPos.z)
+	{
+		// Now check if particle is behind hit position
+		if (vOut.PosW.z > gHitPos.z)
+			vOut.PosW = gHitPos;
+	}
+	// Initial position was behind hit position
+	else
+	{
+		// Now check if particle is behind hit position
+		if (vOut.PosW.z < gHitPos.z)
+			vOut.PosW = gHitPos;
+	}
+
+	if (vOut.PosW.x == gHitPos.x && vOut.PosW.y == gHitPos.y && vOut.PosW.z == gHitPos.z)
+	{
+		vOut.Color.x = 0.0f;
+		vOut.Color.y = 0.0f;
+		vOut.Color.z = 0.0f;
+		//vOut.Color.w = 0.0f;
+		vOut.PosW = gHitPos;
+	}
 
 	// fade color with time
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t/1.0f);
