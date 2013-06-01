@@ -56,6 +56,7 @@ class Player
 		{
 			IdleAnim = 0,
 			RunningAnim,
+			RunningBackwardsAnim,
 			JumpingAnim,
 			StrafingRightAnim,
 			StrafingLeftAnim

@@ -26,7 +26,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 
 	//send package
 	t += dt;
-	if(t > 0.1f)
+	if(t > 0.0f)
 	{
 		t = 0;
 

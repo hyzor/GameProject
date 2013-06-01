@@ -38,6 +38,7 @@ Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Pos
 	// Cache animation keyframes
 	mAnimations.push_back(Animation(IdleAnim, 51+15, 51+15));
 	mAnimations.push_back(Animation(RunningAnim, 1, 24+7));
+	mAnimations.push_back(Animation(RunningBackwardsAnim, 1, 24+7));
 	mAnimations.push_back(Animation(JumpingAnim, 30+7, 49+10));
 	mAnimations.push_back(Animation(StrafingRightAnim, 51+15, 75+20));
 	mAnimations.push_back(Animation(StrafingLeftAnim, 81+20, 105+25));
@@ -163,9 +164,6 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 			sm->playSFX(mPosition, Running, false);
 		else
 			sm->playEnemySFX(Running, this->index, mPosition, false);
-
-		// Running animation
-		mCurAnim = RunningAnim;
 	}
 	else
 	{
@@ -173,6 +171,18 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 			sm->stopSound(Running);
 		else
 			sm->stopEnemySound(Running, this->index);
+	}
+
+	// Running forwards
+	if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) > 0)
+	{
+		// Running animation
+		mCurAnim = RunningAnim;
+	}
+	// Running backwards
+	else if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) < 0)
+	{
+		mCurAnim = RunningBackwardsAnim;
 	}
 
 	// Player not on ground and ySpeed over 10

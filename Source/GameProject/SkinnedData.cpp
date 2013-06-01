@@ -284,6 +284,29 @@ UINT AnimEvaluator::GetFrameIndexAt( float time, UINT frameStart, UINT frameEnd 
 	return frameIndex;
 }
 
+UINT AnimEvaluator::GetFrameIndexAt( float time, UINT frameStart, UINT frameEnd, bool playAnimForward )
+{
+	UINT nrOfFrames = (frameEnd - frameStart) + 1;
+	float framesDuration = (float)nrOfFrames * (mDuration / static_cast<float>(Transforms.size()));
+
+	time *= mTicksPerSecond;
+
+	float _time = 0.0f;
+	if (framesDuration > 0.0)
+		_time = fmod(time, framesDuration);
+
+	float percent = _time / framesDuration;
+
+	if (!playAnimForward)
+		percent = (percent - 1.0f) * -1.0f;
+
+	UINT frameIndex = static_cast<UINT>((static_cast<float>(nrOfFrames) * percent));
+
+	frameIndex += (frameStart - 1);
+
+	return frameIndex;
+}
+
 void AnimEvaluator::Evaluate( float pTime, std::map<std::string, SkinData::Bone*>& bones )
 {
 	pTime *= mTicksPerSecond;

@@ -81,5 +81,5 @@ void GenericSkinnedModelInstance::Update(float dt)
 {
 	TimePos += dt;
 
-	FinalTransforms = model->skinnedData.GetTransforms(TimePos, AnimationIndex, frameStart, frameEnd);
+	FinalTransforms = model->skinnedData.GetTransforms(TimePos, AnimationIndex, frameStart, frameEnd, playAnimForward);
 }

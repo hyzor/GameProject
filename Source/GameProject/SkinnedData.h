@@ -113,6 +113,12 @@ public:
 	UINT GetFrameIndexAt(float time, UINT frameStart, UINT frameEnd);
 	std::vector<XMFLOAT4X4>& GetTransforms(float dt, UINT frameStart, UINT frameEnd) { return Transforms[GetFrameIndexAt(dt, frameStart, frameEnd)]; }
 
+	// Frame interval & animation forward/backward support
+	UINT GetFrameIndexAt(float time, UINT frameStart, UINT frameEnd, bool playAnimForward);
+
+	std::vector<XMFLOAT4X4>& GetTransforms(float dt, UINT frameStart, UINT frameEnd, bool playAnimForward)
+	{ return Transforms[GetFrameIndexAt(dt, frameStart, frameEnd, playAnimForward)]; }
+
 	std::string Name;
 
 	// If the animation has no name, it's name will be
@@ -146,6 +152,10 @@ public:
 
 	// Get transforms (animIndex as a parameter to be able to share SkinnedData) with key frame intervals
 	std::vector<XMFLOAT4X4>& GetTransforms(float dt, UINT animIndex, UINT frameStart, UINT frameEnd) { return Animations[animIndex].GetTransforms(dt, frameStart, frameEnd); }
+
+	// Get transforms (animIndex as a parameter to be able to share SkinnedData) with key frame intervals and animation forward/backward
+	std::vector<XMFLOAT4X4>& GetTransforms(float dt, UINT animIndex, UINT frameStart, UINT frameEnd, bool playAnimForward) 
+	{ return Animations[animIndex].GetTransforms(dt, frameStart, frameEnd, playAnimForward); }
 
 	UINT GetAnimationIndex() const { return CurrentAnimIndex; }
 	UINT GetAnimationIndex(const std::string& name);

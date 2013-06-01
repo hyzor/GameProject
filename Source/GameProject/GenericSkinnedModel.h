@@ -48,6 +48,7 @@ struct GenericSkinnedModelInstance
 	float TimePos;
 
 	UINT frameStart, frameEnd;
+	bool playAnimForward;
 
 	void Update(float dt);
 };

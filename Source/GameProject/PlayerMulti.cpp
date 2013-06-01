@@ -18,7 +18,14 @@ void PlayerMulti::Update(float dt, float gameTime, DirectInput* dInput, World* w
 	this->Player::Update(dt, gameTime, dInput, world, multiplayers);
 	mEntity->SetPosition(this->mPosition);
 
+	// Update which keyframes to play
 	mEntity->SetKeyFrameInterval(mAnimations[mCurAnim].FrameStart, mAnimations[mCurAnim].FrameEnd);
+
+	// Only running backwards plays an animation backwards
+	if (mCurAnim == RunningBackwardsAnim)
+		mEntity->PlayAnimationBackwards();
+	else
+		mEntity->PlayAnimationForwards();
 }
 
 void PlayerMulti::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap)
