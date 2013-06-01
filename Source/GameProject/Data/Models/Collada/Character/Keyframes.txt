@@ -6,3 +6,23 @@
 24 - 1 // Back (Blev bra för bakåt animation med.)
 
 Kan behöva tweaka keyframe speeded på vissa av animationerna, beroende på hur snabbt vi vill ha det.
+
+// Edit (Jesper)
+-----------------------
+Keyframe edits
+-----------------------
+Running:
+Min +0
+Max +7
+
+Jumping:
+Min +7
+Max +10
+
+Sidestep Right:
+Min +15
+Max +20
+
+Sidestep Left:
+Min +20
+Max +25

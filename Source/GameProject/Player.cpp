@@ -34,12 +34,11 @@ Player::Player(SoundModule* sm, int PlayerID, std::string Nickname, XMFLOAT3 Pos
 	mCamera = new Camera();
 
 	// Cache animation keyframes
-	mAnimations.push_back(Animation(IdleAnim, 1, 1));
-	mAnimations.push_back(Animation(RunningAnim, 1, 24));
-	mAnimations.push_back(Animation(JumpingAnim, 30, 49));
-	mAnimations.push_back(Animation(StrafingRightAnim, 51, 75));
-	mAnimations.push_back(Animation(StrafingLeftAnim, 81, 105));
-
+	mAnimations.push_back(Animation(IdleAnim, 51+15, 51+15));
+	mAnimations.push_back(Animation(RunningAnim, 1, 24+7));
+	mAnimations.push_back(Animation(JumpingAnim, 30+7, 49+10));
+	mAnimations.push_back(Animation(StrafingRightAnim, 51+15, 75+20));
+	mAnimations.push_back(Animation(StrafingLeftAnim, 81+20, 105+25));
 
 	SetPosition(mPosition);
 }

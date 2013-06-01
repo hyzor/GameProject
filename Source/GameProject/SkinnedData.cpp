@@ -258,12 +258,12 @@ UINT AnimEvaluator::GetFrameIndexAt(float time)
 UINT AnimEvaluator::GetFrameIndexAt( float time, UINT frameStart, UINT frameEnd )
 {
 	UINT nrOfFrames = (frameEnd - frameStart) + 1;
-	float framesDuration = nrOfFrames * (mDuration / static_cast<float>(Transforms.size()));
+	float framesDuration = (float)nrOfFrames * (mDuration / static_cast<float>(Transforms.size()));
 
 	time *= mTicksPerSecond;
 
 	float _time = 0.0f;
-	if (mDuration > 0.0)
+	if (framesDuration > 0.0)
 		_time = fmod(time, framesDuration);
 
 	float percent = _time / framesDuration;
