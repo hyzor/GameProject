@@ -1,10 +1,11 @@
 #include "Pickup.h"
 
 
-Pickup::Pickup(std::queue<PackageTo*>* send, int id, int type, float posX, float posY, float posZ)
+Pickup::Pickup(std::queue<PackageTo*>* send, int id, int type, float posX, float posY, float posZ, int cpID)
 {
 	this->id = id;
 	this->type = type;
+	this->connectedPlatformID = cpID;
 
 	this->posX = posX;
 	this->posY = posY;
@@ -24,6 +25,7 @@ Package* Pickup::GetConnect()
 	struct PickupConnect
 	{
 		int type;
+		int cpID;
 		float posX;
 		float posY;
 		float posZ;
@@ -31,6 +33,7 @@ Package* Pickup::GetConnect()
 
 	PickupConnect* puc = new PickupConnect();
 	puc->type = this->type;
+	puc->cpID = this->getCPID();
 	puc->posX = this->posX;
 	puc->posY = this->posY;
 	puc->posZ = this->posZ;

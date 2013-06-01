@@ -39,7 +39,7 @@ void Game::Update(float deltaTime, float gameTime, DirectInput* di)
 	world->Update(deltaTime);
 
 	for(UINT i = 0; i < pickups.size(); i++)
-		pickups[i]->Update(deltaTime, &player->GetBounding());
+		pickups[i]->Update(deltaTime, &player->GetBounding(), this->getWorld());
 }
 
 void Game::HandlePackage(Package* p)
@@ -86,9 +86,10 @@ void Game::HandlePackage(Package* p)
 	{
 		Package::Body b = p->GetBody();
 		int type = *(int*)b.Read(4);
+		int cpID = *(int*)b.Read(4);
 		XMFLOAT3 p = *(XMFLOAT3*)b.Read(3*4);
 		Pickup* pickup = new Pickup();
-		pickup->Initialize(0, type, p);
+		pickup->Initialize(0, type, cpID, p);
 		pickups.push_back(pickup);
 	}
 	else if(o == 8)

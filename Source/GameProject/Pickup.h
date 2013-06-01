@@ -20,14 +20,17 @@ class Pickup
 public:
 	Pickup(void);
 	~Pickup(void);
-	void Initialize(int id, int type, XMFLOAT3 pos);
-	void Update(float dt, XNA::AxisAlignedBox *player);
+	void Initialize(int id, int type, int cpID, XMFLOAT3 pos);
+	void Update(float dt, XNA::AxisAlignedBox *player, World* w);
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
 	int GetId(){return mID;}
+	int getCPID() const { return this->cpID;}
+
 
 private:
 
 	int mID;
+	int cpID;
 	int mType;
 	XMFLOAT3 mPos;
 

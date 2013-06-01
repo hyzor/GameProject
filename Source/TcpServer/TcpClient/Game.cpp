@@ -1,7 +1,11 @@
 #include "Game.h"
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 Game::Game(std::queue<PackageTo*>* send)
 {
+	this->nrOfPickups = 0;
 	this->send = send;
 	gameActive = false;
 	gameLength = 360;
@@ -54,6 +58,95 @@ Game::Game(std::queue<PackageTo*>* send)
 
 	players = new std::vector<Player*>();
 
+	std::vector<float> xPos;
+	std::vector<float> yPos;
+	std::vector<float> zPos;
+	std::vector<int> pID;
+
+	//extract positions from platforms to create suitable spawnpositions for the pickups
+
+	for(unsigned int i = 0; i < this->platforms.size(); i++)
+	{
+		int pType = this->platforms.at(i)->getType();
+		switch(pType)
+		{
+		case 1:
+			xPos.push_back(50.0f);
+			yPos.push_back(30.0f);
+			zPos.push_back(-75.f);
+			break;
+		case 2:
+			xPos.push_back(-40.0f);
+			yPos.push_back(48.0f);
+			zPos.push_back(-5.0f);
+			break;
+		case 3:
+			xPos.push_back(58.0f);
+			yPos.push_back(46.0f);
+			zPos.push_back(0.0f);
+			break;
+		case 4:
+			xPos.push_back(0.0f);
+			yPos.push_back(8.0f);
+			zPos.push_back(37.0f);
+			break;
+			
+		}
+		pID.push_back(this->platforms.at(i)->getID());
+	}
+
+	srand((unsigned int)time(NULL));
+
+	Python->LoadModule("pickup_script");
+	for(unsigned int i = 0; i < xPos.size(); i++) // 1 spawnpoint per platform, for now
+	{
+		Python->CallFunction( Python->GetFunction("pCreateSpawnPoint"), Python->CreateArg((double)xPos.at(i), (double)yPos.at(i), (double)zPos.at(i)) );
+	}
+
+	int nrOfSPs = xPos.size();
+	int randomizedSpawnPos = rand() % nrOfSPs;
+	Python->CallFunction( Python->GetFunction("createPickup"), Python->CreateArg(this->platforms.at(randomizedSpawnPos)->getID(), randomizedSpawnPos, nrOfSPs) ); 
+
+	std::vector<int> iReturns;
+	std::vector<double> dReturns;
+	int pickupType = 0;
+	float pPosX = 0.0f;
+	float pPosY = 0.0f;
+	float pPosZ = 0.0f;
+
+	Python->CallFunction( Python->GetFunction("getPickupType"), Python->CreateArg((int)0) );
+	Python->Update(0.0f);
+	if(Python->CheckReturns())
+	{
+		Python->ConvertInts(iReturns);
+		Python->ClearReturns();
+		if(iReturns.size() == 1)
+		{
+			pickupType = iReturns.at(0);
+		}
+		iReturns.clear();
+	}
+
+
+	Python->CallFunction( Python->GetFunction("getPickupPos"), Python->CreateArg((int)0) );
+	Python->Update(0.0f);
+	if(Python->CheckReturns())
+	{
+		Python->ConvertDoubles(dReturns);
+		Python->ClearReturns();
+		if(dReturns.size() > 0)
+		{
+			pPosX = (float)dReturns[0];
+			pPosY = (float)dReturns[1];
+			pPosZ = (float)dReturns[2];
+		}
+		dReturns.clear();
+	}
+
+	std::cout << "x: " << pPosX << " y: " << pPosY << " z: " << pPosZ << std::endl;
+	this->pickups.push_back( new Pickup(send, 0, pickupType, pPosX, pPosY, pPosZ, this->platforms.at(randomizedSpawnPos)->getID()) );
+	this->nrOfPickups++;
+
 	t = 0;
 	this->mTimer.start();
 	this->mTimer.reset();
@@ -85,18 +178,121 @@ void Game::Update()
 			send->push(new PackageTo(p, 0));
 	}
 	
+	Python->LoadModule("pickup_script");
+
 	for(unsigned int i = 0; i < pickups.size(); i++)
 	{
 		pickups[i]->Update(dt);
 		Package* p = pickups[i]->GetDestroy();
 		if(p != NULL)
 		{
+			Python->CallFunction( Python->GetFunction("consumePickup"), Python->CreateArg((int)0) ); //replace 0
+
 			send->push(new PackageTo(p, 0));
 			delete pickups[i];
 			pickups.erase(pickups.begin()+i);
 			break;
 		}
 	}
+
+	for(int i = 0; i < nrOfPickups; i++)
+	{
+		Python->CallFunction(Python->GetFunction("checkActive"), Python->CreateArg((int)0) ); //should be incremental value here too
+		Python->Update(dt);
+		if(Python->CheckReturns())
+		{
+			std::vector<int> iReturns;
+			Python->ConvertInts(iReturns);
+			Python->ClearReturns();
+
+			if(iReturns.size() == 1)
+			{
+				if(iReturns.at(0) == 1)
+				{
+					if( this->pickups.size() > 0)
+					{
+						this->pickups.at(i)->setRemove(false);
+					}
+					else
+					{
+						std::vector<int> iReturns2;
+						std::vector<int> iReturns3;
+						std::vector<double> dReturns;
+						int pickupType = 0;
+						int cpID = 0;
+						float pPosX = 0.0f;
+						float pPosY = 0.0f;
+						float pPosZ = 0.0f;
+
+						Python->CallFunction( Python->GetFunction("getPickupType"), Python->CreateArg((int)0) );
+						Python->Update(dt);
+						if(Python->CheckReturns())
+						{
+							Python->ConvertInts(iReturns2);
+							Python->ClearReturns();
+							if(iReturns2.size() == 1)
+							{
+								pickupType = iReturns2.at(0);
+							}
+							iReturns2.clear();
+						}
+
+
+						Python->CallFunction( Python->GetFunction("getPickupPos"), Python->CreateArg((int)0) );
+						Python->Update(dt);
+						if(Python->CheckReturns())
+						{
+							
+							Python->ConvertDoubles(dReturns);
+							Python->ClearReturns();
+							if(dReturns.size() > 0)
+							{
+								pPosX = (float)dReturns[0];
+								pPosY = (float)dReturns[1];
+								pPosZ = (float)dReturns[2];
+							}
+							dReturns.clear();
+						}
+
+						Python->CallFunction( Python->GetFunction("getPlatID"), Python->CreateArg((int)0) );
+						Python->Update(dt);
+						if(Python->CheckReturns())
+						{
+							Python->ConvertInts(iReturns3);
+							Python->ClearReturns();
+							if(iReturns3.size() > 0)
+							{
+								cpID = iReturns3.at(0);
+							}
+							iReturns3.clear();
+						}
+
+						this->pickups.push_back( new Pickup(send, 0, pickupType, pPosX, pPosY, pPosZ, cpID) );
+
+						for(unsigned int i = 0; i < this->pickups.size(); i++)
+							send->push(new PackageTo(pickups[i]->GetConnect(), 0));
+					}
+				}
+				else
+				{
+					if( this->pickups.size() > 0)
+					{
+						this->pickups.at(i)->setRemove(true);
+					}
+				}
+			}
+			std::cout << "Returned value: " << iReturns.at(0) << std::endl;
+
+			iReturns.clear();
+		
+		}
+
+		Python->CallFunction( Python->GetFunction("update"), Python->CreateArg((int)0) );
+		Python->Update(dt);
+		//the update-call should be inside for-loop with and incrementing value instead of 0
+		
+	}
+
 
 	for(unsigned int i = 0; i < players->size(); i++)
 	{
@@ -254,6 +450,9 @@ void Game::HandelPackage(Package* p, char* socket)
 				Player* player = findPlayer(players, (int)socket);
 				if(player != NULL)
 					player->HandlePickup(pickups[i]);
+
+				Python->LoadModule("pickup_script");
+				Python->CallFunction( Python->GetFunction("consumePickup"), Python->CreateArg((int)0) );
 				
 				send->push(new PackageTo(pickups[i]->GetDestroy(), 0));
 				delete pickups[i];

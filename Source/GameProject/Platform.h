@@ -16,6 +16,7 @@ public:
 	virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
 	virtual void HandleScript() = 0;
 	CollisionModel* getCollision() { return this->mCollision; }
+	XMFLOAT3 getPos() const {return this->pos;}
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
 	
 	void HandlePackage(Package* p);

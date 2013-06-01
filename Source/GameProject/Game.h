@@ -35,6 +35,7 @@ class Game
 		void Update(float deltaTime, float gameTime, DirectInput* di);
 		void Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap);
 		void HandlePackage(Package* p);
+		World* getWorld() { return this->world;}
 
 		Player* GetPlayer() const;
 		Camera* GetCamera();

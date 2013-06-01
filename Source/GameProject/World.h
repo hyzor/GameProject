@@ -24,6 +24,7 @@ public:
 	void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap);
 	Hit Intersect(XMVECTOR origin, XMVECTOR dir, float length);
 	PlatformSwitch* IntersectSwitch(XMVECTOR origin, XMVECTOR dir, float length);
+	Platform* getPlatform(int id);
 
 	void HandlePackage(Package *p);
 

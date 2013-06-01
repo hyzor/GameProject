@@ -75,3 +75,4 @@ void Platform::HandlePackage(Package* p)
 		this->move = *(XMFLOAT3*)b.Read(4*3);
 	}
 }
+

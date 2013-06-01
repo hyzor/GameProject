@@ -14,7 +14,11 @@ class Platform
 
 		Package* GetConnect();
 		Package* GetUpdate();
-
+		float getPosX() const { return this->posX;}
+		float getPosY() const { return this->posY;}
+		float getPosZ() const { return this->posZ;}
+		int getID() const { return this->id;}
+		int getType() const {return this->type;}
 		void Update(float dt);
 
 

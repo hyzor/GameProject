@@ -26,6 +26,7 @@ class Game
 		std::vector<Pickup*> pickups;
 		GameTimer mTimer;
 
+		int nrOfPickups;
 		int gameLength;
 		int pauseLength;
 		bool gameActive;
