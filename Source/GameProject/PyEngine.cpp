@@ -25,7 +25,6 @@ static PyObject* WrapPyEnginePrint(PyObject* self, PyObject* args)
 	lpPyEngine->Print(std::string(lpSrc));
 
 	Py_INCREF(Py_None);
-
 	return Py_None;
 }
 
@@ -62,7 +61,7 @@ static PyObject* PyEngineNotifyAfter(PyObject* self, PyObject* args)
 
 	lpPyEngine->AddTimerEvent(TimerEvent(float(lTime), lpFunc, lpArgs));
 
-	if(PyArgs) Py_DECREF(PyArgs);
+	if(PyArgs) Py_XDECREF(PyArgs);
 	
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -105,7 +104,7 @@ static PyObject* PyEngineNotifyWhen(PyObject* self, PyObject* args)
 
 	lpPyEngine->AddStatusEvent(StatusEvent(s_copy, lpFunc, lpArgs));
 
-	if(PyArgs) Py_DECREF(PyArgs);
+	if(PyArgs) Py_XDECREF(PyArgs);
 	
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -128,7 +127,6 @@ PyEngine::PyEngine()
 
 PyEngine::~PyEngine()
 {
-	Py_XDECREF(this->mModule);
 }
 
 PyEngine* PyEngine::GetInstance()
@@ -161,6 +159,7 @@ HRESULT PyEngine::Initialize()
 
 void PyEngine::ShutDown()
 {
+	if(this->mModule) Py_XDECREF(this->mModule);
 	Py_Finalize();
 	if(mInstance)
 		delete mInstance;
@@ -201,7 +200,7 @@ HRESULT PyEngine::LoadModule(std::string scriptName)
 			PyErr_Print();
 			return E_FAIL;
 		}
-		Py_DECREF(lScriptName); // Plocka bort referensen av vår python string
+		Py_XDECREF(lScriptName); // Plocka bort referensen av vår python string
 	}
 	return S_OK;
 }
@@ -257,7 +256,7 @@ void PyEngine::Update(float dt)
 			else
 				CallFunction(mTimer[i].mFunc, nullptr);
 
-			if(mTimer[i].mFunc) Py_DECREF(mTimer[i].mFunc);
+			if(mTimer[i].mFunc) Py_XDECREF(mTimer[i].mFunc);
 			mTimer.erase(mTimer.begin()+i);
 		}
 	}
@@ -274,8 +273,8 @@ void PyEngine::Update(float dt)
 
 			if(mStatus[i].mReturns != Py_None && mStatus[i].mReturns != nullptr)
 			{
-				if(mStatus[i].mFunc) Py_DECREF(mStatus[i].mFunc);
 				mFuncReturns.push_back(mStatus[i].mReturns);
+				if(mStatus[i].mFunc) Py_XDECREF(mStatus[i].mFunc);
 			}
 		}
 		mStatus.clear();
@@ -313,7 +312,7 @@ PyObject* PyEngine::CallFunction(PyObject* func, PyObject* args)
 	if(!lpReturns)
 	{
 		std::cout << "Something went wrong with calling the function!" << std::endl;
-		if(PyErr_Occurred()) PyErr_Print();
+		PyErr_Print();
 		return nullptr;
 	}
 
@@ -408,7 +407,7 @@ void PyEngine::ClearReturns()
 {
 	for(auto it(mFuncReturns.begin()); it != mFuncReturns.end(); ++it)
 	{
-		if(*it) Py_DECREF(*it);
+		if(*it) Py_XDECREF(*it);
 	}
 	mFuncReturns.clear();
 }
