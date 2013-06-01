@@ -175,8 +175,9 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 			sm->stopEnemySound(Running, this->index);
 	}
 
-	// Player not on ground after testing
-	if (!OnGround)
+	// Player not on ground and ySpeed over 10
+	// to avoid twitching between Idle and Jumping Anim
+	if (!OnGround && ySpeed > 10.0f)
 		mCurAnim = JumpingAnim;
 
 
