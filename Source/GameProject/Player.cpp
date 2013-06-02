@@ -275,5 +275,6 @@ void Player::setKillsDeaths(int kills, int deaths)
 
 void Player::DrawWeapon( ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap, bool isVisible )
 {
-	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, isVisible);
+	if (mIsAlive)
+		mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, isVisible);
 }
