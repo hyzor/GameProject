@@ -143,18 +143,25 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 // 	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
 // 	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
+	// Draw multiplayers
+	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
+	for(UINT i = 0; i < multiplayers->size(); i++)
+		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+
 	// Draw pickups
 	activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	for(UINT i = 0; i < pickups.size(); i++)
 		pickups[i]->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 	
 	// Draw local player
+	activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
 	player->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
-	// Draw multiplayers
-	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
+	// Draw local and multiplayers weapons
+	activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
+	player->DrawWeapon(dc, activeTech, player->GetCamera(), shadowMap, true);
 	for(UINT i = 0; i < multiplayers->size(); i++)
-		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
+		multiplayers->at(i)->DrawWeapon(dc, activeTech, player->GetCamera(), shadowMap, false);
 
 	wstringstream wss;
 	if(gameActive)

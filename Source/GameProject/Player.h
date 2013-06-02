@@ -26,6 +26,7 @@ class Player
 
 		virtual void Update(float dt, float gameTime, DirectInput* dInput, World* world, std::vector<Player*>* multiplayers);
 		virtual void Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap);
+		virtual void DrawWeapon(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap, bool isVisible);
 
 		virtual void HandelPackage(Package *p);
 

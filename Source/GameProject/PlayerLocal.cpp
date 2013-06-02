@@ -350,10 +350,10 @@ void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 	}
 
 	
-	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
-	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, true);
+	//activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
+	//mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, true);
 
-	this->Player::Draw(dc, activeTech, mCamera, shadowMap);
+	//this->Player::Draw(dc, activeTech, mCamera, shadowMap);
 }
 	
 void PlayerLocal::HandelPackage(Package *p)

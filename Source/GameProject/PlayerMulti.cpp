@@ -36,11 +36,12 @@ void PlayerMulti::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 		mEntity->Draw(dc, activeTech, mCamera, shadowMap);
 	}
 
-	this->Player::Draw(dc, activeTech, mCamera, shadowMap);
+	//activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
 
-	activeTech = Effects::NormalMapFX->DirLights3TexAlphaClipTech;
+	//this->Player::Draw(dc, activeTech, mCamera, shadowMap);
+
 	// Draw weapon (weapon model is excluded)
-	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, false);
+	//mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, false);
 }
 
 void PlayerMulti::HandelPackage(Package *p)

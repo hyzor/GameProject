@@ -180,10 +180,10 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	else if(OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&move)), XMVector3Normalize(mCamera->GetLookXM() * XMLoadFloat3(&removeDown)))) > 0.5f)
 		mCurAnim = RunningBackwardsAnim;
 	// Strafing left
-	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) < 0)
+	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) > 0)
 		mCurAnim = StrafingLeftAnim;
 	// Strafing right
-	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) > 0)
+	else if (OnGround && XMVectorGetX(XMVector3Dot(XMVector3Normalize(mCamera->GetRightXM() * XMLoadFloat3(&removeDown)), XMVector3Normalize(XMLoadFloat3(&move)))) < 0)
 		mCurAnim = StrafingRightAnim;
 
 	// Player not on ground and ySpeed over 50
@@ -271,4 +271,9 @@ void Player::setKillsDeaths(int kills, int deaths)
 		Python->GetFunction("SetKillDeaths"),
 		Python->CreateArg<int, int, int>(this->mPlayerID, kills, deaths));
 	}
+}
+
+void Player::DrawWeapon( ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTech, Camera* mCamera, ShadowMap* shadowMap, bool isVisible )
+{
+	mWeapons[mCurWeaponIndex]->Draw(dc, activeTech, mCamera, shadowMap, isVisible);
 }
