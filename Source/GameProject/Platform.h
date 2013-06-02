@@ -24,6 +24,7 @@ public:
 	
 	XMFLOAT3 move;
 	std::vector<PointLight> mPointLights;
+	std::vector<XMFLOAT3> mPointLightOffsets;
 
 protected:
 	std::string mModelName;

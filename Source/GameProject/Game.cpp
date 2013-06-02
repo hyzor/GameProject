@@ -144,7 +144,7 @@ void Game::Draw(ID3D11DeviceContext* dc, ShadowMap* shadowMap)
 // 	animatedEntity->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 
 	// Draw multiplayers
-	activeTech = Effects::NormalMapFX->DirLights3TexSkinnedTech;
+	activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipSkinnedTech;
 	for(UINT i = 0; i < multiplayers->size(); i++)
 		multiplayers->at(i)->Draw(dc, activeTech, player->GetCamera(), shadowMap);
 

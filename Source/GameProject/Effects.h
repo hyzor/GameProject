@@ -328,6 +328,8 @@ public:
 
 	ID3DX11EffectTechnique* DirLights3PointLights12TexAlphaClipTech;
 
+	ID3DX11EffectTechnique* DirLights3PointLights12TexAlphaClipSkinnedTech;
+
 	// Matrices
 	ID3DX11EffectMatrixVariable* WorldViewProj;
 	ID3DX11EffectMatrixVariable* WorldViewProjTex;

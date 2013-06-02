@@ -45,7 +45,7 @@ void Railgun::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* tech, Camera
 	mParticleSys->setEyePos(camera->GetPosition());
 
 	// Dont draw particle system after specified time
-	if (mParticleSys->getAge() < 0.6f)
+	//if (mParticleSys->getAge() < 0.45f)
 		mParticleSys->draw(dc, camera);
 
 	// Restore blend state

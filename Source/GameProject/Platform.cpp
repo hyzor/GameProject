@@ -36,6 +36,13 @@ void Platform::Update(float dt)
 	mCollision->SetPosition(this->pos);
 	for(int i = 0; i < mSwitches.size(); i++)
 		mSwitches[i]->SetPosition(this->pos);
+
+	for (UINT i = 0; i < mPointLights.size(); ++i)
+	{
+		mPointLights[i].Position.x = this->pos.x + mPointLightOffsets[i].x;
+		mPointLights[i].Position.y = this->pos.y + mPointLightOffsets[i].y;
+		mPointLights[i].Position.z = this->pos.z + mPointLightOffsets[i].z;
+	}
 }
 
 void Platform::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)

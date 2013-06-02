@@ -500,11 +500,21 @@ technique11 DirLights3TexSkinned
 	}
 }
 
-technique11 DirLights3PointLight12TexAlphaClip
+technique11 DirLights3PointLights12TexAlphaClip
 {
 	pass P0
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_DirLightPointLight(3, 12, true, true, false, false)));
+	}
+}
+
+technique11 DirLights3PointLights12TexAlphaClipSkinned
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, SkinnedVS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_DirLightPointLight(3, 12, true, true, false, false)));
 	}

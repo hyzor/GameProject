@@ -4,18 +4,7 @@
 World::World()
 	: mPlatformAmount(2), mPlatforms(std::vector<Platform*>())
 {
-	UINT pointLightIndex = 0;
-	for (UINT i = 0; i < mPlatforms.size(); ++i)
-	{
-		for (UINT j = 0; j < mPlatforms[i]->mPointLights.size(); ++j)
-		{
-			if (pointLightIndex >= numPointLights)
-				continue;
-
-			mPointLights[pointLightIndex] = mPlatforms[i]->mPointLights[j];
-			pointLightIndex++;
-		}
-	}
+	mPointLightIndex = 0;
 }
 
 World::~World()
@@ -26,8 +15,21 @@ World::~World()
 
 void World::Update(float dt)
 {
+	UINT plIndex = 0;
 	for(unsigned int i = 0; i < mPlatforms.size(); ++i)
+	{
 		mPlatforms.at(i)->Update(dt);
+
+		// Also have to update the cached point lights
+		for (UINT j = 0; j < mPlatforms[i]->mPointLights.size(); ++j)
+		{
+			if (plIndex >= numPointLights)
+				continue;
+
+			mPointLights[plIndex].Position = mPlatforms[i]->mPointLights[j].Position;
+			plIndex++;
+		}
+	}
 }
 
 void World::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* at, Camera* camera, ShadowMap* shadowMap)
@@ -94,8 +96,18 @@ void World::HandlePackage(Package* p)
 				mPlatforms.push_back(new Platform4());
 				break;
 		}
-		mPlatforms[mPlatforms.size()-1]->Initialize(p->GetHeader().id, pos);
-		mPlatforms[mPlatforms.size()-1]->move = mov;
+		mPlatforms.back()->Initialize(p->GetHeader().id, pos);
+		mPlatforms.back()->move = mov;
+
+		// Cache point lights from the platform
+		for (UINT i = 0; i < mPlatforms.back()->mPointLights.size(); ++i)
+		{
+			if (mPointLightIndex >= numPointLights)
+				continue;
+
+			mPointLights[mPointLightIndex] = mPlatforms.back()->mPointLights[i];
+			mPointLightIndex++;
+		}
 	}
 	else if(p->GetHeader().operation == 6)
 	{

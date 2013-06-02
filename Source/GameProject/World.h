@@ -30,6 +30,8 @@ public:
 
 	static const UINT numPointLights = 12;
 	PointLight mPointLights[numPointLights];
+	UINT mPointLightIndex;
+	//std::vector<PointLight*> mPointLights;
 
 private:
 	int mPlatformAmount;

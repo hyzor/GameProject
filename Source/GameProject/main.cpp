@@ -354,16 +354,16 @@ void Projekt::UpdateScene(float dt)
 	mGame->Update(dt, mTimer.getTimeElapsedS(), mDirectInput);
 
 	// Update shadow map
-	mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);
+	//mShadowMap->BuildShadowTransform(mDirLights[0], mSceneBounds);
 
 	// Frustum culling
-	mFrustumCulling->FrustumCull(mGenericInstances, *mGame->GetCamera());
-
-	std::wostringstream outs;
-	outs.precision(6);
-	outs << L"    " << mFrustumCulling->GetNumVisible() << 
-		L" objects visible out of " << mGenericInstances.size();
-	mMainWndCaption = outs.str();
+// 	mFrustumCulling->FrustumCull(mGenericInstances, *mGame->GetCamera());
+// 
+// 	std::wostringstream outs;
+// 	outs.precision(6);
+// 	outs << L"    " << mFrustumCulling->GetNumVisible() << 
+// 		L" objects visible out of " << mGenericInstances.size();
+// 	mMainWndCaption = outs.str();
 
 	//Check if fullscreen settings has been changed. If it has then update.
 	bool fullscreen = Settings::GetInstance()->GetData().IsFullscreen;

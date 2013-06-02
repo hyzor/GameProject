@@ -221,7 +221,9 @@ NormalMapEffect::NormalMapEffect(ID3D11Device* device, const std::wstring& filen
 	DirLights3TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3TexAlphaClip");
 	DirLights3TexSkinnedTech = mFX->GetTechniqueByName("DirLights3TexSkinned");
 
-	DirLights3PointLights12TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3PointLight12TexAlphaClip");
+	DirLights3PointLights12TexAlphaClipTech = mFX->GetTechniqueByName("DirLights3PointLights12TexAlphaClip");
+
+	DirLights3PointLights12TexAlphaClipSkinnedTech = mFX->GetTechniqueByName("DirLights3PointLights12TexAlphaClipSkinned");
 
 	//-------------
 

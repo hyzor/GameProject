@@ -14,6 +14,28 @@ void Platform4::Initialize(int id, XMFLOAT3 pos)
 {
 	Platform::Initialize(id, pos);
 
+	//------------------------------------
+	// Create lights
+	//------------------------------------
+	PointLight pLight1;
+	pLight1.Position = pos;
+	pLight1.Position.x += 27.227;
+	pLight1.Position.y += 79.323f;
+	pLight1.Position.z += 97.226f;
+
+	mPointLights.push_back(pLight1);
+
+	mPointLightOffsets.push_back(XMFLOAT3(27.227, 79.323f, 97.226f));
+
+	for (UINT i = 0; i < mPointLights.size(); ++i)
+	{
+		mPointLights[i].Ambient		= XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+		mPointLights[i].Diffuse		= XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		mPointLights[i].Specular	= XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		mPointLights[i].Attenuation = XMFLOAT3(0.0f, 0.1f, 0.0f);
+		mPointLights[i].Range		= 150.0f;
+	}
+
 	int index = 0;
 	XMFLOAT4X4 rot;
 

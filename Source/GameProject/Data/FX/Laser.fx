@@ -117,31 +117,28 @@ void StreamOutGS(point Particle gIn[1], inout PointStream<Particle> ptStream)
 	if (gIn[0].Type == PT_EMITTER)
 	{
 		// If over certain age, emit new particle
-		if (gIn[0].Age > 0.0001f)
+		if (gIn[0].Age > 0.001f)
 		{
-			//float3 vRandom = RandUnitVec3(0.0f);
-			//vRandom.x *= 0.5f;
-			//vRandom.z *= 0.5f;
-
 			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
 			p.InitialVelW = gEmitDirW * 2500.0f;
-			p.SizeW = float2(2.0f, 2.0f);
+			p.SizeW = float2(2.5f, 2.5f);
 			p.Age = 0.0f;
 			p.Type = PT_FLARE;
-
 			ptStream.Append(p);
 
 			// Reset time to emit
 			gIn[0].Age = 0.0f;
 		}
 
-		// Always keep emitters
-		ptStream.Append(gIn[0]);
+		// Destroy emitter after specified time
+		if (gIn[0].Age <= 0.5f)
+			ptStream.Append(gIn[0]);
 	}
 	else
 	{
-		if (gIn[0].Age <= 1.0f)
+		// Destroy flares after specified time
+		if (gIn[0].Age <= 5.0f)
 			ptStream.Append(gIn[0]);
 	}
 }
@@ -209,12 +206,15 @@ VertexOut DrawVS(Particle vIn)
 
 	// fade color with time
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t/1.0f);
-	vOut.Color = float4(t*5.0f, t*0.5f, t*0.5f, opacity);
+	vOut.Color = float4(1.0f, 0.0f, 0.0f, opacity);
 	//vOut.Color.y = 0.0f;
 	//vOut.Color.z = 0.0f;
 
 	vOut.SizeW = vIn.SizeW;
 	vOut.Type  = vIn.Type;
+
+	//vOut.PosW.x = vOut.PosW.x + sin(t) * 10;
+	//vOut.PosW.y = vOut.PosW.y + cos(t) * 10;
 	
 	return vOut;
 }
