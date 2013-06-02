@@ -83,7 +83,12 @@ void PlayerMulti::HandelPackage(Package *p)
 						break;
 					};
 				if(!found)
-					wss << "You killed " << this->mNickname.c_str() << "!";
+				{
+					if(deathBy != 0)
+						wss << "You killed " << this->mNickname.c_str() << "!";
+					else
+						wss << this->mNickname.c_str() << " died from falling";
+				}
 				else
 					wss << " killed " << this->mNickname.c_str();
 			}

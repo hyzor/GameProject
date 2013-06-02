@@ -2,7 +2,7 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2013-06-01T07:57:17Z</created><keywords></keywords><modified>2013-06-01T07:57:17Z</modified><revision></revision><subject></subject><title></title><unit meter="0.010000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
-    <image id="file3-image" name="file3"><init_from>file://Character_Diffuse.png</init_from></image>
+    <image id="file3-image" name="file3"><init_from>file://Character_COLOR_BLUE.png</init_from></image>
   </library_images>
   <library_materials>
     <material id="lambert2" name="lambert2">

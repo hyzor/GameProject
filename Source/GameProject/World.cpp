@@ -122,7 +122,9 @@ void World::HandlePackage(Package* p)
 
 Platform* World::getPlatform(int id)
 {
-	return mPlatforms[id];
+	if(id < mPlatforms.size())
+		return mPlatforms[id];
+	return NULL;
 	/*for(unsigned int i = 0; i < this->mPlatforms.size(); i++)
 	{
 		if(this->mPlatforms.at(i)->mID == id)

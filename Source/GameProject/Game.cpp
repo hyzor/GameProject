@@ -57,6 +57,10 @@ void Game::HandlePackage(Package* p)
 		pm->mIsAlive = a==1;
 		pm->InitWeapons(this->device, this->dc);
 		multiplayers->push_back(pm);
+
+		wstringstream wss;
+		wss << pm->mNickname.c_str() << " connected.";
+		Gui->AddEventText(wss.str(), 4);
 	}
 	else if(o == 1 || o == 3 || o == 10 || o == 11)
 	{
@@ -75,6 +79,10 @@ void Game::HandlePackage(Package* p)
 		for(UINT i = 0; i< multiplayers->size(); i++)
 			if(multiplayers->at(i)->GetID() == p->GetHeader().id)
 			{
+				wstringstream wss;
+				wss << multiplayers->at(i)->mNickname.c_str() << " disconnected.";
+				Gui->AddEventText(wss.str(), 4);
+
 				SafeDelete(multiplayers->at(i));
 				multiplayers->erase(multiplayers->begin() + i);
 				break;

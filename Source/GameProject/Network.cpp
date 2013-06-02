@@ -69,6 +69,8 @@ std::queue<Package*> Network::GetPackage()
 			int offset = (int)buf;
 			while((int)buf+len-offset > sizeof(Package::Header))
 			{
+				if(IsBadReadPtr((char*)offset, 12))
+					break;
 				Package* p = new Package((char*)offset, true);
 				if(!(p->Size() > sizeof(Package::Header) && p->Size() < 256))
 					break;

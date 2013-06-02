@@ -348,6 +348,12 @@ void PlayerLocal::Draw(ID3D11DeviceContext* dc, ID3DX11EffectTechnique* activeTe
 		wss << (int)(this->respawntime+0.99f);
 		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(SCREEN_WIDTH/2-50.0f,SCREEN_HEIGHT/2-50.0f), 70, 0xff0000ff);
 	}
+	else if(this->mHealth > 100)
+	{
+		wstringstream wss;
+		wss << "Extra health";
+		Gui->drawText(dc, (wchar_t*)wss.str().c_str(), XMFLOAT2(SCREEN_WIDTH/2+200.0f,SCREEN_HEIGHT/2+300.0f), 20, 0xff0000ff);
+	}
 
 	
 	//activeTech = Effects::NormalMapFX->DirLights3PointLights12TexAlphaClipTech;
