@@ -84,7 +84,7 @@ void Player::HandlePackage(Package* p)
 void Player::HandlePickup(Pickup* p)
 {
 	//give pickup effect
-	this->health += 100;
+	this->health = 200;
 	this->updated = true;
 }
 
