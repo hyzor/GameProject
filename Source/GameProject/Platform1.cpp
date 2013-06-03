@@ -42,7 +42,7 @@ void Platform1::Initialize(int id, XMFLOAT3 pos)
 		mPointLights[i].Diffuse		= XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 		mPointLights[i].Specular	= XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 		mPointLights[i].Attenuation = XMFLOAT3(0.0f, 0.1f, 0.0f);
-		mPointLights[i].Range		= 150.0f;
+		mPointLights[i].Range		= 250.0f;
 	}
 
 	int index = 0;

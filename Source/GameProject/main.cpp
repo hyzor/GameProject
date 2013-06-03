@@ -107,20 +107,20 @@ Projekt::Projekt(HINSTANCE hInstance)
 	//--------------------------------------------------------
 	// Create lights
 	//--------------------------------------------------------
-	mDirLights[0].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	mDirLights[0].Diffuse  = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	mDirLights[0].Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f);
+	mDirLights[0].Ambient  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	mDirLights[0].Diffuse  = XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+	mDirLights[0].Specular = XMFLOAT4(0.4f, 0.4f, 0.5f, 1.0f);
 	mDirLights[0].Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 
-	mDirLights[1].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	mDirLights[1].Diffuse  = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	mDirLights[1].Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f);
-	mDirLights[1].Direction = XMFLOAT3(0.707f, 0.707f, 0.57735f);
+	mDirLights[1].Ambient  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	mDirLights[1].Diffuse  = XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+	mDirLights[1].Specular = XMFLOAT4(0.4f, 0.4f, 0.5f, 1.0f);
+	mDirLights[1].Direction = XMFLOAT3(0.57735f, 0.57735f, 0.0f);
 
-	mDirLights[2].Ambient  = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	mDirLights[2].Diffuse  = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	mDirLights[2].Ambient  = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	mDirLights[2].Diffuse  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	mDirLights[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	mDirLights[2].Direction = XMFLOAT3(0.0f, 0.0, -1.0f);
+	mDirLights[2].Direction = XMFLOAT3(0.0f, 0.0f, -0.57735f);
 
 	mOriginalLightDir[0] = mDirLights[0].Direction;
 	mOriginalLightDir[1] = mDirLights[1].Direction;
