@@ -18,7 +18,7 @@
               <color sid="emission">0.000000  0.000000 0.000000 1.000000</color>
             </emission>
             <ambient>
-              <color sid="ambient">0.000000  0.000000 0.000000 1.000000</color>
+              <color sid="ambient">0.600000  0.600000 0.600000 1.000000</color>
             </ambient>
             <diffuse>
               <texture texture="file3-image" texcoord="CHANNEL0">
