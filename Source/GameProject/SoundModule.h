@@ -79,7 +79,7 @@ class SoundModule
 	public:
 		SoundModule();
 		SoundModule(const SoundModule&);
-		bool playSFX(XMFLOAT3, int soundID, bool looping = false);
+		bool playSFX(XMFLOAT3, int soundID, bool playOver, bool looping = false);
 		bool playDuplicateSFX(XMFLOAT3, int soundID, bool looping = false);
 		bool stopSound(int sID);
 		void playMusic();

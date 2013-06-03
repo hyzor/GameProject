@@ -393,7 +393,7 @@ bool SoundModule::loadWaveFiles()
 	return result;
 }
 
-bool SoundModule::playSFX(XMFLOAT3 pos, int sID, bool looping)
+bool SoundModule::playSFX(XMFLOAT3 pos, int sID, bool playOver, bool looping)
 {
 	HRESULT result;
 	DWORD status;
@@ -404,7 +404,7 @@ bool SoundModule::playSFX(XMFLOAT3 pos, int sID, bool looping)
 		{
 			sBuffers.at(i)->GetStatus(&status);
 
-			if(!(status == DSBSTATUS_PLAYING))
+			if(!(status == DSBSTATUS_PLAYING) || playOver)
 			{
 
 				result = sBuffers.at(i)->SetCurrentPosition(0);

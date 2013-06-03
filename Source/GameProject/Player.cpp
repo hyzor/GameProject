@@ -161,7 +161,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	if(OnGround && XMVectorGetX(XMVector3Dot(XMLoadFloat3(&move), XMLoadFloat3(&XMFLOAT3(1,1,1)))) != 0)
 	{
 		if(this->GetID() == 0)
-			sm->playSFX(mPosition, Running, false);
+			sm->playSFX(mPosition, Running, false, false);
 		else
 			sm->playEnemySFX(Running, this->index, mPosition, false);
 	}

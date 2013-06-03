@@ -197,7 +197,7 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 			//fire
 			if (mWeapons.at(mCurWeaponIndex)->FireProjectile(p, mCamera->GetLook(), hitPos))
 			{
-				sm->playSFX(p, FireWeapon, false);
+				sm->playSFX(p, FireWeapon, true, false);
 
 				struct Data
 				{
@@ -377,7 +377,7 @@ void PlayerLocal::HandelPackage(Package *p)
 		this->setKillsDeaths(kills, deaths);
 
 		if(mHealth > health) //player hurt
-			sm->playSFX(mPosition, PlayerGrunt, false);
+			sm->playSFX(mPosition, PlayerGrunt, true, false);
 		mHealth = health;
 
 		if(this->mIsAlive && !alive) //killed gui text
