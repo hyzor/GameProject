@@ -47,9 +47,16 @@ void Player::HandlePackage(Package* p)
 	if(p->GetHeader().operation == 1)
 	{
 		Package::Body b = p->GetBody();
-		this->posX = *(float*)b.Read(4);
-		this->posY = *(float*)b.Read(4);
-		this->posZ = *(float*)b.Read(4);
+		float posX = *(float*)b.Read(4);
+		float posY = *(float*)b.Read(4);
+		float posZ = *(float*)b.Read(4);
+		if(std::abs(posX-this->posX) < 100)
+			this->posX = posX;
+		if(std::abs(posY-this->posY) < 100)
+			this->posY = posY;
+		if(std::abs(posZ-this->posZ) < 100)
+			this->posZ = posZ;
+
 		this->movX = *(float*)b.Read(4);
 		this->movY = *(float*)b.Read(4);
 		this->movZ = *(float*)b.Read(4);
