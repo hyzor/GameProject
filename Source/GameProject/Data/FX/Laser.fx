@@ -195,15 +195,6 @@ VertexOut DrawVS(Particle vIn)
 			vOut.PosW = gHitPos;
 	}
 
-	if (vOut.PosW.x == gHitPos.x && vOut.PosW.y == gHitPos.y && vOut.PosW.z == gHitPos.z)
-	{
-		vOut.Color.x = 0.0f;
-		vOut.Color.y = 0.0f;
-		vOut.Color.z = 0.0f;
-		//vOut.Color.w = 0.0f;
-		vOut.PosW = gHitPos;
-	}
-
 	// fade color with time
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t/1.0f);
 	vOut.Color = float4(1.0f, 0.0f, 0.0f, opacity);

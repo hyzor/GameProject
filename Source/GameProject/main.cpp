@@ -102,24 +102,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 Projekt::Projekt(HINSTANCE hInstance)
 	: D3D11App(hInstance), mShadowMap(0)
 {
-	mMainWndCaption = L"GameProject";
-	
+	mMainWndCaption = L"GameProject";	
 
 	//--------------------------------------------------------
 	// Create lights
 	//--------------------------------------------------------
 	mDirLights[0].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	mDirLights[0].Diffuse  = XMFLOAT4(0.8f, 0.7f, 0.7f, 1.0f);
+	mDirLights[0].Diffuse  = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	mDirLights[0].Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f);
 	mDirLights[0].Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 
-	mDirLights[1].Ambient  = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	mDirLights[1].Diffuse  = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	mDirLights[1].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	mDirLights[1].Direction = XMFLOAT3(0.707f, -0.707f, 0.0f);
+	mDirLights[1].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	mDirLights[1].Diffuse  = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	mDirLights[1].Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f);
+	mDirLights[1].Direction = XMFLOAT3(0.707f, 0.707f, 0.57735f);
 
 	mDirLights[2].Ambient  = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	mDirLights[2].Diffuse  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	mDirLights[2].Diffuse  = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	mDirLights[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	mDirLights[2].Direction = XMFLOAT3(0.0f, 0.0, -1.0f);
 

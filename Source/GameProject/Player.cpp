@@ -241,7 +241,7 @@ void Player::InitWeapons(ID3D11Device* device, ID3D11DeviceContext* dc)
 	// Create railgun
 	Railgun* railgun = new Railgun();
 	Railgun::Properties prop;
-	prop.cooldown = 2.0f;
+	prop.cooldown = 1.0f;
 	prop.damage = 1.0f;
 	prop.maxProjectiles = 1;
 	railgun->Init(prop, device, dc, "Gun", mPosition);
