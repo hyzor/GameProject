@@ -406,12 +406,15 @@ void Game::HandelPackage(Package* p, char* socket)
 	else if(p->GetHeader().operation == 11)
 	{
 		p->SetId((int)socket);
-		Player* player = findPlayer(players, *(int*)p->GetBody().Read(4));
+		int id = *(int*)p->GetBody().Read(4);
+		Player* player = findPlayer(players, id);
 		if(player != NULL)
 		{
 			player->HandlePackage(p);
 			send->push(new PackageTo(player->GetUpdate(), 0));
 		}
+		else
+			send->push(new PackageTo(new Package(Package::Header(4, id, 0), Package::Body(new char())), socket)); //send disconnect
 		send->push(new PackageTo(new Package(p), 0));
 	}
 	else if(p->GetHeader().operation == 9)
