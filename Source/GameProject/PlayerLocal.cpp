@@ -151,14 +151,14 @@ void PlayerLocal::Update(float dt, float gameTime, DirectInput* dInput, World* w
 		//move
 		XMVECTOR look = XMVector3Normalize(mCamera->GetLookXM()*removeDown);
 		if (dInput->GetKeyboardState()[DIK_W] & 0x80)
-			m += look*mSpeed*dt;
+			m += look*mSpeed;
 		if (dInput->GetKeyboardState()[DIK_S] & 0x80)
-			m -= look*mSpeed*dt;
+			m -= look*mSpeed;
 		XMVECTOR right = XMVector3Normalize(mCamera->GetRightXM()*removeDown);
 		if (dInput->GetKeyboardState()[DIK_D] & 0x80)
-			m += right*mSpeed*dt;
+			m += right*mSpeed;
 		if (dInput->GetKeyboardState()[DIK_A] & 0x80)
-			m -= right*mSpeed*dt;
+			m -= right*mSpeed;
 
 		//jump
 		if (this->OnGround && dInput->GetKeyboardState()[DIK_SPACE] & 0x80)

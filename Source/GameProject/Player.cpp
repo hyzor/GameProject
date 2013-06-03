@@ -91,7 +91,7 @@ void Player::Update(float dt, float gameTime, DirectInput* dInput, World* world,
 	XMVECTOR pos = XMLoadFloat3(&mPosition);	
 	
 	// Move
-	pos += XMLoadFloat3(&move)+XMLoadFloat3(&relativeMotion)*dt;
+	pos += XMLoadFloat3(&move)*dt+XMLoadFloat3(&relativeMotion)*dt;
 
 	// Assume idle animation
 	mCurAnim = IdleAnim;
